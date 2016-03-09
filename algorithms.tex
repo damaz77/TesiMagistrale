@@ -1,0 +1,546 @@
+In Table \ref{tab:t} is shown an overview of the exitent algorithms for computing the GRB or RP weights; in Table 1, the acronym DC is used to refer to the log-barrier formulation (\ref{eq:log1}) whereas LS is used to refer to the least-square formulation (\ref{eq:bp}).
+\begin{table}
+\begin{center}
+\begin{tabular}{| l | c| r |}
+\hline
+    \textbf{Portofolio} &\textbf{Formulation type}& \textbf{Algorithms}  \\ \hline
+    \multirow{2}{4em}{GRB}& \multirow{2}{6em}{Non-Convex}  &SDP relaxation \cite{sdp}  \\ \cline{3-3}
+     &  &AL-MCMC \cite{sdp}\\ \hline
+    \multirow{7}{4em}{RP}& \multirow{2}{6em}{Convex (DC)}  &Newton-Nesterov \cite{spinu}\\\cline{3-3}     
+    &  & CCD \cite{ccd}\\ \cline{2-3}
+
+     &\multirow{5}{8em}{Non-Convex (LS)} & SCRIP \cite{scrip}\\ \cline{3-3}
+    && Genetic Algorithm \cite{genetic} \\\cline{3-3}
+    && ALM \cite{tutuncu}\\ \cline{3-3}
+    && Gauss-Southwell \\ \cline{3-3}
+    && SQP \cite{erc}\\ 
+    \hline
+\end{tabular}
+\end{center}
+\caption{Comparison between different algorithms for computing GRB/RP portfolios}
+\label{tab:t}
+\end{table}
+\section{Newton's Method}
+The algorithm is an application of Newton’s method to solve a system of nonlinear equations \cite{newton}. Writing the system in general form, one is interested in finding the solution of $F(y)=0$. Recall that we can write a linear approximation to this system around any point using a Taylor expansion:
+\begin{equation}
+F(y) \approx F(c) + J(c)(y-c)
+\end{equation}
+where $J(c)$ represents the Jacobian matrix of $F(y)$ evaluated in the point $c$. Now, since we are looking for a root of the system, we set $F(y) = 0$ and solve for $y$:
+\begin{equation}\label{eq:newton}
+y = c - [J(c)]^{-1}F(c)
+\end{equation}
+Of course this solution is only an approximation, but the idea behind the method is that repeated iterations of Equation (\ref{eq:newton}) will get us closer and closer to the optimal solution. In other words, given an approximate solution $y^{(n)}$, one can calculate
+\begin{equation}
+y^{(n+1)} = y^{(n)} - [J(y^{(n)})]^{-1}F(y^{(n)})
+\end{equation}
+and, if the method converges, then $y^{(n)}\rightarrow y$.\\
+The remaining step is simply to write the ERC problem as a system of nonlinear equations. From (\ref{eq:ercconst}) and (\ref{eq:total}) we can write
+\begin{equation}
+\sigma(x) = \sqrt{x^T \Sigma x} = n\lambda \hspace{1em} \Rightarrow \hspace{1em} \Sigma x = (n^2\lambda^2)x^{-1}
+\end{equation}
+If we set $k=n^2\lambda^2$, we obtain
+\begin{equation}
+\Sigma x = k x^{-1}
+\end{equation}
+Now we can write
+\begin{equation}
+F(y) = F(x, k)= \begin{bmatrix}
+    \Sigma x - kx^{-1}\\
+    \sum_{i=1}^n x_i - 1
+\end{bmatrix} = 0
+\end{equation}
+This represents a system with $n+1$ equation and $n+1$ variables, and its Jacobian is a $((n+1)\times(n+1))$ matrix
+\begin{equation}
+J(y) = J(x,k) = \begin{bmatrix}
+    \Sigma + k\cdot diag(x^{-2}) & -x^{-1}\\
+    e^T & 0
+\end{bmatrix}
+\end{equation}
+where $diag(x^{-2})$ represents a diagonal matrix with elements equal to $1/x^2$. Algorithm \ref{alg:newton} illustrates the iterative process just described.
+
+\begin{algorithm}
+Start with an initial guess $x^{(0)}$, $k^{(0)}$, choose a threshold $\epsilon$\\
+
+Define $y^{(0)} = [x^{(0)T}, k^{(0)}]^T$\\
+
+\For{$n=0,1,..$}{
+
+Calculate $F(y^{(n)})$, $J(y^{(n)})$ and $y^{(n+1)}$ using the formulas above\\
+
+\eIf {$(\parallel y^{(n+1)} - y^{(n)} \parallel < \epsilon)$}{STOP}{
+
+Go to Step 3.
+}
+}
+\caption{Newton's algorithm}
+\label{alg:newton}
+\end{algorithm}
+
+
+\section{Newton-Nesterov algorithm (NN)}
+This Newtow based algorithm uses the correlation matrix $C$ rather than the covariance matrix $\Sigma$. Let $D$ be the diagonal matrix of $\Sigma$, then we can obtain $C$ from $\Sigma$ applying
+\begin{equation}
+C = D^{-1/2}\Sigma D^{-1/2}
+\end{equation}
+The correlation matrix C is positive definite, with
+\begin{equation}\label{eq:corr}
+C_{i,i} = 1, \quad |C_{i,j}| \leq 1 
+\end{equation}
+This method uses as objective function a slightly different version of the one of the problem (\ref{eq:log1})
+\begin{equation}
+F(x) = \frac{1}{2} x^T \Sigma x - \sum_{i=1}^n b_i ln(x_i)
+\end{equation}
+The gradient and the Hessian of F are given by
+\begin{equation}\label{eq:grad}
+F'(x) = \Sigma x - bx^{-1}, \quad F''(x) = \Sigma + diag(bx^{-2})
+\end{equation}
+Since F is strictly convex on $\mathbb{R}^n$ ($F''(x)$ is positive definite), it has at most one critical point. The equation used to find the critical point derives from (\ref{eq:grad})
+\begin{equation}\label{eq:sol}
+\Sigma x = bx^{-1}
+\end{equation}
+If $x^*$ is the solution of (\ref{eq:sol}), then $y^* := D^{1/2}x^*$ is the solution of
+\begin{equation}
+Cy = by^{-1}
+\end{equation}
+Therefore, we can solve the problem by replacing $\Sigma$ with $C$ in the objective function $F$. The next observation is that if $x^*$ satisfies (\ref{eq:sol}), then $t^{1/2}x^*$ satisfies the same equation with the vector $b$ replaced by $tb$. Therefore we can rescale the vector $b$, for purposes which will be transparent later, so that
+\begin{equation}\label{eq:resc}
+\min_{1 \leq i \leq n} b_i = 1
+\end{equation}
+Now it is necessary to introduce a the concept of \textit{self-concordant} function. Let $\Omega \subset \mathbb{R}^n$ an arbitrary open set; for a convex function $f \in C^3(\Omega)$ we define the norm 
+\begin{equation}
+\parallel u \parallel _x = \sqrt{\langle f''(x)u,u\rangle}
+\end{equation}
+\begin{definition}
+A convex function $f \in C^3(\Omega)$ is self-concordant if the trilinear form $f'''(x)$ is bounded in the $\parallel \cdot \parallel _x$ norm as follows:
+\begin{equation}
+|f'''(x)[u,u,u]| \leq 2\parallel u \parallel_x^3 \quad \forall x \in \Omega, u \in \mathbb{R}^n
+\end{equation}
+\end{definition}
+\begin{lemma}
+Under the assumptions  (\ref{eq:corr}) and (\ref{eq:resc}), the function $F(x)$ is self-concordant
+\end{lemma}
+Given a starting point $x^{(0)} \in \mathbb{R}^n_+$, the sequence generated by the Newton's algorithm is defined by
+\begin{equation}
+x^{(k+1)} = x^{(k)} - \Delta x^{(k)}
+\end{equation}
+with the iteration step given by
+\begin{equation}
+\Delta x^{(k)} = [F''(x^{(k)})]^{-1}F'(x^{(k)})
+\end{equation}
+Now we define a quantity $\lambda_F$ as
+\begin{equation}
+\lambda_F(x) := \langle \Delta x, F'(x)\rangle^{1/2}
+\end{equation}
+In \cite{nesterov} is derived the region of the quadratic convergence for the Newton algorithm, which is defined as follows:
+\begin{equation}
+\lambda_F(x) < \lambda_*
+\end{equation} 
+where $\lambda_* = \frac{3-\sqrt{5}}{2}$. The \textit{damped} iteration lasts as long as $\lambda_F(x) > \lambda_*$ and the iteration is
+\begin{equation}
+x^{(k+1)} = x^{(k)} - \frac{1}{1+\lambda_F(x^{(k)})}\Delta x^{(k)}
+\end{equation}
+Algorithm \ref{alg:nesterov} summarizes what discussed above.
+
+\begin{algorithm}
+Start with an initial guess $x^{(0)}$, choose a threshold $\epsilon$\\
+\For{$k=0,1,..$}{
+Compute $F'(x^{(k)})$, $F''(x^{(k)})$, $\Delta x^{(k)}$, $\lambda_F(x^{(k)})$ \\
+\eIf {$(\lambda_F(x^{(k)}) > \lambda_*)$}{
+(\textit{Damped Phase}) $x^{(k+1)} = x^{(k)} - \frac{1}{1+\lambda_F(x^{(k)})}\Delta x^{(k)}$
+}
+{
+\eIf{$(\lambda_F(x^{(k)}) > \lambda_*)$}{
+(\textit{Quadratic Phase}) $x^{(k+1)} = x^{(k)} - \Delta x^{(k)}$
+}
+{
+STOP
+}
+}
+}
+\caption{Newton-Nesterov algorithm}
+\label{alg:nesterov}
+\end{algorithm}
+
+In \cite{spinu} the initial guess $x^{(0)}$ is the scaled equally-weighted portfolio
+\begin{equation}
+x^{(0)} := \frac{\sqrt{\sum_i b_i}}{\sqrt{e^T C e}} \cdot e
+\end{equation}
+\section{Cyclical coordinate descent (CCD)}The main idea behind the cyclical coordinate descent (CCD) algorithm is to minimize a function $f(y_1,...,y_n)$ by minimizing only one direction at each step, whereas classical descent algorithms consider all the directions at the same time. In this case, we find the value of $y_i$ which minimizes the objective function by considering the values taken by $y_j$ for $j \neq i$ as fixed. The procedure repeats for each direction until the global minimum is reached. This method uses the same principles as Gauss-Seidel or Jacobi algorithms for solving linear systems  \cite{ccd}.\\
+A RP solution satisfies (\ref{eq:this}), that we can rewrite in the following manner
+\begin{equation}
+\frac{(\Sigma y)_i}{\sigma(y)} - \frac{\lambda_c b_i}{y_i} = 0
+\end{equation}
+Without loss of generality, we can fix $\lambda_c = 1$ and we obtain
+\begin{equation}
+y_i(\Sigma y)_i - b_i\sigma(y) = 0
+\end{equation}
+It follows that
+\begin{equation}
+y_i^2\sigma_i^2 + y_i\sigma_i\sum_{i \neq j} y_j \rho_{i,j} \sigma_j - b_i\sigma(y) = 0
+\end{equation}
+By definition of the RP portfolio we have $x_i > 0$. We notice that the polynomial function is convex because we have $\sigma_i^2 > 0$. Since the product of the roots is negative ($-b_i\sigma_i^2\sigma(y)<0$), we always have two solutions with opposite signs. We deduce that the solution is the positive root of the second degree equation:
+\begin{equation}\label{eq:iter}
+y_i^* = \frac{-\sigma_i\sum_{i \neq j} y_j \rho_{i,j} \sigma_j + \sqrt{\sigma_i^2(\sum_{i \neq j} y_j \rho_{i,j} \sigma_j)^2 + 4b_i\sigma_i^2\sigma(y)}}{2\sigma_i^2}
+\end{equation}
+If the values of $(y_1,.., y_n)$ are strictly positive, it follows that $y_i^*$ is strictly positive. The positivity of the solution is then achieved after each iteration if the starting values are positive. The coordinate-wise descent algorithm consists in iterating the equation (\ref{eq:iter}) until convergence. If we rewrite equation (\ref{eq:iter}) as follows:
+\begin{equation}
+y_i^* = \frac{-(\Sigma y)_i + y_i\sigma_i^2 + \sqrt{((\Sigma y)_i - y_i \sigma_i^2)^2 + 4\sigma_i^2b_i\sigma(y)}}{2\sigma_i^2}
+\end{equation}
+we deduce that $\Sigma y$ and $\sigma (y) $ must be computed at each iteration of the algorithm. We note $y = (y_1,.., y_{i-1}, y_i, y_{i+1},..y_n)$ and $\tilde{y} =(y_1,.., y_{i-1}, y_i^*, y_{i+1},..y_n)$ the vector of weights before and after the update of the $i$th weight $y_i$. Simple algebra shows that
+\begin{equation}
+\Sigma \tilde{y} = \Sigma y - \Sigma_{.,i} y_i + \Sigma_{.,i}\tilde{y}_i
+\end{equation}
+and
+\begin{equation}
+\sigma(y) = \sqrt{\sigma^2(y) - 2y_i\Sigma_{i,.}y + y_i^2\sigma_i^2 + 2\tilde{y}_i\Sigma_{i,.}\tilde{y} -  \tilde{y}_i^2\sigma_i^2}
+\end{equation}
+where $\Sigma_{i,.}$ and $\Sigma_{.,i}$ are the $i$th row and column of $\Sigma$. Updating $\Sigma y$ and $\sigma(y)$ is then
+straightforward and reduces to the computation of two vector products. These operations dramatically reduce the computational time of the algorithm.
+
+\section{Successive Convex Optimization method (SCRIP)}
+Consider a general formulation for the RP problem
+\begin{equation}\label{eq:gen}
+\begin{aligned}
+& \underset{x}{\text{min}}
+&& \mathcal{R}(x)\\
+& \text{s.t.}
+&&\sum_{i=1}^n x_i = 1\\
+&&&x_i \geq 0
+\end{aligned}
+\end{equation}
+where $\mathcal{R}(x)$ measures the risk concentration and has the form
+\begin{equation}
+\mathcal{R}(x) := \sum_{i=1}^n (g_i(x))^2
+\end{equation}
+in which each $g_i(x)$ is a smooth differentiable nonconvex
+function that measures the risk concentration of the $i$th asset \cite{scrip}. For instance, if we set
+\begin{equation}
+g_i(x) = x^T (\Sigma x)_i - \theta
+\end{equation}
+problem (\ref{eq:gen}) becomes (\ref{eq:ls}). Introducing a function $P(x;x^{(k)})$, that is an approximation of $\mathcal{R}(x)$, defined as
+\begin{equation}
+P(x;x^{(k)}) := \sum_{i=1}^n (g_i(x^{(k)}) + (\nabla g_i(x^{(k)}))^T (x-x^{(k)}))^2
+\end{equation}
+at the $k$th iteration, the SCRIP method aims to solve 
+\begin{equation}\label{eq:scrip1}
+\begin{aligned}
+& \underset{x}{\text{min}}
+&&P(x;x^{(k)}) + \frac{\tau}{2}\parallel x - x^{(k)} \parallel^2_2\\
+& \text{s.t.}
+&&\sum_{i=1}^n x_i = 1\\
+&&&x_i \geq 0
+\end{aligned}
+\end{equation}
+where $\tau > 0$ is the parameter for the regularization term. The beauty of the approximation $P(x;x^{(k)})$ is that it is an
+easily computable quadratic convex function and has the same
+gradient as $\mathcal{R}(x)$ at each iteration point $x^{(k)}$:
+\begin{equation}
+\nabla_x P(x;x^{(k)})|_{x=x^{(k)}} = \nabla_x \mathcal{R}(x)|_{x=x^{(k)}}
+\end{equation}
+Algorithm \ref{alg:scrip} summarizes the sequential solving approach based on a successive convex optimization method.
+
+\begin{algorithm}
+Start with an initial guess $x^{(0)}$, choose $\tau > 0$, $\{\gamma^k\}>0$\\
+\Do{not convergence}{
+Solve (\ref{eq:scrip1}) to get the optimal solution $\hat{x}^{(k)}$\\
+Compute $x^{(k+1)} = x^{(k)} + \gamma^k(\hat{x}^{(k)} - x^{(k)}$)\\
+}
+\caption{SCRIP algorithm}
+\label{alg:scrip}
+\end{algorithm}
+
+
+\section{Genetic algorithm}
+In this section is presented a standard genetic algorithm to compute ERC optimal portfolios. The \textit{fitness} definition in the ERC setting is given by the deviance of each risk contribution from the mean of all risk contributions\footnotemark[3]. We use the shorthand notation of $\Delta_i = \partial_{x_i} \sigma (x)$, so we can compute the expectation $\Delta = E(\Delta_i)$ and define the fitness $f$ as the sum of the quadratic distance of each risk contribution from the mean, as in ({\ref{eq:ls1}) \cite{genetic}. This nonnegative fitness value $f$ has to be minimized, where
+\begin{equation}
+f= \sum_i (\Delta_i - \Delta)^2
+\end{equation}
+\footnotetext[3]{It is simple to extend this approach to the more general RP case}
+\hspace{-0.5em}We use chromosomes of length $n$ which contain the specific portfolio weights of the $n$ risky assets. Thus, an important operator is the \textit{repair} operator, i.e. the sum of the portfolio is normalized to $1$ after each operation. The genetic operators used in the algorithm can be summarized as follows:\\[1\baselineskip]
+\textbf{Selection: }The best $n_S$ chromosomes of each population are kept in the population.\\[1\baselineskip]
+\textbf{Mutation: }A random selection of $n_M$ chromosomes of the parent population will be mutated. Up to a number of 15\% of the length of the respective chromosome will be changed to a random
+value between the portfolio bounds. The mutation positions will be chosen randomly. Afterwards the randomly selected positions will be replaced with a random value between the upper and the lower investment limit of the respective asset.\\[1\baselineskip]
+\textbf{Random Addition: }$n_R$ new and completely random chromosomes are added to each new population.\\[1\baselineskip]
+\textbf{Intermediate Crossover: }Two chromosomes from the parent population will be randomly selected for an intermediate crossover. The mixing parameter between the two chromosomes will also be chosen randomly. $n_{IC}$ crossover children will be added to the next population. Let the mixing parameter be $\alpha$ and the two randomly chosen parent chromosomes $p_1$ and $p_2$ with genes $p_{1,1},...,p_{1,n}$ and $p_{2,1},...,p_{2,n}$. An intermediate crossover will result in a child chromosome $c$ where the genes are set to
+\begin{equation}
+c_i = \alpha p_{1,i} + (1-\alpha)p_{2,i} \hspace{1em} \forall i=1,..,n
+\end{equation}
+\textbf{Local Search: }In a second step, a local search algorithm is applied to the best solution of the genetic algorithm. Thereby, within each iteration of the algorithm each asset weight of the $n$ assets of the portfolio is increased or decreased by a factor $\epsilon$. Each of these $(2\times n)$ new portfolios is normalized and if one exhibits a lower fitness value then this new portfolio will be used subsequently. The algorithm terminates if no local improvement is possible anymore or the maximum number of iterations
+has been reached.
+
+\section{Minimum variance with ERC}
+In this section we focus on finding the ERC solution with the least variance. Hence we consider the following problem where the objective function is a weighted sum of total variance and least-squares ERC term\footnotemark[3]:
+\begin{equation}\label{eq:mvrp}
+\begin{aligned}
+& \underset{x,\theta}{\text{min}}
+&&\sum_{i=1}^n (x_i(\Sigma x)_i - \theta)^2 + \rho x^T \Sigma x\\
+& \text{s.t.}
+&&a_i \leq x_i \leq b_i\vspace{0.5em}\\
+&&&\sum_{i=1}^{n} x_i = 1
+\end{aligned}
+\end{equation}
+Where $a_i$ and $b_i$ are nonnegative constants representing the bounds on the weight of $i$th asset and $\rho \geq 0$ is the weight parameter. In the above formulation we simply added a convex term to the objective function of (\ref{eq:ls}). In Algorithm \ref{alg:minvar} is described an approach of finding a ERC solution with the smallest variance, where the problem (\ref{eq:mvrp}) is simply solved with decreasing values of $\rho$.
+
+\begin{algorithm}
+Choose $\rho^0 > 1$, $\beta \in (0,1)$ and $x^0 $\\
+\For{$k=0, 1,..$}{
+$x^{k+1} :=$ argmin $F(x)$, where $F(x)$ is defined as (\ref{eq:mvrp}), using $x^k$ as starting point. \\
+\eIf{($\rho^k \leq \epsilon$)}{
+$x^{k+1} :=$ argmin $F(x)$ with $\rho^{k+1}=0$ using $x^k$ as starting point\\
+STOP
+}
+{
+$\rho^{k+1} := \rho^k\beta$
+}
+}
+\caption{Sequential min-variance algorithm}
+\label{alg:minvar}
+\end{algorithm}
+
+
+By setting initial $\rho$ to a large value, Algorithm \ref{alg:minvar} is initiated with an easy to solve problem and a solution that is close to the min-variance, but may be far from an equally risk contribution solution. Then, the algorithm solves a sequence of subproblems of the form (\ref{eq:mvrp}) with decreasing $\rho$, initializing each new subproblem with the solution of the previous subproblem.
+
+\section{Alternating Linearization Method (ALM)}
+Consider optimizing the following function
+\begin{equation}\label{eq:alm}
+\min_{x \in \chi, \theta} F(x,\theta) = \sum_{i} ((A_i x)^T(B_i x) -\theta)^2
+\end{equation}
+where $x \in \mathbb{R}^n $, $A_i, B_i \in \mathbb{R}^{m * n} $ and $\chi$ is a set defined by linear constraints. Note that all the ERC formulations seen above can be embedded into this more general formulation. The objective function of ERC problem, in the formulation of (\ref{eq:ls}), has $A_i = \Sigma_i \in \mathbb{R}^{1 * n} $ as the $i$th row of the covariance matrix, and $B_i = e_i \in \mathbb{R}^{1 * n} $ is the $i$th column of the identity. If we set $M_i = A_i^TB_i \in \mathbb{R}^{n * n}$, (\ref{eq:alm}) is equivalent to
+\begin{equation}\label{eq:alm2}
+\min_{x \in \chi, \theta} F(x,\theta) = \sum_{i=1}^n F_i(x) = \sum_{i=1}^n (x^TM_ix - \theta)^2
+\end{equation}
+Clearly $M_i$ is not generally symmetric or positive semidefinite. Hence we have a nonconvex function $F(x,\theta)$; we consider a variable splitting approach which replaces $F(x,\theta)$ by $F(x,y,\theta) = \sum_{i=1}^n (x^TM_iy - \theta)^2$, $y=x$. The method generates two sequences $\{x^k\}$ and $\{y^k\}$ in such a way that $x^k \rightarrow x^*$ and/or $y^k \rightarrow x^*$, where $x^*$ is a stationary point of (\ref{eq:alm}).\\
+Given $y^k$ we have
+\begin{equation}
+F(x,y^k,\theta) \equiv \sum_{i=1}^n (x^TM_iy^k - \theta)^2
+\end{equation}
+and given $x^k$ we have
+\begin{equation}
+F(x^k,y,\theta) \equiv \sum_{i=1}^n ((x^k)^TM_iy - \theta)^2
+\end{equation}
+Both $F(x,y^k,\theta)$ and $F(x^k,y,\theta)$ are convex functions of $x$ and $y$, respectively, for any given $y^k$ and $x^k$. Let $\nabla_iF$ denote the partial derivative of $F$ with respect to $x$ ($i=1$) or $y$ ($i=2$). Using the form of (\ref{eq:alm2}) we have
+\begin{equation}
+\begin{split}
+\nabla_1F(x,y,\theta) = \sum_{i=1}^n 2(x^TM_iy-\theta)M_iy \\
+\nabla_2F(x,y,\theta) = \sum_{i=1}^n 2(x^TM_iy-\theta)M_i^Tx
+\end{split}
+\end{equation}
+Then, the following two approximations of $F(x,y,\theta)$ are constructed:
+\begin{equation}
+Q^1_\mu (x,y^k) := F(x,y^k) + \langle\nabla_2F(y^k,y^k),x-y^k\rangle + \frac{1}{2\mu}\Vert x-y^k \Vert^2_2
+\end{equation}
+\begin{equation}
+Q^2_\mu (x^{k+1},y) := F(x^{k+1},y) + \langle\nabla_1F(x^{k+1},x^{k+1}), y- x^{k+1}\rangle + \frac{1}{2\mu}\Vert x^{k+1}-y \Vert^2_2
+\end{equation}
+where $\mu$ is some positive scalar. The simple version of ALM algorithm is shown in Algorithm \ref{alg:alm}.
+
+\begin{algorithm}
+Choose $\mu_1^0 = \mu_2^0$, and $x^0 = y^0$\\
+\For{$k=0,1,..$}{
+$x^{k+1} :=$ argmin$_x \hspace{0.5em} Q^1_{\mu_1^k}(x,y^k)$\\
+$y^{k+1} :=$ argmin$_y \hspace{0.5em} Q^2_{\mu_2^k}(x^{k+1},y)$\\
+Choose new penalty parameters $\mu_1^{k+1} \in (0, \mu_1^k), \text{ } \mu_2^{k+1} \in (0, \mu_2^k)$
+}
+\caption{Alternating linearization method (ALM)}
+\label{alg:alm}
+\end{algorithm}
+
+Each minimization step is a solution of a \textbf{strictly convex} quadratic programming problem, which can be done efficiently by many methods.\\ 
+In practice backtracking strategies should be applied to choose values of parameter $\mu$ at each iteration. A practical backtracking scheme is shown in Algorithm \ref{alg:almbktr}. Note that in each minimization step, we check whether a sufficient reduction has been obtained. If so, the minimization step is accepted and $\mu$ remains the same, otherwise it is decreased and a new candidate step is computed.
+
+\begin{algorithm}
+Choose $\mu_1^0 = \mu_2^0$, and $x^0 = y^0$\\
+\For{$k=0,1,..$}{
+$x^{k+1} :=$ argmin$_x \hspace{0.5em} Q^1_{\mu_1^k}(x,y^k)$\\
+\eIf{$F(x^{k+1}) \leq Q^1_{\mu_1^k}(x^{k+1},y^k)$}{
+$\mu_1^{k+1} = \mu_1^{k}$
+}
+{
+Find the smallest $n$ s.t. $\overline{\mu} := \mu_1^k\beta^n$,  $\overline{x}:=$ arg $\min_x Q^1_{\overline{\mu}}(x,y^k)$ and $F(\overline{x}) \leq Q^1_{\overline{\mu}}(\overline{x},y^k)$\\
+$\mu_1^{k+1} = \mu_1^k \beta^n$\\
+$x^{k+1} =$  arg $\min_x Q^1_{\mu_1^{k+1}}(x,y^k)$
+}
+
+$y^{k+1} :=$ argmin$_y \hspace{0.5em} Q^2_{\mu_2^k}(x^{k+1},y)$\\
+\eIf{$F(y^{k+1}) \leq Q^2_{\mu_2^k}(x^{k+1},y^{k+1})$}{
+$\mu_2^{k+1} = \mu_2^{k}$
+}
+{
+Find the smallest $n$ s.t. $\overline{\mu} := \mu_2^k\beta^n$,  $\overline{y}:=$ arg $\min_y Q^2_{\overline{\mu}}(x^{k+1},y)$ and $F(\overline{y}) \leq Q^2_{\overline{\mu}}(x^{k+1},\overline{y})$\\
+$\mu_2^{k+1} = \mu_2^k \beta^n$\\
+$y^{k+1} =$  arg $\min_y Q^2_{\mu_2^{k+1}}(x^{k+1},y^{k+1})$
+}
+}
+\caption{ALM with Backtracking (ALM-BKTR)}
+\label{alg:almbktr}
+\end{algorithm}
+
+
+\section{SDP Relaxation for the GRB Problem}
+In this section is explained a semidefinite programming (SDP) relaxation for the GRB problem to obtain an upper bound on the optimal objective function value. First of all, recall that is we use volatility as the risk measure, from (\ref{eq:marg}) the marginal risk contributions of the individual assets then satisfy
+\begin{equation}
+RC_i= x_i \frac{(\Sigma x)_i}{\sqrt{x^T \Sigma x}}
+\end{equation}
+We can rewrite the GRB problem in the following equivalent form:
+\begin{equation}\label{eq:sdp}
+\begin{aligned}
+& \underset{x,X}{\text{max}}
+& & \mu^Tx - \lambda(x^T\Sigma x) \\
+& \text{s.t.}
+&& \sum_{i \in \mathcal{M}_k} \mbox{tr}(\Gamma_i X) = \beta_k \mbox{tr}(\Sigma X), \quad k=1,..,s \\
+&&&X = xx^T,\\
+&&&\sum_{i=1}^n x_i = 1,\\
+&&&\sum_{i \in \mathcal{M}_k} x_i \geq 0, \quad k=1,..,s.
+\end{aligned}
+\end{equation}
+where $\Gamma_i = e^T e \Sigma$ and tr($\cdot$) denotes the trace of a matrix. Since $X = x x^T$ is the only non-convex constraint in (\ref{eq:sdp}), we obtain a convex relaxation of the GRB problem by relaxing this constraint to $X \succeq  x x^T$. We then obtain the following SDP relaxation of the GRB problem:
+\begin{equation}
+\begin{aligned}
+& \max_{x,X}
+& & \mu^Tx - \lambda(x^T\Sigma x) \\
+& \text{s.t.}
+&& \sum_{i \in \mathcal{M}_k} \mbox{tr}(\Gamma_i X) = \beta_k \mbox{tr}(\Sigma X), \quad k=1,..,s \\
+&&&\begin{bmatrix}X & x^T\\x & 0\end{bmatrix}\succeq 0,\\
+&&&\sum_{i=1}^n x_i = 1,\\
+&&&\sum_{i \in \mathcal{M}_k} x_i \geq 0, \quad k=1,..,s.
+\end{aligned}
+\end{equation}
+where the Schur complement is used to reformulate the semidefinite constraint $X \succeq  x x^T$ as a linear matrix inequality.
+
+\section{The AL-MCMC Algorithm}
+\subsection{Markov chain Monte Carlo (MCMC)}
+Let $\Omega$ be the state space and $p(x) = p^*(x)/C$ denote some target probability distribution on $\Omega$ where 
+\begin{equation}
+C := \int_{\Omega} p^*(x) dx
+\end{equation}
+The MCMC method is an approach to sample from $p(x)$ when the normalizing constant is hard compute. In the MCMC approach, one
+constructs a Markov chain on $\Omega$ using a "proposal" distribution $q(x_{t+1}|x_t)$ in such a way that $p(x)$
+is the unique stationary distribution for the Markov chain. The main requirement of MCMC is that the unnormalized distribution, $p^*(x)$, should be easy to compute. \\
+Given a current sample $x_t$ at time $t$, the proposal distribution $q(\cdot | x_t)$ is used to generate
+a candidate sample, $x_{t+1}$, which is then accepted with probability
+\begin{equation}\label{eq:acc}
+\alpha(x_t, x_{t+1}) := \min \Big\{ 1, \frac{q(x_t|x_{t+1})p^*(x_{t+1})}{q(x_{t+1}|x_t)p^*(x_t)}\Big\}
+\end{equation}
+If the candidate point $x_{t+1}$ is rejected we then set $x_{t+1} = x_t$ and continue sampling in this manner.\\
+Let $\mathcal{F}$ be the feasible region of the GRB problem:
+\begin{equation}
+\mathcal{F} := \{ x \in \mathcal{X}\quad|\quad h(x) = 0\}
+\end{equation}
+where $\mathcal{X} = \{x \in \mathbb{R}^n | x_i \geq 0$ $\forall i=1,..,n$, $e^T\cdot x = 1\}$. One possibility would be to set
+\begin{equation}
+p^*(x) = e^{\gamma \mathcal{R}(x)}\mathds{1}_{\mathcal{F}(x)} 
+\end{equation}
+where $\mathds{1}_{\{\cdot\}}$ is the characteristic function of a set. Since the feasible region $\mathcal{F}$ of the GRB problem is typically very "small", $p^*(x_{t+1})$ is likely to be zero for most candidate points $x_{t+1}$ and these points will be rejected in the acceptance-rejection step (\ref{eq:acc}). Therefore, using MCMC to sample only from the feasible region is very difficult, and particularly so for high-dimensional problems. One possible approach to overcoming these difficulties is to allow the MCMC iterates $x_t$ to be infeasible; by adding a term which penalizes infeasibility to our definition of $p^*$, we can "direct" them towards the feasible region. In particular, we could define
+\begin{equation}
+P_c(x) := \mathcal{R}(x) - \frac{1}{2} c \parallel h(x) \parallel^2_2
+\end{equation}
+where $c$ is a positive constant. Now we can use
+\begin{equation}
+p^*(x) = e^{\gamma P_c(x)}
+\end{equation}
+as the unnormalized density. The main difficulty with the penalty approach is that it is very sensitive to the value of the penalty parameter $c$.
+
+\subsection{Augmented Lagrangian MCMC}
+The augmented Lagrangian function of the GRB problem is defined as:
+\begin{equation}
+\mathcal{L}_{c_t}(u_t, x) := \mathcal{R}(x) + u_t^T h(x) + \frac{1}{2} c_t \parallel h(x) \parallel^2_2
+\end{equation}
+where $u_t = (u_{t,1},..,u_{t,s}) \in \mathbb{R}^s$  is a vector of time $t$ Lagrange multipliers. We define the time $t$ target distribution to be
+\begin{equation}
+p^*(x) = e^{\gamma \mathcal{L}_{c_t}(u_t, x)}
+\end{equation}
+
+\subsection{Description of the algorithm}
+The initial vector of Lagrange dual multipliers $u_0$ and the penalty parameter $c_0$ are specified \textit{ex ante}. The values for dual multipliers $u_t$ and the non-increasing penalty parameter $c_t$ for $t\geq 1$ are chosen adaptively during the course of the simulation. In particular, $c_t$ is decreased by
+a predetermined value $\epsilon_c$ when there is no improvement in constraint violations over a particular iteration. When there is an improvement in constraint violation, $c_t$ is not updated, but instead it is updated the Lagrange multipliers $u_t$ using the first order conditions, i.e.
+\begin{equation}
+u_{t+1} = u_t - \epsilon_u \nabla d_{c_t}(u_t)
+\end{equation}
+where $d_{c_t}(u) := \max_{x \in \mathcal{X}}\mathcal{L}_{c_t}(u, x) $ denotes the dual function, and $\epsilon_u$ is a given step size. $c_t$ and $u_t$ are never updated both in the same iteration, in order to ensure that we leave the current location only after adequately exploring its neighbourhood.\\
+The proposal distribution $q(x_{t+1}|x_t)$ is based on a random
+walk chain. In particular, one value $z^*_t \sim N(0, \sigma^q_t I )$ is generated, where $I \in \mathbb{R}^{n*n}$ is the identity matrix, and then is taken
+\begin{equation}
+x_{t+1} = x_t + z_t^*
+\end{equation}
+as the candidate point, which is then accepted with probability $\alpha(x_t, x_{t+1})$. The basic idea is to increase $\sigma^q_t$ when the acceptance rate is too high and decrease $\sigma^q_t$ when the acceptance rate is too low.\\
+In each iteration, indipendently of whether the proposed sample $x_{t+1}$ is accepted or rejected, the annealing parameter $\gamma_t$ is increased according to:
+\begin{equation}
+\gamma_t = \sigma_{\gamma}\gamma_{t-1}
+\end{equation}
+where $\sigma_{\gamma} = \big(\frac{\gamma_{max}}{\gamma_0}\big)^{\frac{1}{T}}$. Thus, the AL-MCMC algorithm is a \textit{simulated annealing} algorithm. A complete specification of the AL-MCMC algorithm is given in Algorithm \ref{alg:almcmc}.
+
+\begin{algorithm}
+Choose $x_0, \gamma_0, \sigma_{\gamma}, \epsilon_c, \epsilon_u, \delta, \sigma_0^q, c_0, u_0, \kappa$\\
+\For{$n=0,1,..$}{
+Generate a candidate sample $x_{t+1}$ from the proposal $q(x_{t+1}|x_t)$\\
+Compute $\alpha = \alpha(x_t,x_{t+1})$\\
+\eIf{$\alpha \geq 1$}{
+$x_{t+1} \leftarrow x_{t+1}$
+}
+{
+Choose $p \sim \mathbb{U}[0,1]$\\
+\eIf{ $p \leq \alpha$ }{
+$x_{t+1} \leftarrow x_{t+1}$
+}
+{
+$x_{t+1} \leftarrow x_{t}$
+}
+}
+$\gamma_{t+1}\leftarrow \sigma_{\gamma}\gamma_t$\\
+\eIf{$\parallel h(x_{t+1})\parallel^2_2$ $<$ $\parallel h(x_{t})\parallel^2_2$}{
+$u_{t+1}\leftarrow u_t - \epsilon_u \nabla d_{c_t}(u_t)$\\
+\If{$\frac{\parallel h(x_{t})\parallel^2_2}{\parallel h(x_{t+1})\parallel^2_2} - 1 > \delta $}
+{
+$\sigma_{t+1}^q \leftarrow \kappa \sigma_t^q$
+}
+}
+{
+$c_{t+1} \leftarrow c_t + \epsilon_c$
+}
+}
+\caption{AL-MCMC algorithm}
+\label{alg:almcmc}
+\end{algorithm}
+
+\section{Equal Risk Bounding (ERB)}
+Since the ERC approach requires all assets to give an equal risk contribution to the variance of the selected portfolio, it is clear that the ERC portfolio must contain \textit{all} assets\footnotemark[4].\footnotetext[4]{This is also true in the RP case} However, this might not be sensible if the exclusion of some asset provides a less risky portfolio. When aiming at minimizing risk, one should more rationally require that the risk contributions of all assets to the variance should not exceed a given threshold which might then be minimized. This alternative approach, which is called \textit{Equal Risk Bounding} (ERB), might, and actually does in some cases, select portfolios that do not contain all assets and where the total risk contributions of all assets is strictly smaller than in the ERC portfolio \cite{erb}. The Equal Risk Bounding approach can be formulated as follows:
+\begin{equation}\label{eq:erb1}
+\begin{aligned}
+& \min_x
+& & \lambda\\
+& \text{s.t.}
+& & x_i (\Sigma x)_i \leq \lambda\\
+&&&\sum_{i=1}^n x_i =1\\
+&&&x_i \geq 0
+\end{aligned}
+\end{equation}
+Note that this is a nonconvex quadratic programming problem with quadratic constraints which might have \textit{multiple} solutions. Let $(x^{ERB},\lambda^{ERB})$ be a solution of the above problem. Then $\lambda^{ERB}$ is an upper bound for the total contribution of each asset to the variance. Thus the ERC portfolio is theoretically dominated by the ERB portfolios in terms of variance.\\
+The solution $(x^{ERC},\lambda^{ERC})$ of the ERC problem (where $\lambda^{RP} = \frac{x^{T} \Sigma x}{n}$) is also a feasible solution to the ERB problem. Thus
+\begin{equation}
+\lambda^{ERB} \leq \lambda^{ERC} \Rightarrow \sigma^2(x^{ERB}) \leq \sigma^2(x^{ERC})
+\end{equation}
+The stricly inequality can actually occur, but only when $x_i=0$ for some $i$.\\
+Problem (\ref{eq:erb1}) is an hard nonconvex quadratic programming problem with quadratic constraints. However its solutions, the Equal Risk Bounding portfolios, have a particular structure which can be exploited to reduce the problem of solving (\ref{eq:erb1}) to the problem of solving a finite number of simpler ERC problems.
+\begin{lemma}
+Let ($x^{ERB},\lambda^{ERB}$) be a solution of the ERB problem (\ref{eq:erb1}). If $x_i^{ERB}>0$, then
+\begin{equation}
+x_i^{ERB}(\Sigma x^{ERB})_i = \lambda^{ERB}
+\end{equation}
+\end{lemma}
+This result clearly implies that for every solution to the ERB model, there exists a subset $P$ of the set $N = \{1,...,n\}$ of indices such that only the assets with indices in $P$ have nonzero weights, and such weights are those of the ERC portfolio of the assets with indices in P.
+\begin{theorem} 
+Every solution to the ERB problem (\ref{eq:erb1}) has the form ($x_P,x_Z$) where $P \cup Z=N$, $P \cap  Z = \emptyset$, $x_Z=0$ and $x_P$ is the unique solution to the ERC problem (\ref{eq:b}) with respect to the indices in $P$
+\end{theorem}
+Thanks to the Theorem 3.4, a solution to (\ref{eq:erb1}) can be obtained by solving a nonlinear pseudo-boolean optimization problem. For a subset $P\subseteq N = \{1,...,n\}$ of indices, let $x_i^{RP}(P)$ denote the asset weights and $\lambda^{ERC}(P)$ denote the equal risk contribution of the assets with indices in P of the (unique) ERC portfolio. Any ERB portfolio $x^{ERB}$ is given by
+\begin{equation}
+x_i^{ERB} = \begin{cases}
+        x_i^{ERC}(P) \hspace{2em} \text{if}\hspace{1em} i \in P
+        \\
+        0 \hspace{5em} \text{otherwise}
+        \end{cases}
+\end{equation}
+for any P which solves the pseudo-boolean optimization problem
+\begin{equation}\label{eq:c}
+\lambda^{ERB} = \min_{P\subseteq N} \lambda^{ERC}
+\end{equation}
+Clearly a brute force solution of the pseudo-boolean optimization problem (\ref{eq:c}) requires the solution of an exponential number of ERC models. However, more refined exact methods and heuristics have been developed for pseudo-boolean optimization problems. Furthermore, some experiments has found that for the ERB model the optimal solution can almost always be obtained by considering only subsets $P$ with at least $n-3$ indices. However, the theoretical complexity of the problem of exactly finding an ERB portfolio is still unknown in the general case.

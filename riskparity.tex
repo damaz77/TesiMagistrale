@@ -1,0 +1,455 @@
+Numerous methods based on the famous Markowitz mean-variance framework have been proposed to overcome its drawbacks while maintaining its advantages. One of these are the risk based diversification strategies. Unlike the classic mean-variance approach, risk based strategies do not incorporate expected returns into the formulation. Motivations for not using expected returns in the portfolio construction include the difficulty of estimating these quantities accurately, and the well documented sensitivity of the optimal weights to small changes in expected returns. 
+
+\section{Standard formulation}
+Risk parity portfolios can be motivated by considering Euler decomposition of a portfolio risk measure into contributions from each asset in the portfolio \cite{tutuncu}.
+\begin{theorem}
+(Euler’s theorem) Let a continuous and differentiable function f : $\mathbb{R}^n \longrightarrow \mathbb{R}$ be a homogeneous function of degree one. Then
+\begin{equation}\label{eq:euler}
+f(x) = x_1\cdot\frac{\partial f}{\partial x_1} + x_2\cdot\frac{\partial f}{\partial x_2} + ... + x_n\cdot\frac{\partial f}{\partial x_n}
+\end{equation}
+\end{theorem}
+\begin{proof}
+If $f$ is homogeneous of degree one, then
+\begin{equation}\label{eq:p1}
+f(c x_1, .., c x_n) = c \cdot f(x_1, .., x_n)
+\end{equation}
+$\forall (x_1, .., x_n)$  and  $c > 0$. Differentiating each side of (\ref{eq:p1}) with respect to $c$ we obtain (\ref{eq:euler}).
+\end{proof}
+Then the risk contribution of the asset $i$th is
+\begin{equation}\label{eq:marg}
+RC_i = x_i \frac{\partial \sigma(x)}{\partial x_i}
+\end{equation} 
+So, the total risk of the invested portfolio can be written as
+\begin{equation}\label{eq:total}
+\mathcal{R}(x) = \sigma(x) = \sum_{i=1}^n RC_i
+\end{equation}
+Let $b=(b_1,..,b_n)$ be a vector of \textit{budgets} such as $b_i > 0$ and $\sum_{i=1}^n b_i = 1$. The simplest way to define a risk parity \cite{bruder} (or risk budgeting) portfolio is through the following system of constraints:\\
+\begin{equation}\label{eq:1}
+\begin{aligned}
+&\begin{cases}
+RC_1(x_1,..,x_n) = b_1 \mathcal{R}(x)\\
+..\\
+RC_i(x_1,..,x_n) = b_i \mathcal{R}(x)\\
+..\\
+RC_n(x_1,..,x_n) = b_n \mathcal{R}(x)
+\end{cases}
+\end{aligned}
+\end{equation} Then, the risk parity constraint is
+\begin{equation}\label{eq:newconst}
+RC_i = b_i \sigma (x)
+\end{equation}
+Another useful formulation of (\ref{eq:newconst}) is
+\begin{equation}\label{eq:newconst1}
+x_i \frac{\partial_{x_i} \sigma (x)}{b_i} = x_j \frac{\partial_{x_j} \sigma (x)}{b_j} \hspace{1em} \forall i,j
+\end{equation}
+The risk parity portfolio \cite{roncalli} is defined by this system of equations:
+\begin{equation}\label{eq:rb}
+\begin{aligned}
+&x_i \frac{\partial_{x_i} \sigma (x)}{b_i} = x_j \frac{\partial_{x_j} \sigma (x)}{b_j} \hspace{1em} &&\forall i,j\\
+&x_i \geq 0,  &&b_i > 0 \\
+&\sum_{i=1}^n x_i = 1,  &&\sum_{i=1}^n b_i = 1
+\end{aligned}
+\end{equation}
+
+\subsection{About the vector of budgets}
+A possible difficult may appear when one specifies that some risk budgets are equal to zero. Let $\Sigma$ be the covariance matrix specified as follows:
+\begin{equation}
+\Sigma_{i,j} = \rho_{i,j}\sigma_i \sigma_j
+\end{equation}
+where $\sigma_i > 0$ is the volatility of the asset $i$ and $\rho_{i,j}$ is the cross-correlation between the assets $i$ and $j$. It comes that:
+\begin{equation}
+\frac{\partial \sigma(x)}{\delta x_i} = \frac{x_i \sigma_i^2 + \sigma_i \sum_{j \neq i} x_j \rho_{i,j} \sigma_j}{\sigma(x)}
+\end{equation}
+Suppose that the risk budget $b_k$ is equal to zero. From (\ref{eq:marg}) and (\ref{eq:newconst}) we obtain:
+\begin{equation}
+x_k\left( x_k \sigma_k^2 + \sigma_k \sum_{j \neq k} x_j \rho_{k,j} \sigma_j\right) = 0
+\end{equation}
+We obtain two solutions. The first one is $x_{k_1} = 0$, whereas the second one verifies:
+\begin{equation}
+x_{k_2} = - \frac{\sum_{j \neq k}x_j \rho_{k,j} \sigma_j}{\sigma_k}
+\end{equation}
+The only way to have $x_{k_2} > 0$ is to have some negative correlations $\rho_{k,j}$. In this case, it implies that:
+\begin{equation}
+\sum_{j \neq k}x_j \rho_{k,j} \sigma_j <0
+\end{equation}
+\begin{example}
+Consider a universe of $3$ assets with a given budget vector:
+\begin{equation*}
+b=(0.5,0.5, 0)
+\end{equation*}
+Take, for example, $\sigma_1 = 0.2$, $\sigma_2 = 0.1$, $\sigma_3 = 0.05$ and $\rho_{1,2} = 0.5$, $\rho_{1,3} = -0.25$, $\rho_{2,3} = -0.25$. The two solutions of the RP problem are:
+\begin{equation*}
+x^{*1} = (0.33, 0.66, 0)
+\end{equation*}
+\begin{equation*}
+x^{*2} = (0.2, 0.2, 0.4)
+\end{equation*}
+\end{example}
+In practice, this second solution may not satisfy the investor. When he sets one risk budget to zero, he expects that he will not have the corresponding asset in his portfolio. If we would like to impose that some risk budgets are equal to zero, we first have to reduce the universe of assets by excluding the assets corresponding to these zero risk contributions \cite{intr}. From now on, we impose the strict constraint
+\begin{equation}
+b_i >0
+\end{equation}
+
+\subsection{Existence and uniqueness}
+\begin{theorem}
+The following optimization problem
+\begin{equation}\label{eq:dc1}
+\begin{aligned}
+& y^* = \underset{y}{\text{argmin}}
+&& \sqrt{y^T \Sigma y}\\
+& \text{s.t.}
+&&\sum_{i=1}^n b_i ln(y_i) \geq c\\
+&&&y_i \geq 0 \hspace{1em} \forall i
+\end{aligned}
+\end{equation}
+where $b_i > 0$, $\sum_i b_i = 1$, $c$ an arbitrary constant, is equivalent to problem (\ref{eq:rb})
+\end{theorem} 
+\begin{proof}
+The Lagrangian function of the optimization problem (\ref{eq:dc1}) is
+\begin{equation}
+\mathcal{L}(y;\lambda,\lambda_c) = \sqrt{y^T \Sigma y} - \lambda^Ty - \lambda_c\left(\sum_{i=1}^n b_i ln(y_i) - c\right)
+\end{equation}
+The solution $y^*$ verifies the following first-order condition:
+\begin{equation}
+\partial_{y_i}\mathcal{L}(y;\lambda,\lambda_c) = \partial_{y_i}\sigma(y) - \lambda_i - \lambda_c b_i y_i^{-1} = 0
+\end{equation}
+and the Kuhn-Tucker conditions:
+\begin{equation}
+\begin{cases}
+\min(\lambda_i,y_i)=0\\
+\min\big(\lambda_c,\sum_{i=1}^n b_i ln(y_i) - c\big) = 0
+\end{cases}
+\end{equation}
+Because $ln(y_i)$ is not defined for $y_i = 0$, it comes that $y_i > 0$ and $\lambda_i = 0$.\\
+The constraint $\sum_{i=1}^n b_i ln(y_i) = c$ is necessarly reached (because the solution can not be $y^* = 0$), then $\lambda_c >0$ and we have:
+\begin{equation}\label{eq:this}
+y_i \frac{\partial_{y_i}\sigma(y)}{b_i}= \lambda_c \hspace{1em} \forall i
+\end{equation}
+Equation (\ref{eq:this}) is equivalent to (\ref{eq:newconst1}). We then deduce the RP portfolio by normalizing the solution $y^*$ such that the sum of weights equals one: $x_i^* =y_i^*/\sum_{i=1}^n y_i^*$
+\end{proof}
+Formulation (\ref{eq:dc1}) is very interesting because it demonstrates that the RP portfolio specified by the mathematical system (\ref{eq:rb}) exists, and it is unique as long as the covariance matrix $\Sigma$ is positive-definite. Indeed, it corresponds to the minimization of a quadratic function with a convex constraint.
+
+\section{RP alternative formulations}
+\subsection{Logarithmic barrier}
+\begin{theorem}
+Solve the following problem that incorporates a logarithmic barrier in the objective function is equivalent to find a RP solution:
+\begin{equation}\label{eq:log1}
+\begin{aligned}
+& \underset{x}{\text{min}}
+&&\frac{1}{2} x^T \Sigma x - c \sum_{i=1}^{n} b_i ln(x_i)\\
+& \text{s.t.}
+&& x_i > 0 \hspace{1em} \forall i
+\end{aligned}
+\end{equation}
+where $b_i > 0$, $\sum_i b_i = 1$ and $c$ is positive constant.
+\end{theorem}
+\begin{proof}
+Since $\Sigma$ is positive semidefinite and the logarithm function is strictly concave, the objective function is \textbf{strictly convex}. From the first order condition, the unique solution is in corrispondence of the point where the gradient of the objective function is zero:
+\begin{equation}
+\Sigma x - c b_i x^{-1} = 0
+\end{equation}
+Hence, at optimality we have
+\begin{equation}\label{eq:a1}
+(\Sigma x)_i = \frac{c b_i}{x_i} \Rightarrow \frac{x_i(\Sigma x)_i}{b_i} = \frac{x_j(\Sigma x)_j}{b_j}, \quad \forall i,j
+\end{equation}
+It is easy to see that equation (\ref{eq:a1}) is equivalent to (\ref{eq:newconst1}). 
+\end{proof}
+\subsection{Least-square model}
+The log-barrier approach to finding risk parity solutions in the long-only setting does not immediately extend to scenarios with additional constraints or preferences. In particular, when general bounds are added, risk parity solution may not exist; moreover, the log-barrier formulation gives no guidance on how to produce feasible solution which may be “close to risk parity”. In addition, it is not clear how to extend this approach to the cases when risk parity is desirable not for individual assets but for groups of assets. The least-squares formulation for solving the risk parity problem is the following:
+\begin{equation}\label{eq:bp}
+\begin{aligned}
+& \min_x
+&& \sum_{i=i}^n \left( \frac{x_i(\Sigma x)_i}{b_i} - \theta \right)^2\\
+& \text{s.t.}
+&&\sum_{i=1}^n x_i =1\\
+&&&x_i \geq 0
+\end{aligned}
+\end{equation}
+Note that the formulation (\ref{eq:bp}) is \textbf{non-convex}.  If the optimization problem above has an optimal value of zero, then the RP portfolio is achieved. Otherwise, the value of $\sum_{i=i}^n \left( \frac{x_i(\Sigma x)_i}{b_i} - \theta\right)^2$  can be regarded as a minimum variance measure towards our goal. Note that, since (\ref{eq:bp}) is a non-convex problem, in theory it is hard to solve and may produce local solutions. Anyway, we have the following lemma (for the proof see \cite{tutuncu}):
+\begin{lemma}\label{lem:rpsolution}
+Let $F(x,\theta) = \sum_{i=i}^n \left( \frac{x_i(\Sigma x)_i}{b_i} - \theta \right)^2$. A solution pair $\{x,\theta\}$ is a global optimum with $F(x,\theta)=0$ if and only if $\nabla_xF(x,\theta) = 0$ and $\frac{\partial F}{\partial \theta} = 0$.
+\end{lemma}
+Lemma (\ref{lem:rpsolution}) implies that if constraints of (\ref{eq:bp}) are not considered, then first order optimality conditions determine the global optimal solution. On the other hand, when constraints are imposed, local optima and local stationary points can occur.
+\section{Equally Risk Contribution portfolio (ERC)}
+Simply put, an ERC portfolio is a portfolio where the total contribution of each asset to the total portfolio risk is equal \cite{tutuncu}. The ERC problem aims to find any portfolio that satisfies
+\begin{equation}\label{eq:ercconst}
+x_i\cdot\frac{\partial\sigma (x)}{\partial x_i} = x_j\cdot\frac{\partial\sigma (x)}{\partial x_j} = \lambda \quad \forall i,j
+\end{equation}
+where $\lambda$ is an unknown value. It is easy to notice that ERC is a special case of RP portfolio, because (\ref{eq:ercconst}) is equivalent to (\ref{eq:newconst1}) under the assumption that $b_i = 1/n \hspace{0.5em} \forall i$.\\
+The solution of the following system of constraints
+\begin{equation}\label{eq:b}
+\begin{aligned}
+&x_i\cdot\frac{\partial\sigma (x)}{\partial x_i} = x_j\cdot\frac{\partial\sigma (x)}{\partial x_j} \quad \forall i,j\\
+&\sum_{i=1}^n x_i =1\\
+&x_i \geq 0
+\end{aligned}
+\end{equation}
+is a (normalized) ERC solution. There are also situations where ERC solutions may not exist because of the presence of additional restrictions on the portfolio weights. In such cases, the problem becomes to find portfolios that are close to equally risk contribution and for this purpose it will be important to quantify the deviation from equal contribution.
+
+\subsection{Least-square model}
+This section presents a least-squares formulation for solving the ERC problem.
+\begin{equation}
+\begin{aligned}
+& \min_x
+&& \sum_{i=i}^n \sum_{j=1}^{n}\left(x_i(\Sigma x)_i - x_j(\Sigma x)_j\right)^2\\
+& \text{s.t.}
+&&\sum_{i=1}^n x_i =1\\
+&&&x_i \geq 0
+\end{aligned}
+\end{equation}
+Alternatively, one can consider using penalty terms for deviations of risk contributions from their average value:
+\begin{equation}\label{eq:ls1} 
+\min_x \hspace{1em}\sum_{i=1}^{n}\left(x_i(\Sigma x)_i - \frac{\sum_{j=1}^{n} x_j(\Sigma x)_j}{n}\right)^2
+\end{equation}
+In this way, the objective function contains only $n$ elements in the sum. If we replace the average risk contribution term with a free variable $\theta$, which is also optimized, we obtain:
+\begin{equation}\label{eq:ls}
+\begin{aligned}
+& \min_{x,\theta}
+&& F(x,\theta) = \sum_{i=1}^n (x_i(\Sigma x)_i - \theta)^2\\
+& \text{s.t.}
+&&\sum_{i=1}^n x_i =1\\
+&&&x_i \geq 0
+\end{aligned}
+\end{equation}
+If the optimization problem above has an optimal value of zero, then the ERC portfolio is achieved. Otherwise, the value of $F(x,\theta)$ can be regarded as a minimum variance measure towards our goal. The auxiliary variable $\theta$ can always be set to its optimal value using the following lemma, however, allowing $\theta$ to be a free variable significantly simplifies the formulation \cite{tutuncu}. 
+\begin{lemma} Given a solution x, there exist one and only one $\theta^*$ such that $F(x,\theta)$ is minimized, and
+\begin{equation}
+\theta^* = \frac{\sum_{i=1}^n x_i(\Sigma x)_i}{n}
+\end{equation}
+\end{lemma}
+
+\subsection{Diversification constraint}
+As in the RP case (see Sect. 3.3), we can give another formulation to find a ERC solution
+\begin{equation}\label{eq:dc}
+\begin{aligned}
+& y^* = \underset{y}{\text{argmin}}
+&& \sqrt{y^T \Sigma y}\\
+& \text{s.t.}
+&&\sum_{i=1}^n ln(y_i) \geq c\\
+&&&y_i > 0 \hspace{1em} \forall i
+\end{aligned}
+\end{equation}
+with $c$ an arbitrary constant. Following the same steps used in Sect. 3.3, we derive 
+\begin{equation}
+y_i \frac{\partial\sigma(y)}{\partial y_i} = \lambda_c
+\end{equation}
+We verify that risk contributions are the same for all assets \cite{erc}. We then deduce the ERC portfolio by normalizing the solution $y^*$ such that the sum of weights equals one: $x_i^* =y_i^*/\sum_{i=1}^n y_i^*$
+
+\subsection{Logarithmic barrier}
+As in the RP case (see Sect. 3.4.1), we can give another formulation to find a ERC solution
+\begin{equation}
+\begin{aligned}
+& \underset{x}{\text{min}}
+&&\frac{1}{2} x^T \Sigma x - c \sum_{i=1}^{n} ln(x_i)\\
+& \text{s.t.}
+&& x_i > 0 \hspace{1em} \forall i
+\end{aligned}
+\end{equation}
+where $c$ is an arbitrary positive constant. Following the same steps used in Sect. 3.4.1, we derive
+
+\begin{equation}\label{eq:a}
+(\Sigma x)_i = \frac{c}{x_i} \Rightarrow x_i(\Sigma x)_i = x_j(\Sigma x)_j, \forall i,j
+\end{equation}
+It is easy to see that equation (\ref{eq:a}) is equivalent to (\ref{eq:ercconst}). 
+
+\section{RP as a general case of other portfolios}
+Let us introduce a quantity called $\beta_i$, that indicates the sensitivity of the asset $i$ to the systematic risk. The $\beta_i$ of the asset $i$ with respect to the portfolio $x$ is defined as
+\begin{equation}
+\beta_i = \frac{(\Sigma x)_i}{x^T \Sigma x}
+\end{equation}
+It means that the risk contribution $RC_i$ is equal to $x_i\beta_i\sigma(x)$. For RP portofolios, it follows that:
+\begin{equation}
+b_j x_i \beta_i = b_i x_j \beta_j
+\end{equation}
+We finally deduce that:
+\begin{equation}\label{eq:3}
+x_i = \frac{b_i \beta_i^{-1}}{\sum_{j=1}^n b_j \beta_j^{-1}}
+\end{equation}
+The weight allocated to the component $i$ is thus inversely proportional to its beta.\\
+\subsection{Equally Weighted portfolio (EW)}
+The Equally Weighted (EW) portfolio is the one where the capital is equally distributed among the assets. In terms of relative weights we have $x_i=\frac{1}{n}$. Clearly, the choice of the EW portfolio does not use any in-sample information nor involve any optimization approach \cite{colucci}. This portfolio is usually used as a benchmark to compare the performance of the portfolios constructed by other models.\\
+The equally-weighted portfolio could be viewed as a risk parity portfolio when the risk budget is proportional to the beta of the asset. If we set $b_i = \beta_i/n$, using the result (\ref{eq:3}) follows that:
+\begin{equation*}
+x_i = \frac{1}{n}
+\end{equation*}
+
+\subsection{Most Diversified Portofolio (MDP)}
+The definition of the diversification ratio (\ref{eq:dr}) leads to the contruction of maximally diversified long-only portfolios \cite{diversification}, defined as
+\begin{equation}
+\begin{aligned}
+x^{MDP} = \mbox{argmax}_x &&&DR(x)\\
+\text{s.t.}&&&\sum_{i=1}^{n} x_i = 1\\ 
+&&&x_i \geq 0
+\end{aligned}
+\end{equation}
+Consider a homogeneous investment universe of single assets where we have no reason to believe, \textit{ex ante}, that any single asset will reward risk more than another. In this universe, the \textit{ex ante} Sharpe ratios of single assets are identical, and thus each asset’s expected excess return (EER) is proportional to its volatility: risk is homogeneously rewarded. Denoting by $\mu_1,..,\mu_n$ the single assets' expected returns, we can define the EER for a single asset $i$ like
+\begin{equation}
+EER_i = \mu_i - \mu_{RF}
+\end{equation}
+where $\mu_{RF}$ is the \textit{risk-free rate}. As already stated, the single assets' EER statify
+\begin{equation}
+EER_i = k\sigma_i
+\end{equation}
+where $k$ is a positive constant. As such, for any portfolio of single assets with weights $x$ and expected return $\mu$,
+\begin{equation}
+EER = \sum_{i=1}^{n} x_i (EER_i) = k \sum_{i=1}^n x_i \sigma_i
+\end{equation}
+Using the definition of diversification ratio (\ref{eq:dr}), we obtain
+\begin{equation}\label{eq:MDP1}
+EER = k \sigma DR(x)
+\end{equation}
+Equation (\ref{eq:MDP1}) shows that portfolios’ EERs are proportional to their volatilities multiplied by their DRs. Dividing both sides of this equation by $\sigma$ demonstrates that in this homogenous universe, maximizing the DR is equivalent to maximizing the Sharpe ratio.\\
+The MDP portfolio could be viewed as the RP portfolio such that the risk budgets are proportional to the product of the weight of the asset and its volatility\footnotemark[2]:
+\footnotetext[2]{This solution is endogenous because it depends on the weights of the portfolio.}
+\begin{equation*}
+b_i \propto x_i \sigma_i
+\end{equation*}
+\subsection{Minimum Variance portfolio (MV)}
+The following optimization problem minimizes the total variance of a fully-invested long-only portfolio:
+\begin{equation}
+\begin{aligned}
+& \min_x
+&& \frac{1}{2}x^T \Sigma x\vspace{-0.8em}\\
+&\text{s.t.}
+&&e^T x =1\\
+&&&x \geq 0
+\end{aligned}
+\end{equation}
+where $e = [1, .., 1] \in \mathbb{R}^n$ is the identity vector. Starting from the formulation seen above, using the first-order optimality conditions, we obtain
+\begin{equation}
+\Sigma x - \lambda - \gamma e = 0
+\end{equation}
+where $\lambda \in \mathbb{R}^n$ and $\gamma \in \mathbb{R}$ are the Lagrange multipliers corresponding to the constraints. Note that, complementary slackness conditions imply that if some $x_i$ is strictly larger than zero, then the corresponding $\lambda_i$ must be zero. We obtain
+\begin{equation}\label{eq:first}
+(\Sigma x)_i = \gamma \quad \forall i: x_i \neq 0
+\end{equation}
+From (\ref{eq:first}) we can write
+\begin{equation}
+\left(\frac{\Sigma x}{\sqrt{x^T \Sigma x}}\right)_i = \left(\frac{\Sigma x}{\sqrt{x^T \Sigma x}}\right)_j \quad \forall i,j: x_i,x_j \neq 0 
+\end{equation}
+If we take $\sigma (x) = \sqrt{x^T \Sigma x}$ as the total risk of the portfolio, $\frac{\partial\sigma (x)}{\partial x} = \frac{\Sigma x}{\sqrt{x^T \Sigma x}}$ is the vector of \textit{marginal risk} contributions for the assets in the portfolio. Finally we obtain
+\begin{equation}\label{eq:erc1}
+\frac{\partial\sigma}{\partial x_i} = \frac{\partial\sigma}{\partial x_j}\quad \forall i,j: x_i,x_j \geq 0
+\end{equation}
+The above condition implies that, as long as we invest in an asset, its marginal risk contribution should be the same as that of all other assets with positive weights in the portfolio \cite{tutuncu}. The minimum variance approach often leads to concentrated portfolios, i.e., encourages investors to concentrate on a small number of assets with lower risk profiles and to give up diversification. This behavior is often undesirable and this is exactly what equally risk optimization intends to overcome.\\
+The minimum variance portfolio could be viewed as a RP portfolio when the risk budget is equal to the weight of the asset\footnotemark[2]:
+\begin{equation*}
+b_i = x_i
+\end{equation*}
+
+\section{Expected returns in RP portfolios}
+Risk parity is generally presented as an allocation method unrelated to the Markowitz approach. Most of the time, these are opposed, because risk parity does not depend on expected returns. However, the risk parity approach has also been strongly criticized, because some investment professionals consider this aspect a weakness, with some active managers having subsequently reintroduced expected returns in an ad-hoc manner \cite{intr}. Consider the MVO unconstrained solution:
+\begin{equation}\label{eq:ob1}
+x^*(\gamma) = \mbox{argmin} \frac{1}{2} x^T \Sigma x - \gamma x^T (\mu - \mu_r)
+\end{equation}
+where $\gamma$ is the risk aversion parameter, $\mu$ is the vector of expected returns of the assets and $\mu_r$ is the return of the risk-free asset. This framework is particularly appealing because the objective function has a concrete financial interpretation in terms of utility functions, with the investor facing a trade-off between risk and performance. To obtain a better expected return, the investor must then choose a riskier portfolio.\\
+Now, let $\mu(x) = x^T \mu$ be the expected return of the portfolio and $\pi(x) = \mu(x) - \mu_r$ its risk premium. The optimal solution (\ref{eq:ob1}) can also be formulated as follows:
+\begin{equation}
+x^*(c) =\mbox{argmin } \mathcal{R}(x) := - \pi(x) + c \cdot \sigma(x)
+\end{equation}
+where $c = \gamma^{-1} \sigma(x^*(\gamma))$. The Markowitz model is therefore equivalent to minimizing a risk measure that
+encompasses both the performance dimension and the risk dimension \cite{intr}. Defining $\pi$ as the vector of risk premiums ($\pi_i = \mu_i - \mu_r$), follows that
+\begin{equation}\label{eq:risk2}
+\mathcal{R}(x) = -x^T \pi + c \cdot \sqrt{x^T \Sigma x}
+\end{equation}
+We can deduce that the expression of the marginal risk is:
+\begin{equation}
+\frac{\partial \mathcal{R}(x)}{\partial x_i} = -\pi_i + c \frac{(\Sigma x)_i}{\sqrt{x^T \Sigma x}}
+\end{equation}
+This means that:
+\begin{equation}
+RC_i = x_i \cdot \frac{\partial \mathcal{R}(x)}{\partial x_i} = -x_i\pi_i + c \frac{x_i(\Sigma x)_i}{\sqrt{x^T \Sigma x}}
+\end{equation}
+
+\subsection{Decomposing each asset's risk contribution}
+Here the risk contribution has two components. The first component is the opposite of the performance contribution ($-x_i\pi_i$), while the second component corresponds to the standard risk contribution based on the volatility risk measure. We can therefore reformulate $RC_i$ as follows:
+\begin{equation}
+RC_i = -\pi_i(x) + c \sigma_i(x)
+\end{equation}
+with $\pi_i(x) = x_i\pi_i$ and $\sigma_i(x) = \frac{x_i \cdot (\Sigma x)_i}{\sigma(x)}$. The normalized risk contribution of asset $i$ can be defined as follows:
+\begin{equation}
+RC^*_i = \frac{RC_i}{\mathcal{R}(x)}
+\end{equation}
+Similarly, the normalized excess return contribution is:
+\begin{equation}
+PC^*_i = \frac{\pi_i(x)}{\pi(x)} = \frac{x_i \pi_i}{\sum_{j=1}^n x_j \pi_j}
+\end{equation}
+while the normalized volatility contribution is:
+\begin{equation}
+VC^*_i = \frac{\sigma_i(x)}{\sigma(x)} = \frac{x_i(\Sigma x)_i}{x^T \Sigma x}
+\end{equation}
+
+\begin{theorem}
+The risk contribution of asset $i$ is the weighted average of the excess return contribution and the volatility contribution:
+\begin{equation}
+RC^*_i = (1-\omega)PC^*_i + \omega VC^*_i
+\end{equation}
+where the weight $\omega$ is:
+\begin{equation}
+\omega = \frac{c \sigma(x)}{- \pi(x) + c\sigma(x)}
+\end{equation}
+\end{theorem}
+If $c=0$, $\omega$ is equal to zero. $\omega$ is then a decreasing function with respect to $c$ until the value
+\begin{equation}
+c^* = \frac{\pi(x)}{\sigma (x)} = \frac{\mu(x)-\mu_r}{\sigma(x)}
+\end{equation}
+which is the ex-ante Sharpe ratio $SR(x)$ (\ref{eq:SR}) of the portfolio. If $c > c^*$, $\omega$ is positive and $\omega \rightarrow 1$ when $c \rightarrow \infty$.\\
+We conclude that
+\begin{itemize}
+\item The risk contribution of asset $i$ is a \textbf{return-based} contribution if $c$ is \textbf{lower} than the Sharpe ratio of the portfolio
+\item The risk contribution of asset $i$ is a \textbf{volatility-based} contribution if $c$ is \textbf{higher} than the Sharpe ratio of the portfolio
+\end{itemize}
+The singularity around the Sharpe ratio implies that the value of $c$ must be carefully calibrated.
+
+\subsection{Existence and uniqueness}
+\begin{theorem}
+If $c > SR^+$, where
+\begin{equation}
+SR^+ = \max \big\{\sup_{x \in [0,1]^n} SR(x), 0\big\}
+\end{equation}
+the RP portfolio, with risk defined in (\ref{eq:risk2}), exists and is unique. It is the solution of the following optimization problem:
+\end{theorem}
+\begin{equation}
+\begin{aligned}
+& y^* = {\text{argmin}}
+&& \mathcal{R}(x)\\
+& \text{s.t.}
+&&\sum_{i=1}^n b_i ln(y_i) \geq \kappa\\
+&&&y_i > 0 \hspace{1em} \forall i
+\end{aligned}
+\end{equation}
+\emph{where $\kappa$ is an arbitrary constant \cite{intr}.}\\
+The case $c \leq SR^+$ is not relevant from a financial point of view, because the risk measure of some portfolios may be negative. By leveraging these portfolios, the risk measure may be infinitely negative.
+
+\section{Group risk parity}
+An extension of the risk parity problem is the case of group risk parity where we seek parity of risk contributions from groups of assets instead of individual assets \cite{tutuncu}. This variation
+is useful in the case when there are a large number of assets. Another reason to apply group risk parity is to avoid fully dense solutions (which are enforced by individual risk parity) when the number of assets is large. If $\mathcal{M}_1, ..., \mathcal{M}_s \subseteq \{1,..,n\}$ denote $s$ subsets of portfolio assets, then the marginal risk contribution of the $k$-th subset is
+\begin{equation}
+RC_{\mathcal{M}_k}(x) = \sum_{i \in \mathcal{M}_k} RC_i(x)
+\end{equation} For group risk parity, we solve the following nonconvex problem:
+\begin{equation}
+\begin{aligned}
+&\sum_{i \in \mathcal{M}_k} RC_i = b_k \mathcal{R}(x) \quad k=1,..,s\\
+&\sum_{i=1}^n x_i = 1\\
+& x_i \geq 0
+\end{aligned}
+\end{equation}
+where $b=(b_1,..,b_s)$ is the vector of \textit{budgets} of the $s$ assets groups. We note that the group risk parity problem becomes a RP problem (\ref{eq:rb}) when the $\mathcal{M}_k$'s are all singletons and $\cup_k \mathcal{M}_k = \{1,..,n\}$.
+\section{Generalized Risk Budgeting (GRB)}
+In portfolio construction and analysis it is often preferable to group assets according to attributes such as asset class, country, sector and industry. The generalized risk budgeting (GRB) strategy is based on this very idea of managing the marginal risk contributions of subsets of assets to the total portfolio risk. Note that is used the term "subset" rather than "partition" since depending on the attributes used for the asset classification, assets may belong to more than one group.\\
+The GRB problem can be formulated as follows \cite{sdp}:
+\begin{equation}
+\begin{aligned}
+& \underset{x}{\text{max}}
+&& \mu^Tx - \lambda\mathcal{R}(x)\\
+& \text{s.t.}
+&&\sum_{i \in \mathcal{M}_k} RC_i = \beta_k \mathcal{R}(x) \quad k=1,..,s\\
+&&&\sum_{i=1}^n x_i = 1\\
+&&&\sum_{i \in \mathcal{M}_k} x_i \geq 0, \quad k=1,..,s
+\end{aligned}
+\end{equation}
+where $\mu \in \mathbb{R}^n$ is a vector of expected returns and $\lambda$ is a risk aversion parameter. Note that the constraint
+\begin{equation}
+\sum_{i \in \mathcal{M}_k} RC_i = \beta_k \mathcal{R}(x)
+\end{equation}
+implies that $\sum_{k=1}^s \beta_k =1$ when the $\mathcal{M}_k$'s form a partition. We note that the GRB problem becomes a RP problem (\ref{eq:rb}) when all assets have the same expected return, i.e. $\mu = \mu_0 \cdot e$ and the $\mathcal{M}_k$'s are all singletons.
