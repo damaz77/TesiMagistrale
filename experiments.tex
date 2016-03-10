@@ -1,36 +1,5 @@
-\section{Datasets}
-In this section we briefly describe the datasets on which we tested some of the previously presented algorithms. The datasets used are the following:
-\begin{itemize}
-\item Random generated covariance matrices
-\item S\&P-500 (476 assets)
-\item NASDAQ (2196 assets)
-\end{itemize}
-\subsection{Random generated dataset}
-For our purposes, we need to generate an $n \times n$ random semidefinite positive matrix, that represents the covariance matrix between the $n$ assets. Let $A$ be an $n \times n$ matrix with elements 
-\begin{equation}
-A_{i,j} \sim \mathbb{U}[0,1] \quad \forall i,j \in \{1,..,n\}
-\end{equation}
-where $\mathbb{U}[0,1]$ is the uniform distribution among the interval $[0,1]$. We can obtain the random semidefinite positive covariance matrix $\Sigma_{\text{RAND}}$ using
-\begin{equation}
-\Sigma_{\text{RAND}} = A \cdot A^T
-\end{equation}
-We can try to characterize this dataset highlighting some of his features:
-\begin{itemize}
-\item $\Sigma_{\text{RAND}i,j} \geq 0 \quad \forall i,j \in \{1,..,n\}$ 
-\item $\mu(\Sigma_{\text{RAND}}) = \frac{n}{4}$
-\end{itemize}
-
-\subsection{S\&P-500 dataset}
-This dataset is a $476 \times 476$ covariance matrix with:
-\begin{itemize}
-\item $\min \{\Sigma_{\text{S\&P}}\} = -2.5212 \times 10^{-4} $
-\item $\max \{\Sigma_{\text{S\&P}}\} = 6.6626 \times 10^{-3} $
-\item $\mu(\Sigma_{\text{S\&P}}) = 3.0559 \times 10^{-4} $
-\item $\sigma^2(\Sigma_{\text{S\&P}}) = 5.4873 \times 10^{-8}$
-\end{itemize}
-
-\subsection{NASDAQ dataset}
-This dataset is a $2196 \times 2196$ covariance matrix with:
+\section{Dataset}
+In this section we briefly describe the dataset on which we tested some of the previously presented algorithms. The dataset used is the NASDAQ-2196\footnotemark[1]; this dataset is a $2196 \times 2196$ covariance matrix with:\footnotetext[1]{NASDAQ-2196 dataset can be downloaded at \url{http://host.uniroma3.it/docenti/cesarone/datasetsw3_tardella.html}}
 \begin{itemize}
 \item $\min \{\Sigma_{\text{NQ}}\} = -7.5347 \times 10^{-3} $
 \item $\max \{\Sigma_{\text{NQ}}\} = 6.0531 \times 10^{-2} $
@@ -38,18 +7,63 @@ This dataset is a $2196 \times 2196$ covariance matrix with:
 \item $\sigma^2(\Sigma_{\text{NQ}}) = 2.9305 \times 10^{-7}$
 \end{itemize}
 
-
 \section{Implementation details}
-In this section we compare the decomposition algorithm (both with QLS and ELS) against SNOPT \cite{snopt}.
-The decomposition algorithm is written in \textit{Python 2.7} while we use the official Python interface for SNOPT. We also use \texttt{numpy} library, linked with \texttt{blas} and \texttt{ATLAS} libraries. The PC used for the experiments is equipped with and Intel i7 3630QM processor, 8GB of RAM and a Linux based distribution.\\
-We use \texttt{time.clock()} to determine the execution time of an algorithm, in this way:\\
+All the algorithms are written in \textit{Python 2.7} while we use the official Python interface for SNOPT. We also use \texttt{numpy} library, linked with \texttt{blas} and \texttt{ATLAS} libraries. The PC used for the experiments is equipped with and Intel i7 3630QM processor, 8GB of RAM and a Linux based distribution. We use \texttt{time.clock()} to determine the execution time of an algorithm, in this way:\\
 \texttt{init = time.clock()}\\
 \texttt{..execute algorithm..}\\
 \texttt{exetime = time.clock() - init}\\
 
+\section{Convex formulation}
 \subsection{Test problems and stopping criterion}
-In all the following experiments we used the NASDAQ-2196 dataset\footnotemark[1]; from the covariance matrix contained in the dataset, we compute the correlation matrix and we use that instead of the covariance one for numerical reasons. 
-\footnotetext[1]{NASDAQ-2196 dataset can be downloaded at \url{http://host.uniroma3.it/docenti/cesarone/datasetsw3_tardella.html}}
+
+\begin{figure}
+\centering
+\makebox[\textwidth][c]{
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=0.6\textwidth,
+xlabel={\# of assets},
+ylabel={Exe Time (s)},
+legend pos=north west,
+title={$\epsilon=10^{-8}$},
+legend cell align=left
+]
+\addplot [color=blue,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%
+50	.0013		\\
+100	.0029	\\
+200 .0128		\\
+300 .0383        \\
+500	.161		\\
+750	.550		\\
+1000 1.143		\\
+1250	 2.067	\\
+};
+
+\addplot [color=red,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%
+50	.009	\\
+100	.0158		\\
+200	.0427		\\
+300 .064        \\
+500	.124		\\
+750	.194		\\
+1000	 .269\\
+1250	 .339	\\
+};
+\addlegendentry{Newton-Nesterov}
+\addlegendentry{CCD}
+\end{axis}
+\end{tikzpicture}
+}
+\end{figure}
+
+\section{Least-square formulation}
+In this section we compare the decomposition algorithm against SNOPT \cite{snopt}.
+
+\subsection{Test problems and stopping criterion}
+In all the following experiments we used the NASDAQ-2196 dataset; from the covariance matrix contained in the dataset, we compute the correlation matrix and we use that instead of the covariance one for numerical reasons.
 In order to obtain comparable results, in our scheme we use a \textit{stop criterion} that is the same used by SNOPT, i.e. we stop the algorithm when
 \begin{equation}\label{eq:stop}
 \left| \frac{\partial f(x^k,y^k)}{d{x_{j(k)}}} - \frac{\partial f(x^k,y^k)}{d{x_{i(k)}} }\right| < \epsilon
@@ -57,7 +71,6 @@ In order to obtain comparable results, in our scheme we use a \textit{stop crite
 In SNOPT, this is (almost) equivalent to set the \texttt{Major optimality tolerance} optional parameter to $\epsilon$.\\
 In the following experiments, we denote with DEC$_{\text{MVP}}$ the decomposition algorithm with $M=1$ (we compute the MVP among the full gradient $\nabla_x f(x,y)$ at each iteration), while we denote with DEC$_{\text{MVP-}\lambda\%}$ the decomposition algorithm where we use $\lambda$ in (\ref{eq:lambda}). For DEC$_{\text{MVP-}\lambda\%}$ we evaluate the stop criterion (\ref{eq:stop}) every $M$ iterations (in the following experiments we always set $M=100$ for DEC$_{\text{MVP-}\lambda\%}$).
 
-\section{Numerical results}
 \subsection{General box constraints}
 In this section we use different combinations for the box constraints $l$ and $u$ and we compare the values assumed by the objective function in the critical point reached by the different algorithms. In these tests we take:
 \begin{equation}

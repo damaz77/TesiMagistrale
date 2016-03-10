@@ -144,7 +144,7 @@ Solve the following problem that incorporates a logarithmic barrier in the objec
 where $b_i > 0$, $\sum_i b_i = 1$ and $c$ is positive constant.
 \end{theorem}
 \begin{proof}
-Since $\Sigma$ is positive semidefinite and the logarithm function is strictly concave, the objective function is \textbf{strictly convex}. From the first order condition, the unique solution is in corrispondence of the point where the gradient of the objective function is zero:
+Since $\Sigma$ is positive semidefinite and the logarithm function is strictly concave, the objective function is strictly convex. From the first order condition, the unique solution is in corrispondence of the point where the gradient of the objective function is zero:
 \begin{equation}
 \Sigma x - c b_i x^{-1} = 0
 \end{equation}
@@ -165,7 +165,7 @@ The log-barrier approach to finding risk parity solutions in the long-only setti
 &&&x_i \geq 0
 \end{aligned}
 \end{equation}
-Note that the formulation (\ref{eq:bp}) is \textbf{non-convex}.  If the optimization problem above has an optimal value of zero, then the RP portfolio is achieved. Otherwise, the value of $\sum_{i=i}^n \left( \frac{x_i(\Sigma x)_i}{b_i} - \theta\right)^2$  can be regarded as a minimum variance measure towards our goal. Note that, since (\ref{eq:bp}) is a non-convex problem, in theory it is hard to solve and may produce local solutions. Anyway, we have the following lemma (for the proof see \cite{tutuncu}):
+Note that the formulation (\ref{eq:bp}) is non-convex.  If the optimization problem above has an optimal value of zero, then the RP portfolio is achieved. Otherwise, the value of $\sum_{i=i}^n \left( \frac{x_i(\Sigma x)_i}{b_i} - \theta\right)^2$  can be regarded as a minimum variance measure towards our goal. Note that, since (\ref{eq:bp}) is a non-convex problem, in theory it is hard to solve and may produce local solutions. Anyway, we have the following lemma (for the proof see \cite{tutuncu}):
 \begin{lemma}\label{lem:rpsolution}
 Let $F(x,\theta) = \sum_{i=i}^n \left( \frac{x_i(\Sigma x)_i}{b_i} - \theta \right)^2$. A solution pair $\{x,\theta\}$ is a global optimum with $F(x,\theta)=0$ if and only if $\nabla_xF(x,\theta) = 0$ and $\frac{\partial F}{\partial \theta} = 0$.
 \end{lemma}
