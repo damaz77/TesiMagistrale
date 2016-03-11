@@ -41,7 +41,7 @@ It is intuitive that portfolios with “concentrated” weights and/or highly co
 
 \section{Portfolio selection}
 The Markowitz portfolio theory states that an investor should
-choose a portfolio from the efficient set, depending on how risk averse he is. One way to handle this, is to consider the optimization problem\footnotemark[1]:
+choose a portfolio from the efficient set, depending on how risk averse he is. One way to handle this, is to consider the optimization problem\footnotemark[1]\footnotetext[1]{The condition $x \geq 0$ is often referred as \textit{long-only} investment strategy.}:
 \begin{equation}
 \begin{aligned}
 &\min_x &&(\sigma^2 - A\mu) = x^T \Sigma x - A\mu^T x\\
@@ -49,7 +49,7 @@ choose a portfolio from the efficient set, depending on how risk averse he is. O
 &&&x \geq 0
 \end{aligned}
 \end{equation}
-\footnotetext[1]{The condition $x \geq 0$ is often referred as \textit{long-only} investment strategy. In this paper we study exclusively long-only portfolios.}
+
 where $A$ ($0 \leq A \leq \infty$) is the so called \textit{risk aversion index}. $A = 0$ will result in the portfolio with the \textit{smallest variance}. An increasing $A$ corresponds to the investor becoming more willing to take a bigger risk to get a higher expected return; $A = \infty$ corresponds to the investor only caring about getting a large expected return no matter what the risk is \cite{markovitz}.\\
 If we set $A=0$, the problem became a \textit{mean-variance
 optimization} (MVO) problem. If we add the constraint that every asset yields at least a target value $R$ of expected return, we obtain a convex quadratic programming problem:

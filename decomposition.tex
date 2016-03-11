@@ -8,11 +8,15 @@ Let us consider the following optimization problem:
 \end{align}
 \end{subequations}
 where $x \in \R^n$, $y \in \R^m$, $f$ continuously differentiable, $l, u \in \R^n$ with $l < u$ and $\mathds{1} \in \R^n$ is all composed by ones. \\
+We define the feasible set $\mathcal{F}$  of Problem (\ref{eq:problem}):
+\begin{equation}
+\mathcal{F} = \{(x,y) \in \R^{n+m} : \mathds{1}^T x = 1, l \leq x \leq u\}.
+\end{equation}
 Since the constraints of Problem (\ref{eq:problem}) respect constraints qualification conditions, a point $(x,y) \in \mathcal{F}$ is critical, if the Karush-Kuhn-Tucker (KKT) conditions are satisfied. Let $L(x,y,\lambda,\mu,\gamma)$ the Lagrangian function associated to Problem (\ref{eq:problem}) then we can write KKT conditions.
 
 \begin{proposition}[Optimality conditions (Necessary)]\label{prop:KKT}
 
-Let $(x^*,y^*) \in \R^{n+1}$, with $(x^*,y^*) \in \mathcal{F}$, a local optimum for Problem (\ref{eq:problem}). Then there exist three multipliers $\lambda^* \in \R^n$, $\mu^* \in \R^n, \gamma^* \in \R$ such that:
+Let $(x^*,y^*) \in \R^{n+m}$, with $(x^*,y^*) \in \mathcal{F}$, a local optimum for Problem (\ref{eq:problem}). Then there exist three multipliers $\lambda^* \in \R^n$, $\mu^* \in \R^n, \gamma^* \in \R$ such that:
 \begin{equation}
  \begin{aligned}
   &\nabla_x L(x^*,y^*\lambda^*,\mu^*,\gamma^*)= \nabla_x f(x^*,y^*)+\lambda^*-\mu^*+\gamma^*=0\\
@@ -42,10 +46,7 @@ Then if $x^*_i>l_i$:
 \end{equation}
 
 After writing KKT optimality condition we focus on feasible direction in a feasibile point.
-We define the feasible set $\mathcal{F}$  of Problem (\ref{eq:problem}):
-\begin{equation}
-\mathcal{F} = \{(x,y) \in \R^{n+m} : \mathds{1}^T x = 1, l \leq x \leq u\}.
-\end{equation}
+
 A vector $d\in \R^{n+m}$ is partitioned as follows
 $$
 d=\left(
@@ -367,9 +368,7 @@ Finally we have
 \begin{equation}
 f(x^{k+1}, y^{k+1}) \leq f(x^{k}, y^{k})
 \end{equation}
-so we have that the points of the sequence $\{(x^{k}, y^{k})\}$ belongs to the level set $\mathcal{L}_0$.
-\vspace{1.5cm}
-
+so we have that the points of the sequence $\{(x^{k}, y^{k})\}$ belongs to the level set $\mathcal{L}_0$.\\
 Let $(\overline{x},\overline{y})$ be a limit point of $\{(x^k, y^k)\}$, i.e. there exist an infinite subset $K \subseteq N$ such that
 \begin{equation}\label{eq:asim}
 \lim_{k \in K, k \rightarrow \infty} (x^k, y^k) = (\overline{x},\overline{y}) \qquad \lim_{k \in K, k \rightarrow \infty} d^{i(k),j(k)} = \overline{d}
@@ -539,17 +538,12 @@ which contradicts \ref{eq:bb}.
  
  Let's consider the subsequence $x^{k}$ with $k  \in K =\{0,M,2M,\ldots\}$ in which we take the MVP.
  In next iterations $k+m \in K$, $m\ge 0$ we have at least one of these two possible cases, from MVP selection rule:
-
- 
- \begin{subequations}
+\begin{subequations}
 \begin{align}
  j(k+m) &\in L(x^{k+m+1})\label{eq:SetCasesA}\\
  i(k+m) &\in U(x^{k+m+1})\label{eq:SetCasesB}
 \end{align}
 \end{subequations}
- 
- 
- 
 Now we define two sets $\Gamma_1,\Gamma_2$ in $\{x^{k}\}_{k \in K}$ such that the first one contains all indexes $m \in\{0,\ldots,2n\}$ such that (\ref{eq:SetCasesA}) hold.
 On the contrary the second one contains all indexes $m \in\{0,\ldots,2n\}$ such that (\ref{eq:SetCasesB}) hold.
 
@@ -586,7 +580,6 @@ and then
 \begin{equation}
  \frac{\partial f(x^{p(k_i)},y^{p(k_i)})}{dx_{i^*}} \ge \frac{\partial f(x^{p(k_i)},y^{p(k_i)})}{dx_{h}}, \ \forall h \in U(x^{p(k_i)}) \cup C(x^{p(k_i)})
 \end{equation}
-
 
 Thanks to Lemma (\ref{lem:direction}) we can say that for $k$ sufficiently large, the set of feasible direction in $(x^k,y^k)$ contains the correspondent set in $(\overline{x},\overline{y})$.
 
@@ -684,5 +677,45 @@ Next convergence steps are equal to previous proposition.
 In computational experiments we use $\tau = 0$ and compute an exact line search along direction $d^{i(k),j(k)}$. In next section we will show that in practical cases exact line search performs very well especially increasing number of variables.
 \end{oss}
 
-\section{Implementation guidelines}
-TODO
+\section{Application to Risk Parity}
+Let us consider the problem
+\begin{equation}\label{eq:rpfordec}
+\begin{aligned}
+& \underset{x, \theta}{\text{min}}
+&&f(x,\theta)=\sum_{i=1}^n \left(x_i (Q x)_i - \theta\right)^2\\
+& \text{s.t.}
+&& l \leq x \leq u\\
+&&& \mathds{1}^T x = 1 \\
+\end{aligned}
+\end{equation}
+where $Q$ is the covariance matrix. Problem (\ref{eq:rpfordec}) is an ERC problem and it's easy to see that it is a particular case of Problem (\ref{eq:problem}). Thus we can use the decomposition algorithm just exposed to solve it. First of all, we can write the derivative of the objective function with respect to $x$ and $\theta$ as:
+\begin{equation}\label{eq:gradxdec}
+\frac{\partial f(x,\theta)}{\partial x_j} = 2 \sum_{i=1}^n \left(x_i (Q x)_i - \theta\right)Q_{ij}x_i + 2(x_j (Q x)_j - \theta)(Q x)_j
+\end{equation}
+and
+\begin{equation}\label{eq:gradthetadec}
+\frac{\partial f(x,\theta)}{\partial \theta}= -2\sum_{i=1}^n \left(x_i (Q x)_i - \theta\right)
+\end{equation}
+
+$f(x,\theta)$ is clearly non-convex, but it is strictly convex with respect to $\theta$. It follows that, at every iteration $k$, we can compute $\theta^{k}$ by simply imposing that $\frac{\partial f(x^{k},\theta)}{\partial \theta} =0$, that is
+\begin{equation}\label{eq:theta}
+\theta^* = \frac{\sum_{i=1}^n x_i^{k} (Q x^{k})_i}{n}
+\end{equation} 
+
+\subsection{Implementation guidelines}
+As we can see from (\ref{eq:gradxdec}) and (\ref{eq:gradthetadec}), at every iteration $k$ we must compute:
+\begin{equation}
+Q  x^{k}
+\end{equation}
+This scalar product is highly time consuming and we therefore use another approach to compute it. At every iteration, only 2 variables changes value, more precisely:
+\begin{equation}
+x_{i(k)}^{k+1} = x_{i(k)}^{k} + \alpha^{k}
+\end{equation}
+\begin{equation}
+x_{j(k)}^{k+1} = x_{j(k)}^{k} - \alpha^{k}
+\end{equation}
+Thanks to this updating scheme, we can write:
+\begin{equation}
+Q x^{k+1} = Q  x^{k} + \left[Q_{i(k)} - Q_{j(k)}\right]\alpha^{k} 
+\end{equation}
+where $Q_{i}$ is the $i$-th column of $Q$. This shrewdness dramatically reduces the computation time of the algorithm, especially for large values of $n$.
