@@ -684,31 +684,31 @@ Let us consider the problem
 \begin{equation}\label{eq:rpfordec}
 \begin{aligned}
 & \underset{x, \theta}{\text{min}}
-&&f(x,\theta)=\sum_{i=1}^n \left(x_i (Q x)_i - \theta\right)^2\\
+&&f(x,\theta)=\sum_{i=1}^n \left(x_i (\Sigma x)_i - \theta\right)^2\\
 & \text{s.t.}
 && l \leq x \leq u\\
 &&& \mathds{1}^T x = 1 \\
 \end{aligned}
 \end{equation}
-where $Q$ is the covariance matrix. Problem (\ref{eq:rpfordec}) is an ERC problem and it's easy to see that it is a particular case of Problem (\ref{eq:problem}). Thus we can use the decomposition algorithm just exposed to solve it. First of all, we can write the derivative of the objective function with respect to $x$ and $\theta$ as:
+Problem (\ref{eq:rpfordec}) is an ERC problem and it's easy to see that it is a particular case of Problem (\ref{eq:problem}). Thus we can use the decomposition algorithm just exposed to solve it. First of all, we can write the derivative of the objective function with respect to $x$ and $\theta$ as:
 \begin{equation}\label{eq:gradxdec}
-\frac{\partial f(x,\theta)}{\partial x_j} = 2 \sum_{i=1}^n \left(x_i (Q x)_i - \theta\right)Q_{ij}x_i + 2(x_j (Q x)_j - \theta)(Q x)_j
+\frac{\partial f(x,\theta)}{\partial x_j} = 2 \sum_{i=1}^n \left(x_i (\Sigma x)_i - \theta\right)\Sigma_{ij}x_i + 2(x_j (\Sigma x)_j - \theta)(\Sigma x)_j
 \end{equation}
 and
 \begin{equation}\label{eq:gradthetadec}
-\frac{\partial f(x,\theta)}{\partial \theta}= -2\sum_{i=1}^n \left(x_i (Q x)_i - \theta\right)
+\frac{\partial f(x,\theta)}{\partial \theta}= -2\sum_{i=1}^n \left(x_i (\Sigma x)_i - \theta\right)
 \end{equation}
 
 $f(x,\theta)$ is clearly non-convex, but it is strictly convex with respect to $\theta$. It follows that, at every iteration $k$, we can compute $\theta^{k}$ by simply imposing that $\frac{\partial f(x^{k},\theta)}{\partial \theta} =0$, that is
 \begin{equation}\label{eq:theta}
-\theta^* = \frac{\sum_{i=1}^n x_i^{k} (Q x^{k})_i}{n}
+\theta^* = \frac{\sum_{i=1}^n x_i^{k} (\Sigma x^{k})_i}{n}
 \end{equation} 
 
 \subsection{Implementation guidelines}
 \subsubsection{Matrix product}
 As we can see from (\ref{eq:gradxdec}) and (\ref{eq:gradthetadec}), at every iteration $k$ we must compute:
 \begin{equation}
-Q  x^{k}
+\Sigma  x^{k}
 \end{equation}
 This scalar product is highly time consuming and we therefore use another approach to compute it. At every iteration, only 2 variables changes value, more precisely:
 \begin{equation}
@@ -719,26 +719,26 @@ x_{j(k)}^{k+1} = x_{j(k)}^{k} - \alpha^{k}
 \end{equation}
 Thanks to this updating scheme, we can write:
 \begin{equation}
-Q x^{k+1} = Q  x^{k} + \left[Q_{i(k)} - Q_{j(k)}\right]\alpha^{k} 
+Q x^{k+1} = \Sigma  x^{k} + \left[\Sigma_{i(k)} - \Sigma_{j(k)}\right]\alpha^{k} 
 \end{equation}
-where $Q_{i}$ is the $i$-th column of $Q$. This shrewdness dramatically reduces the computation time of the algorithm, especially for large values of $n$.
+where $\Sigma_{i}$ is the $i$-th column of $\Sigma$. This shrewdness dramatically reduces the computation time of the algorithm, especially for large values of $n$.
 
 \subsubsection{Gradient computation}
 We can split the gradient (\ref{eq:gradxdec}) computation in two parts. The first is:
 \begin{equation}\label{eq:first}
-2 \sum_{i=1}^n \left(x_i (Q x)_i - \theta\right)Q_{ij}x_i
+2 \sum_{i=1}^n \left(x_i (\Sigma x)_i - \theta\right)\Sigma_{ij}x_i
 \end{equation}
 while the second is:
 \begin{equation}\label{eq:second}
-2(x_j (Q x)_j - \theta)(Q x)_j
+2(x_j (\Sigma x)_j - \theta)(\Sigma x)_j
 \end{equation}
 Let us introduce the matrix $B \in \mathbb{R}^{n \times n}$ with elements:
 \begin{equation}
-B_{i,j} = Q_{i,j}  x_i 
+B_{i,j} = \Sigma_{i,j}  x_i 
 \end{equation}
 and the vector $d \in \mathbb{R}^n$ with elements:
 \begin{equation}
-d_j = 2 (x_j (Q x)_j - \theta) 
+d_j = 2 (x_j (\Sigma x)_j - \theta) 
 \end{equation}
 We can now write the two terms of the gradient using $B$ and $d$; the first term (\ref{eq:first}) becomes:
 \begin{equation}
@@ -746,16 +746,16 @@ B d
 \end{equation}
 The second term (\ref{eq:second}) is simply:
 \begin{equation}
-d_j (Q x)_j
+d_j (\Sigma x)_j
 \end{equation}
 Finally, we have:
 \begin{equation}\label{eq:newgradx}
-\frac{\partial F(x,\theta)}{\partial x_j} =\left(B d\right)_j + d_j (Q x)_j
+\frac{\partial F(x,\theta)}{\partial x_j} =\left(B d\right)_j + d_j (\Sigma x)_j
 \end{equation}
 At every iteration $k$, we have:
 \begin{equation}
 B^{k}_{h} = \begin{cases}
-		  		Q_{h}x_h^{k} \quad \text{if } h = i(k) \vee h = j(k)\\\\
+		  		\Sigma_{h}x_h^{k} \quad \text{if } h = i(k) \vee h = j(k)\\\\
 		  	    B^{k-1}_{h} \quad \text{     otherwise}
 		  		\end{cases}
 \end{equation}
