@@ -19,7 +19,7 @@ In this section we compare the execution time of two algorithms used to solve th
 \subsection{Test problems and stopping criterion}
 We use the same stop criterion for both the algorithms tested; we stop the algorithm when:
 \begin{equation}\label{eq:stopconv}
-\max_i \left| \frac{RC_i}{\mathcal{R}(x^*,y^*)} - b_i \right| < \epsilon
+\max_i \left| \frac{RC_i}{\mathcal{R}(x)} - \frac{1}{n} \right| < \epsilon
 \end{equation}
 Equation (\ref{eq:stopconv}) express the fact that the (normalized) max deviation from Risk Parity of the solutions is less than $\epsilon$.
 \begin{figure}
@@ -75,11 +75,11 @@ In order to obtain comparable results, in our scheme we use a stop criterion tha
 \left| \frac{\partial f(x^k,y^k)}{d{x_{j(k)}}} - \frac{\partial f(x^k,y^k)}{d{x_{i(k)}} }\right| < \epsilon
 \end{equation}
 In SNOPT, this is (almost) equivalent to set the \texttt{Major optimality tolerance} optional parameter to $\epsilon$.\\
-In the following experiments, we denote with DEC$_{\text{MVP}}$ the decomposition algorithm with $M=1$ (we compute the MVP among the full gradient $\nabla_x f(x,y)$ at each iteration), while we denote with DEC$_{\text{MVP-}\lambda\%}$ the decomposition algorithm where we use $\lambda$ in (\ref{eq:lambda}). For DEC$_{\text{MVP-}\lambda\%}$ we evaluate the stop criterion (\ref{eq:stop}) every $M$ iterations (in the following experiments we always set $M=100$ for DEC$_{\text{MVP-}\lambda\%}$).
+In the following experiments, we denote with DEC$_{\text{MVP}}$ the decomposition algorithm with $M=1$ (we compute the MVP among the full gradient $\nabla_x f(x,y)$ at each iteration), while we denote with DEC$_{\text{MVP-}\lambda\%}$ the decomposition algorithm where we use $\lambda$ in (\ref{eq:lambda}). For DEC$_{\text{MVP-}\lambda\%}$ we evaluate the stop criterion (\ref{eq:stop}) every $M$ iterations.
 
 \subsection{General box constraints}
 In this section we use different combinations for the box constraints $l$ and $u$ and we compare the values assumed by the objective function in the critical point reached by the different algorithms. In these tests we take:
-\begin{equation}
+\begin{equation}\label{eq:startxx}
 x_i^0 = \frac{1}{n} \quad \forall i \in \left\{1, .., n \right\}
 \end{equation}
 We denote with $x_{D}$ the solution produced by DEC$_{\text{MVP}}$ and with $x_{S}$ the solution produced by SNOPT. In Figure (\ref{fig:box}), we compare the value of $f(x_{D})$ with $f(x_{S})$ when the two algorithms converges at two different critical points ($x_D \neq x_S$) using different combinations of box constraints.
@@ -265,11 +265,7 @@ title={$l_i = -1, \quad u_i = 1 \quad \forall i$}
 \label{fig:box}
 \end{figure}
 
-In Figure (\ref{subfig-1:time1}) we compare the average execution time of the decomposition algorithm (with different values of $\lambda$) against SNOPT using 
-\begin{equation}
-x^0_i = \frac{1}{n} \quad \forall i \in \left\{1, .., n \right\}
-\end{equation}
-and 
+In Figure (\ref{subfig-1:time1}) we compare the average execution time of the decomposition algorithm (with different values of $\lambda$) against SNOPT using the starting point defined in (\ref{eq:startxx}) and 
 \begin{equation}\label{eq:generalbox}
 l_i = \frac{1}{2n}  \qquad u_i = \frac{2}{n}  \quad \forall i
 \end{equation} 
@@ -446,11 +442,103 @@ In this section we use
 \begin{equation}\label{eq:classicalbox}
 l_i = 0  \qquad u_i = 1  \quad \forall i
 \end{equation} 
-In Figure (\ref{subfig-1:time2}) we compare the average execution time of the decomposition algorithm (with different values of $\lambda$) against SNOPT using 
+\subsubsection{Inexact vs Exact Line Search}
+In Figure (\ref{fig:els}) we compare the performances of the decomposition algorithm using two different step selection: Algoritm \ref{alg:qls}, that uses Quadratic Line Search (QLS) and Algorithm \ref{alg:proximal} that uses Exact Line Search (ELS) instead. Figure (\ref{fig:els}) points out that Algorithm \ref{alg:proximal} performs better than Algorithm \ref{alg:qls} in this particular problem. From now on, we always use the Proximal Point version of the decomposition algorithm (Algorithm \ref{alg:proximal}) in the experiments.
+\begin{figure}
+\makebox[\textwidth][c]{
+\subfloat[Comparison of average execution time\label{subfig-4:time2}]{%
+\begin{tikzpicture}
+\begin{axis}[%
+width=0.5\textwidth,
+xlabel={\# of assets},
+ylabel={Average Exe Time (s)},
+scaled y ticks=false,
+legend pos=north west,
+legend cell align=left
+]
+
+
+\addplot [color=red,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%10
+500 2.30\\
+750 5.17\\
+1000 10.62\\
+1250 18.39\\
+1500 30.91\\
+1750 45.15\\
+2000 67.12\\
+};
+
+\addplot [color=blue,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%5
+500	1.486	\\
+750	3.147	\\
+1000 6.431 \\
+1250 11.57 \\
+1500 18.6  \\
+1750 27.68 \\
+2000 40.08\\
+};
+
+
+\addlegendentry{DEC$_{\text{MVP}}$ (QLS)}
+\addlegendentry{DEC$_{\text{MVP}}$ (ELS)}
+\end{axis}
+
+\end{tikzpicture}
+}
+\hfill
+\hspace{1em}\subfloat[Comparison of average iterations\label{subfig-4:iterations2}]{%
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=0.5\textwidth,
+xlabel={\# of assets},
+ylabel={Average Iterations},
+scaled y ticks=false,
+legend pos=north west,
+legend cell align=left
+]
+
+\addplot [color=red,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%10
+500 4680 \\
+750 7532 \\
+1000 10401\\
+1250 13469\\
+1500 16750\\
+1750 21095\\
+2000 24204\\
+};
+
+\addplot [color=blue,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%5
+500	 3538\\
+750	 5343 \\
+1000	  7200\\
+1250 9151\\
+1500 11011\\
+1750 12741\\
+2000 15241\\
+};
+
+\addlegendentry{DEC$_{\text{MVP}}$ (QLS)}
+\addlegendentry{DEC$_{\text{MVP}}$ (ELS)}
+\end{axis}
+
+\end{tikzpicture}
+}
+}
+\caption{Comparison of performances using $\epsilon = 10^{-10}$ in (\ref{eq:stop}) with box constraints defined in (\ref{eq:classicalbox}) between the decomposition algorithm with two different step selection (Inexact Line Search and Exact Line Search)}
+\label{fig:els}
+\end{figure}
+
+\subsubsection{Decomposition vs SNOPT}
+In Figure (\ref{fig:100}) and Figure (\ref{fig:10}) we compare the average execution time and the average number of iterations performed by the decomposition algorithm (with different values of $\lambda$) against SNOPT using
 \begin{equation}
 x^0 = \left[1, 0, .., 0 \right]
 \end{equation}
-The $\epsilon$ in the stop criterion (\ref{eq:stop}) is set to $10^{-10}$. In Figure (\ref{subfig-2:iterations2}) we compare the average number of iterations performed by the decomposition algorithm using different values of $\lambda$.
+The $\epsilon$ in the stop criterion (\ref{eq:stop}) is set to $10^{-10}$. In Figure (\ref{fig:100}) we set $M=100$, while in Figure (\ref{fig:10}) we set $M=10$.
 \begin{figure}
 \makebox[\textwidth][c]{
 \subfloat[Comparison of average execution time\label{subfig-1:time2}]{%
@@ -537,7 +625,7 @@ width=0.5\textwidth,
 xlabel={\# of assets},
 ylabel={Average Iterations},
 scaled y ticks=false,
-ymax=20000,
+ymax=24000,
 legend pos=north west,
 legend cell align=left
 ]
@@ -595,7 +683,157 @@ legend cell align=left
 \end{tikzpicture}
 }
 }
-\caption{Comparison of performances using $\epsilon = 10^{-10}$ in (\ref{eq:stop}) with box constraints defined in (\ref{eq:classicalbox})}
+\caption{Comparison of performances using $\epsilon = 10^{-10}$ in (\ref{eq:stop}) with box constraints defined in (\ref{eq:classicalbox}) with $M=100$}
+\label{fig:100}
+\end{figure}
+
+\begin{figure}
+\centering
+\makebox[\textwidth][c]{
+\subfloat[Comparison of average execution time\label{subfig-1:time3}]{%
+\begin{tikzpicture}
+\begin{axis}[%
+width=0.5\textwidth,
+xlabel={\# of assets},
+ylabel={Average Exe Time (s)},
+scaled y ticks=false,
+legend pos=north west,
+legend cell align=left
+]
+
+\addplot [color=black,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%MVP
+500	1.486	\\
+750	3.147	\\
+1000 6.431 \\
+1250 11.57 \\
+1500 18.6  \\
+1750 27.68 \\
+2000 40.08\\
+};
+
+\addplot [color=red,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%10
+500 1.43\\
+750 2.94\\
+1000 5.21 \\
+1250 8.13\\
+1500 12.09\\
+1750 16.99\\
+2000 23.08\\
+};
+
+\addplot [color=blue,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%5
+500 1.22 \\
+750 2.36 \\
+1000 4.06 \\
+1250 6.24\\
+1500 9.03 \\
+1750 12.43 \\
+2000 16.72 \\
+};
+
+\addplot [color=magenta,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%2.5
+500  1.28\\
+750  2.30\\
+1000 3.72 \\
+1250 5.64 \\
+1500 7.94 \\
+1750 10.65 \\
+2000 14.06\\
+};
+
+\addplot [color=green,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%SNOPT
+500	.353	    \\
+750	 1.197  \\
+1000 3.15	\\
+1250 6.617	\\
+1500 11.765 \\
+1750 19.84\\
+2000 30.32 \\
+};
+
+\addlegendentry{DEC$_{\text{MVP}}$}
+\addlegendentry{DEC$_{\text{MVP-}10\%}$}
+\addlegendentry{DEC$_{\text{MVP-}5\%}$}
+\addlegendentry{DEC$_{\text{MVP-}2.5\%}$}
+\addlegendentry{SNOPT}
+\end{axis}
+
+\end{tikzpicture}
+}
+\hfill
+\hspace{1em}\subfloat[Comparison of average iterations\label{subfig-2:iterations3}]{%
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=0.5\textwidth,
+xlabel={\# of assets},
+ylabel={Average Iterations},
+scaled y ticks=false,
+legend pos=north west,
+legend cell align=left,
+ymax=24000
+]
+
+\addplot [color=black,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%MVP
+500	 3538\\
+750	 5343 \\
+1000	  7200\\
+1250 	9151\\
+1500    11011\\
+1750 13141\\
+2000 15241\\
+};
+
+\addplot [color=red,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%10
+500 3565  \\
+750 5422 \\
+1000 7263 \\
+1250 9155 \\
+1500 11101 \\
+1750 13089 \\
+2000 15289\\
+};
+
+\addplot [color=blue,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%5
+500 3654   \\
+750 5522 \\
+1000 7418  \\
+1250 9314 \\
+1500 11285 \\
+1750 13317\\
+2000 15526\\
+};
+
+\addplot [color=magenta,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%2.5
+500 4037 \\
+750 5885\\
+1000 7803  \\
+1250 9835\\
+1500 11800\\
+1750 13925\\
+2000 16214\\
+};
+
+\addlegendentry{DEC$_{\text{MVP}}$}
+\addlegendentry{DEC$_{\text{MVP-}10\%}$}
+\addlegendentry{DEC$_{\text{MVP-}5\%}$}
+\addlegendentry{DEC$_{\text{MVP-}2.5\%}$}
+\end{axis}
+
+\end{tikzpicture}
+}
+}
+\caption{Comparison of performances using $\epsilon = 10^{-10}$ in (\ref{eq:stop}) with box constraints defined in (\ref{eq:classicalbox}) with $M=10$}
+\label{fig:10}
 \end{figure}
 
 \subsection{Convergence to a Risk Parity solution}
@@ -735,7 +973,7 @@ legend style={at={(0.5,-0.3)},anchor=north}
 %\label{tab:second}
 %\end{table}
 
-\subsection{On the choosing of starting point}
+\subsection{On the choosing of the starting point}
 From our experiments, it turns out that the choice of the starting point $x^0$ strongly affects the probability of the algorithms to reach a Risk Parity solution.  In Figure (\ref{fig:sparsity}) we measure the probability to reach a Risk Parity solution varying the sparsity of the initial guess $x^0$, i.e. the percentage of components of $x^0$ fixed to 0. In Figure (\ref{subfig-3:equally}) we use an equally distributed starting point:
 \begin{equation}
 x^{0} = \left[x^{0}_0, x^{0}_1, .. ,  x^{0}_k, x^{0}_{k+1} .., x^{0}_n \right] = \left[\frac{1}{k}, \frac{1}{k}, .., \frac{1}{k}, 0, .., 0 \right]

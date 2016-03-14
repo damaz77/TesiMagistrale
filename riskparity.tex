@@ -47,7 +47,7 @@ The risk parity portfolio \cite{roncalli} is defined by this system of equations
 \begin{aligned}
 &x_i \frac{\partial_{x_i} \sigma (x)}{b_i} = x_j \frac{\partial_{x_j} \sigma (x)}{b_j} \hspace{1em} &&\forall i,j\\
 &x_i \geq 0,  &&b_i > 0 \\
-&\sum_{i=1}^n x_i = 1,  &&\sum_{i=1}^n b_i = 1
+&\mathds{1}^T x = 1,  &&\sum_{i=1}^n b_i = 1
 \end{aligned}
 \end{equation}
 
@@ -161,7 +161,7 @@ The log-barrier approach to finding risk parity solutions in the long-only setti
 & \min_x
 && \sum_{i=i}^n \left( \frac{x_i(\Sigma x)_i}{b_i} - \theta \right)^2\\
 & \text{s.t.}
-&&\sum_{i=1}^n x_i =1\\
+&&\mathds{1}^T x =1\\
 &&&x_i \geq 0
 \end{aligned}
 \end{equation}
@@ -180,7 +180,7 @@ The solution of the following system of constraints
 \begin{equation}\label{eq:b}
 \begin{aligned}
 &x_i\cdot\frac{\partial\sigma (x)}{\partial x_i} = x_j\cdot\frac{\partial\sigma (x)}{\partial x_j} \quad \forall i,j\\
-&\sum_{i=1}^n x_i =1\\
+&\mathds{1}^T x =1\\
 &x_i \geq 0
 \end{aligned}
 \end{equation}
@@ -193,7 +193,7 @@ This section presents a least-squares formulation for solving the ERC problem.
 & \min_x
 && \sum_{i=i}^n \sum_{j=1}^{n}\left(x_i(\Sigma x)_i - x_j(\Sigma x)_j\right)^2\\
 & \text{s.t.}
-&&\sum_{i=1}^n x_i =1\\
+&&\mathds{1}^T x =1\\
 &&&x_i \geq 0
 \end{aligned}
 \end{equation}
@@ -207,7 +207,7 @@ In this way, the objective function contains only $n$ elements in the sum. If we
 & \min_{x,\theta}
 && F(x,\theta) = \sum_{i=1}^n (x_i(\Sigma x)_i - \theta)^2\\
 & \text{s.t.}
-&&\sum_{i=1}^n x_i =1\\
+&&\mathds{1}^T x =1\\
 &&&x_i \geq 0
 \end{aligned}
 \end{equation}
@@ -278,7 +278,7 @@ The definition of the diversification ratio (\ref{eq:dr}) leads to the contructi
 \begin{equation}
 \begin{aligned}
 x^{MDP} = \mbox{argmax}_x &&&DR(x)\\
-\text{s.t.}&&&\sum_{i=1}^{n} x_i = 1\\ 
+\text{s.t.}&&&\mathds{1}^T x = 1\\ 
 &&&x_i \geq 0
 \end{aligned}
 \end{equation}
@@ -311,11 +311,11 @@ The following optimization problem minimizes the total variance of a fully-inves
 & \min_x
 && \frac{1}{2}x^T \Sigma x\vspace{-0.8em}\\
 &\text{s.t.}
-&&e^T x =1\\
+&&\mathds{1}^T x =1\\
 &&&x \geq 0
 \end{aligned}
 \end{equation}
-where $e = [1, .., 1] \in \mathbb{R}^n$ is the identity vector. Starting from the formulation seen above, using the first-order optimality conditions, we obtain
+Starting from the formulation seen above, using the first-order optimality conditions, we obtain
 \begin{equation}
 \Sigma x - \lambda - \gamma e = 0
 \end{equation}
@@ -430,7 +430,7 @@ RC_{\mathcal{M}_k}(x) = \sum_{i \in \mathcal{M}_k} RC_i(x)
 \begin{equation}
 \begin{aligned}
 &\sum_{i \in \mathcal{M}_k} RC_i = b_k \mathcal{R}(x) \quad k=1,..,s\\
-&\sum_{i=1}^n x_i = 1\\
+&\mathds{1}^T x = 1\\
 & x_i \geq 0
 \end{aligned}
 \end{equation}
@@ -444,7 +444,7 @@ The GRB problem can be formulated as follows \cite{sdp}:
 && \mu^Tx - \lambda\mathcal{R}(x)\\
 & \text{s.t.}
 &&\sum_{i \in \mathcal{M}_k} RC_i = \beta_k \mathcal{R}(x) \quad k=1,..,s\\
-&&&\sum_{i=1}^n x_i = 1\\
+&&&\mathds{1}^T x = 1\\
 &&&\sum_{i \in \mathcal{M}_k} x_i \geq 0, \quad k=1,..,s
 \end{aligned}
 \end{equation}

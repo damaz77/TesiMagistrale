@@ -204,7 +204,7 @@ Consider a general formulation for the RP problem
 & \underset{x}{\text{min}}
 && \mathcal{R}(x)\\
 & \text{s.t.}
-&&\sum_{i=1}^n x_i = 1\\
+&&\mathds{1}^T x = 1\\
 &&&x_i \geq 0
 \end{aligned}
 \end{equation}
@@ -227,7 +227,7 @@ at the $k$th iteration, the SCRIP method aims to solve
 & \underset{x}{\text{min}}
 &&P(x;x^{(k)}) + \frac{\tau}{2}\parallel x - x^{(k)} \parallel^2_2\\
 & \text{s.t.}
-&&\sum_{i=1}^n x_i = 1\\
+&&\mathds{1}^T x = 1\\
 &&&x_i \geq 0
 \end{aligned}
 \end{equation}
@@ -276,7 +276,7 @@ In this section we focus on finding the ERC solution with the least variance. He
 &&\sum_{i=1}^n (x_i(\Sigma x)_i - \theta)^2 + \rho x^T \Sigma x\\
 & \text{s.t.}
 &&a_i \leq x_i \leq b_i\vspace{0.5em}\\
-&&&\sum_{i=1}^{n} x_i = 1
+&&&\mathds{1}^T x = 1
 \end{aligned}
 \end{equation}
 Where $a_i$ and $b_i$ are nonnegative constants representing the bounds on the weight of $i$th asset and $\rho \geq 0$ is the weight parameter. In the above formulation we simply added a convex term to the objective function of (\ref{eq:ls}). In Algorithm \ref{alg:minvar} is described an approach of finding a ERC solution with the smallest variance, where the problem (\ref{eq:mvrp}) is simply solved with decreasing values of $\rho$.
@@ -345,7 +345,7 @@ Choose new penalty parameters $\mu_1^{k+1} \in (0, \mu_1^k), \text{ } \mu_2^{k+1
 \label{alg:alm}
 \end{algorithm}
 
-Each minimization step is a solution of a \textbf{strictly convex} quadratic programming problem, which can be done efficiently by many methods.\\ 
+Each minimization step is a solution of a strictly convex quadratic programming problem, which can be done efficiently by many methods.\\ 
 In practice backtracking strategies should be applied to choose values of parameter $\mu$ at each iteration. A practical backtracking scheme is shown in Algorithm \ref{alg:almbktr}. Note that in each minimization step, we check whether a sufficient reduction has been obtained. If so, the minimization step is accepted and $\mu$ remains the same, otherwise it is decreased and a new candidate step is computed.
 
 \begin{algorithm}
@@ -389,7 +389,7 @@ We can rewrite the GRB problem in the following equivalent form:
 & \text{s.t.}
 && \sum_{i \in \mathcal{M}_k} \mbox{tr}(\Gamma_i X) = \beta_k \mbox{tr}(\Sigma X), \quad k=1,..,s \\
 &&&X = xx^T,\\
-&&&\sum_{i=1}^n x_i = 1,\\
+&&&\mathds{1}^T x = 1,\\
 &&&\sum_{i \in \mathcal{M}_k} x_i \geq 0, \quad k=1,..,s.
 \end{aligned}
 \end{equation}
@@ -401,7 +401,7 @@ where $\Gamma_i = e^T e \Sigma$ and tr($\cdot$) denotes the trace of a matrix. S
 & \text{s.t.}
 && \sum_{i \in \mathcal{M}_k} \mbox{tr}(\Gamma_i X) = \beta_k \mbox{tr}(\Sigma X), \quad k=1,..,s \\
 &&&\begin{bmatrix}X & x^T\\x & 0\end{bmatrix}\succeq 0,\\
-&&&\sum_{i=1}^n x_i = 1,\\
+&&&\mathds{1}^T x = 1,\\
 &&&\sum_{i \in \mathcal{M}_k} x_i \geq 0, \quad k=1,..,s.
 \end{aligned}
 \end{equation}
@@ -510,7 +510,7 @@ Since the ERC approach requires all assets to give an equal risk contribution to
 & & \lambda\\
 & \text{s.t.}
 & & x_i (\Sigma x)_i \leq \lambda\\
-&&&\sum_{i=1}^n x_i =1\\
+&&&\mathds{1}^T x =1\\
 &&&x_i \geq 0
 \end{aligned}
 \end{equation}

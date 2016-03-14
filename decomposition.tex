@@ -7,7 +7,7 @@ Let us consider the following optimization problem:
 & \quad \mathds{1}^T x = 1 
 \end{align}
 \end{subequations}
-where $x \in \R^n$, $y \in \R^m$, $f$ continuously differentiable, $l, u \in \R^n$ with $l < u$ and $\mathds{1} \in \R^n$ is all composed by ones. \\
+where $x \in \R^n$, $y \in \R^m$, $f$ continuously differentiable, $l, u \in \R^n$ with $l < u$.\\
 We define the feasible set $\mathcal{F}$  of Problem (\ref{eq:problem}):
 \begin{equation}
 \mathcal{F} = \{(x,y) \in \R^{n+m} : \mathds{1}^T x = 1, l \leq x \leq u\}.
@@ -268,6 +268,7 @@ The algorithm is formally described below.
   Set $k = k + 1$
  }
  \caption{Decomposition Algorithm}
+ \label{alg:qls}
 \end{algorithm}
 \subsection{Proximal Point approximation}
 In this section we propose a version of previous algorithm which uses proximal point approximation.
@@ -318,6 +319,7 @@ x_i^{k+1}= c^{k}-x^{k+1}_j
   Set $k = k + 1$
  }
  \caption{Decomposition Algorithm with proximal point}
+ \label{alg:proximal}
 \end{algorithm}
 
 \section{Convergence analysis}
@@ -703,6 +705,7 @@ $f(x,\theta)$ is clearly non-convex, but it is strictly convex with respect to $
 \end{equation} 
 
 \subsection{Implementation guidelines}
+\subsubsection{Matrix product}
 As we can see from (\ref{eq:gradxdec}) and (\ref{eq:gradthetadec}), at every iteration $k$ we must compute:
 \begin{equation}
 Q  x^{k}
@@ -719,3 +722,41 @@ Thanks to this updating scheme, we can write:
 Q x^{k+1} = Q  x^{k} + \left[Q_{i(k)} - Q_{j(k)}\right]\alpha^{k} 
 \end{equation}
 where $Q_{i}$ is the $i$-th column of $Q$. This shrewdness dramatically reduces the computation time of the algorithm, especially for large values of $n$.
+
+\subsubsection{Gradient computation}
+We can split the gradient (\ref{eq:gradxdec}) computation in two parts. The first is:
+\begin{equation}\label{eq:first}
+2 \sum_{i=1}^n \left(x_i (Q x)_i - \theta\right)Q_{ij}x_i
+\end{equation}
+while the second is:
+\begin{equation}\label{eq:second}
+2(x_j (Q x)_j - \theta)(Q x)_j
+\end{equation}
+Let us introduce the matrix $B$ with elements:
+\begin{equation}
+B_{i,j} = Q_{i,j}  x_i 
+\end{equation}
+and the vector $d$ with elements:
+\begin{equation}
+d_j = 2 (x_j (Q x)_j - \theta) 
+\end{equation}
+We can now write the two terms of the gradient using $B$ and $d$; the first term (\ref{eq:first}) becomes:
+\begin{equation}
+B^T d
+\end{equation}
+The second term (\ref{eq:second}) is simply:
+\begin{equation}
+d_j (Q x)_j
+\end{equation}
+Finally, we have:
+\begin{equation}\label{eq:newgradx}
+\frac{\partial F(x,\theta)}{\partial x_j} =\left(B^T d\right)_j + d_j (Q x)_j
+\end{equation}
+At every iteration $k$, we have:
+\begin{equation}
+B^{k}_{h} = \begin{cases}
+		  		Q_{h}x_h^{k} \quad \text{if } h = i(k) \vee h = j(k)\\\\
+		  	    B^{k-1}_{h} \quad \text{     otherwise}
+		  		\end{cases}
+\end{equation}
+where $B_{h}$ is the $h$-th column of $B$.
