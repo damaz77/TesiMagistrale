@@ -476,7 +476,7 @@ ymax=24000
 \label{fig:10}
 \end{figure}
 
-\subsection{Convergence to a Risk Parity solution}
+\subsubsection{Convergence to a Risk Parity solution}
 In this section we evaluate the probability to converge to a critical point $(x^*,y^*)$ that is also a Risk Parity solution, i.e. that satisfies 
 \begin{equation}\label{eq:reseps}
 \max_i \left| \frac{RC_i}{\mathcal{R}(x^*,y^*)} - \frac{1}{n} \right| < 10^{-6}
@@ -613,7 +613,7 @@ legend style={at={(0.5,-0.3)},anchor=north}
 %\label{tab:second}
 %\end{table}
 
-\subsection{On the choosing of the starting point}
+\subsubsection{On the choosing of the starting point}
 From our experiments, it turns out that the choice of the starting point $x^0$ strongly affects the probability of the algorithms to reach a Risk Parity solution.  In Figure (\ref{fig:sparsity}) we measure the probability to reach a Risk Parity solution varying the sparsity of the initial guess $x^0$, i.e. the percentage of components of $x^0$ fixed to 0. In Figure (\ref{subfig-3:equally}) we use an equally distributed starting point:
 \begin{equation}
 x^{0} = \left[x^{0}_0, x^{0}_1, .. ,  x^{0}_k, x^{0}_{k+1} .., x^{0}_n \right] = \left[\frac{1}{k}, \frac{1}{k}, .., \frac{1}{k}, 0, .., 0 \right]

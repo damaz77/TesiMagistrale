@@ -420,6 +420,48 @@ the RP portfolio, with risk defined in (\ref{eq:risk2}), exists and is unique. I
 \end{equation}
 \emph{where $\kappa$ is an arbitrary constant \cite{intr}.}\\
 The case $c \leq SR^+$ is not relevant from a financial point of view, because the risk measure of some portfolios may be negative. By leveraging these portfolios, the risk measure may be infinitely negative.
+\section{Equal Risk Bounding (ERB)}
+Since the ERC approach requires all assets to give an equal risk contribution to the variance of the selected portfolio, it is clear that the ERC portfolio must contain \textit{all} assets\footnotemark[4].\footnotetext[4]{This is also true in the RP case} However, this might not be sensible if the exclusion of some asset provides a less risky portfolio. When aiming at minimizing risk, one should more rationally require that the risk contributions of all assets to the variance should not exceed a given threshold which might then be minimized. This alternative approach, which is called \textit{Equal Risk Bounding} (ERB), might, and actually does in some cases, select portfolios that do not contain all assets and where the total risk contributions of all assets is strictly smaller than in the ERC portfolio \cite{erb}. The Equal Risk Bounding approach can be formulated as follows:
+\begin{equation}\label{eq:erb1}
+\begin{aligned}
+& \min_x
+& & \lambda\\
+& \text{s.t.}
+& & x_i (\Sigma x)_i \leq \lambda\\
+&&&\mathds{1}^T x =1\\
+&&&x_i \geq 0
+\end{aligned}
+\end{equation}
+Note that this is a nonconvex quadratic programming problem with quadratic constraints which might have \textit{multiple} solutions. Let $(x^{ERB},\lambda^{ERB})$ be a solution of the above problem. Then $\lambda^{ERB}$ is an upper bound for the total contribution of each asset to the variance. Thus the ERC portfolio is theoretically dominated by the ERB portfolios in terms of variance.\\
+The solution $(x^{ERC},\lambda^{ERC})$ of the ERC problem (where $\lambda^{RP} = \frac{x^{T} \Sigma x}{n}$) is also a feasible solution to the ERB problem. Thus
+\begin{equation}
+\lambda^{ERB} \leq \lambda^{ERC} \Rightarrow \sigma^2(x^{ERB}) \leq \sigma^2(x^{ERC})
+\end{equation}
+The stricly inequality can actually occur, but only when $x_i=0$ for some $i$.\\
+Problem (\ref{eq:erb1}) is an hard nonconvex quadratic programming problem with quadratic constraints. However its solutions, the Equal Risk Bounding portfolios, have a particular structure which can be exploited to reduce the problem of solving (\ref{eq:erb1}) to the problem of solving a finite number of simpler ERC problems.
+\begin{lemma}
+Let ($x^{ERB},\lambda^{ERB}$) be a solution of the ERB problem (\ref{eq:erb1}). If $x_i^{ERB}>0$, then
+\begin{equation}
+x_i^{ERB}(\Sigma x^{ERB})_i = \lambda^{ERB}
+\end{equation}
+\end{lemma}
+This result clearly implies that for every solution to the ERB model, there exists a subset $P$ of the set $N = \{1,...,n\}$ of indices such that only the assets with indices in $P$ have nonzero weights, and such weights are those of the ERC portfolio of the assets with indices in P.
+\begin{theorem}\label{thm:erb} 
+Every solution to the ERB problem (\ref{eq:erb1}) has the form ($x_P,x_Z$) where $P \cup Z=N$, $P \cap  Z = \emptyset$, $x_Z=0$ and $x_P$ is the unique solution to the ERC problem (\ref{eq:b}) with respect to the indices in $P$
+\end{theorem}
+Thanks to the Theorem (\ref{thm:erb}), a solution to (\ref{eq:erb1}) can be obtained by solving a nonlinear pseudo-boolean optimization problem. For a subset $P\subseteq N = \{1,...,n\}$ of indices, let $x_i^{RP}(P)$ denote the asset weights and $\lambda^{ERC}(P)$ denote the equal risk contribution of the assets with indices in P of the (unique) ERC portfolio. Any ERB portfolio $x^{ERB}$ is given by
+\begin{equation}
+x_i^{ERB} = \begin{cases}
+        x_i^{ERC}(P) \hspace{2em} \text{if}\hspace{1em} i \in P
+        \\
+        0 \hspace{5em} \text{otherwise}
+        \end{cases}
+\end{equation}
+for any P which solves the pseudo-boolean optimization problem
+\begin{equation}\label{eq:c}
+\lambda^{ERB} = \min_{P\subseteq N} \lambda^{ERC}
+\end{equation}
+Clearly a brute force solution of the pseudo-boolean optimization problem (\ref{eq:c}) requires the solution of an exponential number of ERC models. However, more refined exact methods and heuristics have been developed for pseudo-boolean optimization problems. Furthermore, some experiments has found that for the ERB model the optimal solution can almost always be obtained by considering only subsets $P$ with at least $n-3$ indices. However, the theoretical complexity of the problem of exactly finding an ERB portfolio is still unknown in the general case.
 
 \section{Group risk parity}
 An extension of the risk parity problem is the case of group risk parity where we seek parity of risk contributions from groups of assets instead of individual assets \cite{tutuncu}. This variation

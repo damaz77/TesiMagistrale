@@ -732,17 +732,17 @@ while the second is:
 \begin{equation}\label{eq:second}
 2(x_j (Q x)_j - \theta)(Q x)_j
 \end{equation}
-Let us introduce the matrix $B$ with elements:
+Let us introduce the matrix $B \in \mathbb{R}^{n \times n}$ with elements:
 \begin{equation}
 B_{i,j} = Q_{i,j}  x_i 
 \end{equation}
-and the vector $d$ with elements:
+and the vector $d \in \mathbb{R}^n$ with elements:
 \begin{equation}
 d_j = 2 (x_j (Q x)_j - \theta) 
 \end{equation}
 We can now write the two terms of the gradient using $B$ and $d$; the first term (\ref{eq:first}) becomes:
 \begin{equation}
-B^T d
+B d
 \end{equation}
 The second term (\ref{eq:second}) is simply:
 \begin{equation}
@@ -750,7 +750,7 @@ d_j (Q x)_j
 \end{equation}
 Finally, we have:
 \begin{equation}\label{eq:newgradx}
-\frac{\partial F(x,\theta)}{\partial x_j} =\left(B^T d\right)_j + d_j (Q x)_j
+\frac{\partial F(x,\theta)}{\partial x_j} =\left(B d\right)_j + d_j (Q x)_j
 \end{equation}
 At every iteration $k$, we have:
 \begin{equation}
