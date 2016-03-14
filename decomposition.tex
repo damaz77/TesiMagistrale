@@ -249,7 +249,7 @@ At every step $k$ we choose a random subset $W^k\subset \{1,..,n\}$ such as
 \frac{|W^k|}{n} \times 100 = \lambda
 \end{equation}
 For each $w \in W^k$, we compute the partial derivative $\frac{\partial f(x,y)}{\partial x_w}$ and we select the MVP among the indexes in $W^k$. If we don't find a violating pair in $W^k$, we randomly add indexes until we find one, and we use this violating pair to build the descent direction. To assure the global convergence properties, we evaluate the MVP among the full gradient $\nabla_x f(x,y)$ every $M$ iterations. \\
-The algorithm is formally described below.
+The algorithm is formally described in Algorithm \ref{alg:qls}.
 
 \begin{algorithm}[ht]
  \KwData{Given the initial feasible point $(x^{0}, y^{0})$}
@@ -270,12 +270,9 @@ The algorithm is formally described below.
  \caption{Decomposition Algorithm}
  \label{alg:qls}
 \end{algorithm}
+
 \subsection{Proximal Point approximation}
-In this section we propose a version of previous algorithm which uses proximal point approximation.
-
-Let us redefine selected variable $x^k_{i(k)},x^k_{j(k)}$ as $x_{i},x_{j}$ for ease of notation.
-
-The idea behind proximal point modification is that at every iteration $k$ it's easy to solve the subproblem:
+In this section we propose a version of previous algorithm which uses proximal point approximation. Let us redefine selected variable $x^k_{i(k)},x^k_{j(k)}$ as $x_{i},x_{j}$ for ease of notation. The idea behind proximal point modification is that at every iteration $k$ it's easy to solve the subproblem:
 \begin{align}
  &\min_{x_i,x_j} f(x_i,x_j)+ \frac{1}{2} \tau||(x_i,x_j)-(x_i^k,x_j^k)||^2\\
  &x_i+x_j = \underbrace{1-\sum_{h \ne i,j} x^k_h}_{c^k}\\
@@ -283,15 +280,10 @@ The idea behind proximal point modification is that at every iteration $k$ it's 
  \end{align}
 with $\tau>0$.
 
-In fact, thanks to simplex constraint, the objective function depends only on one of the selected variables (e.g. $x_j$). 
-Additionally it is simply a 4-degree polynomial in $x_j$.
-Because of a continuous function admits minimum in a compact set, we have to find it between zeros of derivative and the limit points of the feasible set.
-
-Let us define $h'(\xi)$ as objective function derivative, then we can define the set of possible global minima as:
+In fact, thanks to simplex constraint, the objective function depends only on one of the selected variables (e.g. $x_j$). Additionally it is simply a 4-degree polynomial in $x_j$. Because of a continuous function admits minimum in a compact set, we have to find it between zeros of derivative and the limit points of the feasible set. Let us define $h'(\xi)$ as objective function derivative, then we can define the set of possible global minima as:
 \begin{equation}
  O_k = \{ \xi < x_j^k: h'(\xi)=0\} \cup \{\min\{l_j,x_i^k\} \}
 \end{equation}
-
 then we set:
 \begin{equation}
 x_j^{k+1}= \arg \min_{\xi \in O_k} \{h(\xi)\}
@@ -300,9 +292,7 @@ and:
 \begin{equation}
 x_i^{k+1}= c^{k}-x^{k+1}_j
 \end{equation}
-
-
-
+The algorithm is formally described in Algorithm \ref{alg:proximal}.
 \begin{algorithm}[ht]
  \KwData{Given the initial feasible point $(x^{0}, y^{0})$}
  Set $k = 0$\\
