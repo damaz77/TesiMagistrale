@@ -147,7 +147,7 @@ Compute $F'(x^{(k)})$, $F''(x^{(k)})$, $\Delta x^{(k)}$, $\lambda_F(x^{(k)})$ \\
 (\textit{Damped Phase}) $x^{(k+1)} = x^{(k)} - \frac{1}{1+\lambda_F(x^{(k)})}\Delta x^{(k)}$
 }
 {
-\eIf{$(\lambda_F(x^{(k)}) > \lambda_*)$}{
+\eIf{$(\lambda_F(x^{(k)}) > \epsilon)$}{
 (\textit{Quadratic Phase}) $x^{(k+1)} = x^{(k)} - \Delta x^{(k)}$
 }
 {
@@ -273,11 +273,11 @@ In this section we focus on finding the ERC solution with the least variance. He
 & \underset{x,\theta}{\text{min}}
 &&\sum_{i=1}^n (x_i(\Sigma x)_i - \theta)^2 + \rho x^T \Sigma x\\
 & \text{s.t.}
-&&a_i \leq x_i \leq b_i\vspace{0.5em}\\
+&&l \leq x \leq u\vspace{0.5em}\\
 &&&\mathds{1}^T x = 1
 \end{aligned}
 \end{equation}
-Where $a_i$ and $b_i$ are nonnegative constants representing the bounds on the weight of $i$th asset and $\rho \geq 0$ is the weight parameter. In the above formulation we simply added a convex term to the objective function of (\ref{eq:ls}). In Algorithm \ref{alg:minvar} is described an approach of finding a ERC solution with the smallest variance, where the problem (\ref{eq:mvrp}) is simply solved with decreasing values of $\rho$.
+where $l,u \in \mathbb{R}^n$ represent the bounds on the assets' weights and $\rho \geq 0$ is the weight parameter. In the above formulation we simply added a convex term to the objective function of (\ref{eq:ls}). In Algorithm \ref{alg:minvar} is described an approach of finding a ERC solution with the smallest variance, where the problem (\ref{eq:mvrp}) is simply solved with decreasing values of $\rho$.
 
 \begin{algorithm}
 Choose $\rho^0 > 1$, $\beta \in (0,1)$ and $x^0 $\\
@@ -303,7 +303,7 @@ Consider optimizing the following function
 \begin{equation}\label{eq:alm}
 \min_{x \in \chi, \theta} F(x,\theta) = \sum_{i} ((A_i x)^T(B_i x) -\theta)^2
 \end{equation}
-where $x \in \mathbb{R}^n $, $A_i, B_i \in \mathbb{R}^{m * n} $ and $\chi$ is a set defined by linear constraints. Note that all the ERC formulations seen above can be embedded into this more general formulation. The objective function of ERC problem, in the formulation of (\ref{eq:ls}), has $A_i = \Sigma_i \in \mathbb{R}^{1 * n} $ as the $i$th row of the covariance matrix, and $B_i = e_i \in \mathbb{R}^{1 * n} $ is the $i$th column of the identity. If we set $M_i = A_i^TB_i \in \mathbb{R}^{n * n}$, (\ref{eq:alm}) is equivalent to
+where $x \in \mathbb{R}^n $, $A_i, B_i \in \mathbb{R}^{m \times n} $ and $\chi$ is a set defined by linear constraints. Note that all the ERC formulations seen above can be embedded into this more general formulation. The objective function of ERC problem, in the formulation of (\ref{eq:ls}), has $A_i = \Sigma_i \in \mathbb{R}^{1 \times n} $ as the $i$th row of the covariance matrix, and $B_i = e_i \in \mathbb{R}^{1 \times n} $ is the $i$th column of the identity. If we set $M_i = A_i^TB_i \in \mathbb{R}^{n \times n}$, (\ref{eq:alm}) is equivalent to
 \begin{equation}\label{eq:alm2}
 \min_{x \in \chi, \theta} F(x,\theta) = \sum_{i=1}^n F_i(x) = \sum_{i=1}^n (x^TM_ix - \theta)^2
 \end{equation}
@@ -379,7 +379,7 @@ In this section is explained a semidefinite programming (SDP) relaxation for the
 \begin{equation}
 RC_i= x_i \frac{(\Sigma x)_i}{\sqrt{x^T \Sigma x}}
 \end{equation}
-We can rewrite the GRB problem in the following equivalent form:
+We can rewrite the GRB problem (\ref{eq:grb}) in the following equivalent form:
 \begin{equation}\label{eq:sdp}
 \begin{aligned}
 & \underset{x,X}{\text{max}}

@@ -73,7 +73,7 @@ The only way to have $x_{k_2} > 0$ is to have some negative correlations $\rho_{
 \sum_{j \neq k}x_j \rho_{k,j} \sigma_j <0
 \end{equation}
 \begin{example}
-Consider a universe of $3$ assets with a given budget vector:
+Consider a universe of 3 assets with a given budget vector:
 \begin{equation*}
 b=(0.5,0.5, 0)
 \end{equation*}
@@ -92,7 +92,7 @@ b_i >0
 
 \subsection{Existence and uniqueness}
 \begin{theorem}
-The following optimization problem
+The solution of the following optimization problem
 \begin{equation}\label{eq:dc1}
 \begin{aligned}
 & y^* = \underset{y}{\text{argmin}}
@@ -102,7 +102,7 @@ The following optimization problem
 &&&y_i \geq 0 \hspace{1em} \forall i
 \end{aligned}
 \end{equation}
-where $b_i > 0$, $\sum_i b_i = 1$, $c$ an arbitrary constant, is equivalent to problem (\ref{eq:rb})
+where $b_i > 0$, $\sum_i b_i = 1$, $c$ an arbitrary constant, is the only solution of problem (\ref{eq:rb}).
 \end{theorem} 
 \begin{proof}
 The Lagrangian function of the optimization problem (\ref{eq:dc1}) is
@@ -130,7 +130,7 @@ Equation (\ref{eq:this}) is equivalent to (\ref{eq:newconst1}). We then deduce t
 Formulation (\ref{eq:dc1}) is very interesting because it demonstrates that the RP portfolio specified by the mathematical system (\ref{eq:rb}) exists, and it is unique as long as the covariance matrix $\Sigma$ is positive-definite. Indeed, it corresponds to the minimization of a quadratic function with a convex constraint.
 
 \section{RP alternative formulations}
-\subsection{Logarithmic barrier}
+\subsection{Logarithmic barrier}\label{sec:rp}
 \begin{theorem}
 Solve the following problem that incorporates a logarithmic barrier in the objective function is equivalent to find a RP solution:
 \begin{equation}\label{eq:log1}
@@ -236,7 +236,7 @@ y_i \frac{\partial\sigma(y)}{\partial y_i} = \lambda_c
 We verify that risk contributions are the same for all assets \cite{erc}. We then deduce the ERC portfolio by normalizing the solution $y^*$ such that the sum of weights equals one: $x_i^* =y_i^*/\sum_{i=1}^n y_i^*$
 
 \subsection{Logarithmic barrier}
-As in the RP case (see Sect. 3.4.1), we can give another formulation to find a ERC solution
+As in the RP case (see Section \ref{sec:rp},), we can give another formulation to find a ERC solution
 \begin{equation}
 \begin{aligned}
 & \underset{x}{\text{min}}
@@ -245,7 +245,7 @@ As in the RP case (see Sect. 3.4.1), we can give another formulation to find a E
 && x_i > 0 \hspace{1em} \forall i
 \end{aligned}
 \end{equation}
-where $c$ is an arbitrary positive constant. Following the same steps used in Sect. 3.4.1, we derive
+where $c$ is an arbitrary positive constant. Following the same steps used in Section \ref{sec:rp}, we derive
 
 \begin{equation}\label{eq:a}
 (\Sigma x)_i = \frac{c}{x_i} \Rightarrow x_i(\Sigma x)_i = x_j(\Sigma x)_j, \forall i,j
@@ -340,7 +340,7 @@ b_i = x_i
 \section{Expected returns in RP portfolios}
 Risk parity is generally presented as an allocation method unrelated to the Markowitz approach. Most of the time, these are opposed, because risk parity does not depend on expected returns. However, the risk parity approach has also been strongly criticized, because some investment professionals consider this aspect a weakness, with some active managers having subsequently reintroduced expected returns in an ad-hoc manner \cite{intr}. Consider the MVO unconstrained solution:
 \begin{equation}\label{eq:ob1}
-x^*(\gamma) = \mbox{argmin} \frac{1}{2} x^T \Sigma x - \gamma x^T (\mu - \mu_r)
+x^*(\gamma) = \mbox{argmin}_x \enskip \frac{1}{2} x^T \Sigma x - \gamma x^T (\mu - \mu_r)
 \end{equation}
 where $\gamma$ is the risk aversion parameter, $\mu$ is the vector of expected returns of the assets and $\mu_r$ is the return of the risk-free asset. This framework is particularly appealing because the objective function has a concrete financial interpretation in terms of utility functions, with the investor facing a trade-off between risk and performance. To obtain a better expected return, the investor must then choose a riskier portfolio.\\
 Now, let $\mu(x) = x^T \mu$ be the expected return of the portfolio and $\pi(x) = \mu(x) - \mu_r$ its risk premium. The optimal solution (\ref{eq:ob1}) can also be formulated as follows:
@@ -480,7 +480,7 @@ where $b=(b_1,..,b_s)$ is the vector of \textit{budgets} of the $s$ assets group
 \section{Generalized Risk Budgeting (GRB)}
 In portfolio construction and analysis it is often preferable to group assets according to attributes such as asset class, country, sector and industry. The generalized risk budgeting (GRB) strategy is based on this very idea of managing the marginal risk contributions of subsets of assets to the total portfolio risk. Note that is used the term "subset" rather than "partition" since depending on the attributes used for the asset classification, assets may belong to more than one group.\\
 The GRB problem can be formulated as follows \cite{sdp}:
-\begin{equation}
+\begin{equation}\label{eq:grb}
 \begin{aligned}
 & \underset{x}{\text{max}}
 && \mu^Tx - \lambda\mathcal{R}(x)\\
