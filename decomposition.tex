@@ -709,7 +709,7 @@ x_{j(k)}^{k+1} = x_{j(k)}^{k} - \alpha^{k}
 \end{equation}
 Thanks to this updating scheme, we can write:
 \begin{equation}
-Q x^{k+1} = \Sigma  x^{k} + \left[\Sigma_{i(k)} - \Sigma_{j(k)}\right]\alpha^{k} 
+\Sigma x^{k+1} = \Sigma  x^{k} + \left[\Sigma_{i(k)} - \Sigma_{j(k)}\right]\alpha^{k} 
 \end{equation}
 where $\Sigma_{i}$ is the $i$-th column of $\Sigma$. This shrewdness dramatically reduces the computation time of the algorithm, especially for large values of $n$.
 
