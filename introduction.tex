@@ -6,7 +6,14 @@ The term \textit{risk} is defined as the measurement of the likelihood that an i
 \item \textbf{Systematic risk} - the possibility that the entire market and economy will show losses, which will negatively affect nearly every investment; also called \textit{market risk};
 \item \textbf{Unsystematic risk} – the possibility that an investment or a category of investments will decline in value without having a major impact upon the entire market
 \end{itemize}
-Diversification generally does not protect against systematic risk because a drop in the entire market and economy typically affects all investments. However, diversification is designed to decrease unsystematic risk. Since unsystematic risk is the possibility that one single thing will decline in value, having a portfolio invested in a variety of stocks, a variety of asset classes and a variety of sectors will lower the risk of losing much money when one investment type declines in value.
+Diversification generally does not protect against systematic risk because a drop in the entire market and economy typically affects all investments. However, diversification is designed to decrease unsystematic risk. Since unsystematic risk is the possibility that one single thing will decline in value, having a portfolio invested in a variety of stocks, a variety of asset classes and a variety of sectors will lower the risk of losing much money when one investment type declines in value. Figure (\ref{fig:div}) shows how diversification strategies can reduce the overall risk of the invested portfolio.
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.6]{Diversification} 
+\caption{How the diversification can reduce the overall risk}
+\label{fig:div}
+\end{figure}
 
 \section{Markovitz Theory}
 Consider a portfolio with $n$ different assets where asset number $i$ will give the return $R_i$. Let $\mu_i$ and $\sigma^2_i$ be the corresponding mean and variance and assume, for any two assets $i$ and $j$ that is known their correlation coefficient $\rho_{ij}$. Let $\sigma_{i,j} = \rho_{ij}\sigma_i\sigma_j$ be the covariance between $R_i$ and $R_j$. Suppose the the relative amount of the value of the portfolio invested in asset $i$ is $x_i$. If $R$ is the return of the whole portfolio then:
@@ -17,11 +24,12 @@ Consider a portfolio with $n$ different assets where asset number $i$ will give 
 \sigma^2 = Var[R] = \sum\limits_{i=1}^n\sum\limits_{j=1}^n\sigma_{i,j}x_i x_j = x^T \Sigma x
 \end{equation}
 where $\Sigma$ is the covariance matrix and $\Sigma_{ij} = \sigma_{i,j}x_i x_j$ \cite{markovitz}.
-For different choices of $x_1, ..., x_n$ the investor will get different combinations of $\mu$ and $\sigma^2$. The set of all possible ($\sigma^2$, $\mu$) combinations is called the \textit{attainable set}. Those ($\sigma^2$, $\mu$) with minimum $\sigma^2$ for a given $\mu$ or more and maximum $\mu$ for a given $\sigma^2$ or less are called the \textit{efficient set} (or efficient frontier). Since an investor wants a high profit and a small risk, he wants to maximize $\mu$ and minimize $\sigma^2$ and should therefore choose a portfolio which gives a ($\sigma^2$, $\mu$) combination in the efficient set. In Figure 1 the attainable set is the interior of the ellipse and the efficient set is the upper left part of its boundary. \\
+For different choices of $x_1, ..., x_n$ the investor will get different combinations of $\mu$ and $\sigma^2$. The set of all possible ($\sigma^2$, $\mu$) combinations is called the \textit{attainable set}. Those ($\sigma^2$, $\mu$) with minimum $\sigma^2$ for a given $\mu$ or more and maximum $\mu$ for a given $\sigma^2$ or less are called the \textit{efficient set} (or efficient frontier). Since an investor wants a high profit and a small risk, he wants to maximize $\mu$ and minimize $\sigma^2$ and should therefore choose a portfolio which gives a ($\sigma^2$, $\mu$) combination in the efficient set. In Figure (\ref{fig:efficient}) the attainable set is the interior of the ellipse and the efficient set is the upper left part of its boundary. \\
 \begin{figure}
 \centering
 \includegraphics[scale=0.9]{efficient_set} 
 \caption{The efficient set in the ($\sigma^2$,$\mu$) plane}
+\label{fig:efficient}
 \end{figure}
 
 \section{Sharpe Ratio (SR)}
