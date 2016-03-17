@@ -1,4 +1,4 @@
-In Table \ref{tab:t} is shown an overview of the exitent algorithms for computing the GRB or RP weights; in Table 1, the acronym DC is used to refer to the log-barrier formulation (\ref{eq:log1}) whereas LS is used to refer to the least-square formulation (\ref{eq:bp}).
+In Table \ref{tab:t} is shown an overview of the exitent algorithms for computing the GRB or RP weights; in Table \ref{tab:t}, the acronym DC is used to refer to the log-barrier formulation (\ref{eq:log1}) whereas LS is used to refer to the least-square formulation (\ref{eq:bp}).
 \begin{table}
 \begin{center}
 \begin{tabular}{| l | c| r |}
@@ -163,63 +163,63 @@ In \cite{spinu} the initial guess $x^{0}$ is the scaled equally-weighted portfol
 \begin{equation}
 x^{0} := \frac{\sqrt{\sum_i b_i}}{\sqrt{e^T C e}} \cdot e
 \end{equation}
-\section{Cyclical coordinate descent (CCD)}The main idea behind the cyclical coordinate descent (CCD) algorithm is to minimize a function $f(y_1,...,y_n)$ by minimizing only one direction at each step, whereas classical descent algorithms consider all the directions at the same time. In this case, we find the value of $y_i$ which minimizes the objective function by considering the values taken by $y_j$ for $j \neq i$ as fixed. The procedure repeats for each direction until the global minimum is reached. This method uses the same principles as Gauss-Seidel or Jacobi algorithms for solving linear systems  \cite{ccd}.\\
+
+\section{Cyclical coordinate descent (CCD)}The main idea behind the cyclical coordinate descent (CCD) algorithm is to minimize a function $f(x_1,...,x_n)$ by minimizing only one direction at each step, whereas classical descent algorithms consider all the directions at the same time. In this case, we find the value of $x_i$ which minimizes the objective function by considering the values taken by $x_j$ for $j \neq i$ as fixed. The procedure repeats for each direction until the global minimum is reached. This method uses the same principles as Gauss-Seidel or Jacobi algorithms for solving linear systems  \cite{ccd}.\\
 A RP solution satisfies (\ref{eq:this}), that we can rewrite in the following manner
 \begin{equation}
-\frac{(\Sigma y)_i}{\sigma(y)} - \frac{\lambda_c b_i}{y_i} = 0
+\frac{(\Sigma x)_i}{\sigma(x)} - \frac{\lambda_c b_i}{x_i} = 0
 \end{equation}
 Without loss of generality, we can fix $\lambda_c = 1$ and we obtain
 \begin{equation}
-y_i(\Sigma y)_i - b_i\sigma(y) = 0
+x_i(\Sigma x)_i - b_i\sigma(x) = 0
 \end{equation}
 It follows that
 \begin{equation}
-y_i^2\sigma_i^2 + y_i\sigma_i\sum_{i \neq j} y_j \rho_{i,j} \sigma_j - b_i\sigma(y) = 0
+x_i^2\sigma_i^2 + x_i\sigma_i\sum_{i \neq j} x_j \rho_{i,j} \sigma_j - b_i\sigma(x) = 0
 \end{equation}
-By definition of the RP portfolio we have $x_i > 0$. We notice that the polynomial function is convex because we have $\sigma_i^2 > 0$. Since the product of the roots is negative ($-b_i\sigma_i^2\sigma(y)<0$), we always have two solutions with opposite signs. We deduce that the solution is the positive root of the second degree equation:
+By definition of the RP portfolio we have $x_i > 0$. We notice that the polynomial function is convex because we have $\sigma_i^2 > 0$. Since the product of the roots is negative ($-b_i\sigma_i^2\sigma(x)<0$), we always have two solutions with opposite signs. We deduce that the solution is the positive root of the second degree equation:
 \begin{equation}\label{eq:iter}
-y_i^* = \frac{-\sigma_i\sum_{i \neq j} y_j \rho_{i,j} \sigma_j + \sqrt{\sigma_i^2(\sum_{i \neq j} y_j \rho_{i,j} \sigma_j)^2 + 4b_i\sigma_i^2\sigma(y)}}{2\sigma_i^2}
+x_i^* = \frac{-\sigma_i\sum_{i \neq j} x_j \rho_{i,j} \sigma_j + \sqrt{\sigma_i^2(\sum_{i \neq j} x_j \rho_{i,j} \sigma_j)^2 + 4b_i\sigma_i^2\sigma(x)}}{2\sigma_i^2}
 \end{equation}
-If the values of $(y_1,.., y_n)$ are strictly positive, it follows that $y_i^*$ is strictly positive. The positivity of the solution is then achieved after each iteration if the starting values are positive. The coordinate-wise descent algorithm consists in iterating the equation (\ref{eq:iter}) until convergence. If we rewrite equation (\ref{eq:iter}) as follows:
+If the values of $(x_1,.., x_n)$ are strictly positive, it follows that $x_i^*$ is strictly positive. The positivity of the solution is then achieved after each iteration if the starting values are positive. The coordinate-wise descent algorithm consists in iterating the equation (\ref{eq:iter}) until convergence. If we rewrite equation (\ref{eq:iter}) as follows:
 \begin{equation}
-y_i^* = \frac{-(\Sigma y)_i + y_i\sigma_i^2 + \sqrt{((\Sigma y)_i - y_i \sigma_i^2)^2 + 4\sigma_i^2b_i\sigma(y)}}{2\sigma_i^2}
+x_i^* = \frac{-(\Sigma x)_i + x_i\sigma_i^2 + \sqrt{((\Sigma x)_i - x_i \sigma_i^2)^2 + 4\sigma_i^2b_i\sigma(x)}}{2\sigma_i^2}
 \end{equation}
-we deduce that $\Sigma y$ and $\sigma (y) $ must be computed at each iteration of the algorithm. We note $y = (y_1,.., y_{i-1}, y_i, y_{i+1},..y_n)$ and $\tilde{y} =(y_1,.., y_{i-1}, y_i^*, y_{i+1},..y_n)$ the vector of weights before and after the update of the $i$th weight $y_i$. Simple algebra shows that
+we deduce that $\Sigma x$ and $\sigma (x) $ must be computed at each iteration of the algorithm. We note $x = (x_1,.., x_{i-1}, x_i, x_{i+1},..x_n)$ and $\tilde{x} =(x_1,.., x_{i-1}, x_i^*, x_{i+1},..x_n)$ the vector of weights before and after the update of the $i$th weight $x_i$. Simple algebra shows that
 \begin{equation}
-\Sigma \tilde{y} = \Sigma y - \Sigma_{.,i} y_i + \Sigma_{.,i}\tilde{y}_i
+\Sigma \tilde{x} = \Sigma x - \Sigma_{.,i} x_i + \Sigma_{.,i}\tilde{x}_i
 \end{equation}
 and
 \begin{equation}
-\sigma(y) = \sqrt{\sigma^2(y) - 2y_i\Sigma_{i,.}y + y_i^2\sigma_i^2 + 2\tilde{y}_i\Sigma_{i,.}\tilde{y} -  \tilde{y}_i^2\sigma_i^2}
+\sigma(x) = \sqrt{\sigma^2(x) - 2y_i\Sigma_{i,.}x + x_i^2\sigma_i^2 + 2\tilde{x}_i\Sigma_{i,.}\tilde{x} -  \tilde{x}_i^2\sigma_i^2}
 \end{equation}
-where $\Sigma_{i,.}$ and $\Sigma_{.,i}$ are the $i$th row and column of $\Sigma$. Updating $\Sigma y$ and $\sigma(y)$ is then
-straightforward and reduces to the computation of two vector products. These operations dramatically reduce the computational time of the algorithm.
+where $\Sigma_{i,.}$ and $\Sigma_{.,i}$ are the $i$th row and column of $\Sigma$. Updating $\Sigma x$ and $\sigma(x)$ is then straightforward and reduces to the computation of two vector products. These operations dramatically reduce the computational time of the algorithm.
 
 \section{Successive Convex Optimization method (SCRIP)}
 Consider a general formulation for the RP problem
 \begin{equation}\label{eq:gen}
 \begin{aligned}
 & \underset{x}{\text{min}}
-&& \mathcal{R}(x)\\
+&& \mathcal{L}(x)\\
 & \text{s.t.}
 &&\mathds{1}^T x = 1\\
 &&&x_i \geq 0
 \end{aligned}
 \end{equation}
-where $\mathcal{R}(x)$ measures the risk concentration and has the form
+where $\mathcal{L}(x)$ measures the risk concentration and has the form
 \begin{equation}
-\mathcal{R}(x) := \sum_{i=1}^n (g_i(x))^2
+\mathcal{L}(x) := \sum_{i=1}^n (g_i(x))^2
 \end{equation}
 in which each $g_i(x)$ is a smooth differentiable nonconvex
 function that measures the risk concentration of the $i$th asset \cite{scrip}. For instance, if we set
 \begin{equation}
 g_i(x) = x^T (\Sigma x)_i - \theta
 \end{equation}
-problem (\ref{eq:gen}) becomes (\ref{eq:ls}). Introducing a function $P(x;x^{k})$, that is an approximation of $\mathcal{R}(x)$, defined as
+problem (\ref{eq:gen}) becomes (\ref{eq:ls}). Introducing a function $P(x;x^{k})$, that is an approximation of $\mathcal{L}(x)$, defined as
 \begin{equation}
 P(x;x^{k}) := \sum_{i=1}^n (g_i(x^{k}) + (\nabla g_i(x^{k}))^T (x-x^{k}))^2
 \end{equation}
-at the $k$th iteration, the SCRIP method aims to solve 
+at the $k$-th iteration, the SCRIP method aims to solve 
 \begin{equation}\label{eq:scrip1}
 \begin{aligned}
 & \underset{x}{\text{min}}
@@ -231,9 +231,9 @@ at the $k$th iteration, the SCRIP method aims to solve
 \end{equation}
 where $\tau > 0$ is the parameter for the regularization term. The beauty of the approximation $P(x;x^{k})$ is that it is an
 easily computable quadratic convex function and has the same
-gradient as $\mathcal{R}(x)$ at each iteration point $x^{k}$:
+gradient as $\mathcal{L}(x)$ at each iteration point $x^{k}$:
 \begin{equation}
-\nabla_x P(x;x^{k})|_{x=x^{k}} = \nabla_x \mathcal{R}(x)|_{x=x^{k}}
+\nabla_x P(x;x^{k})|_{x=x^{k}} = \nabla_x \mathcal{L}(x)|_{x=x^{k}}
 \end{equation}
 Algorithm \ref{alg:scrip} summarizes the sequential solving approach based on a successive convex optimization method.
 
@@ -249,11 +249,11 @@ Compute $x^{k+1} = x^{k} + \gamma^k(\hat{x}^{k} - x^{k}$)\\
 
 
 \section{Genetic algorithm}
-In this section is presented a standard genetic algorithm to compute ERC optimal portfolios. The \textit{fitness} definition in the ERC setting is given by the deviance of each risk contribution from the mean of all risk contributions\footnotemark[3]. We use the shorthand notation of $\Delta_i = \partial_{x_i} \sigma (x)$, so we can compute the expectation $\Delta = E(\Delta_i)$ and define the fitness $f$ as the sum of the quadratic distance of each risk contribution from the mean, as in ({\ref{eq:ls1}) \cite{genetic}. This nonnegative fitness value $f$ has to be minimized, where
+In this section is presented a standard genetic algorithm to compute ERC optimal portfolios. The \textit{fitness} definition in the ERC setting is given by the deviance of each risk contribution from the mean of all risk contributions\footnotemark[3]\footnotetext[3]{It is simple to extend this approach to the more general RP case}. We use the shorthand notation of $\Delta_i = \partial_{x_i} \sigma (x)$, so we can compute the expectation $\Delta = E(\Delta_i)$ and define the fitness $f$ as the sum of the quadratic distance of each risk contribution from the mean, as in ({\ref{eq:ls1}) \cite{genetic}. This nonnegative fitness value $f$ has to be minimized, where
 \begin{equation}
 f= \sum_i (\Delta_i - \Delta)^2
 \end{equation}
-\footnotetext[3]{It is simple to extend this approach to the more general RP case}
+
 \hspace{-0.5em}We use chromosomes of length $n$ which contain the specific portfolio weights of the $n$ risky assets. Thus, an important operator is the \textit{repair} operator, i.e. the sum of the portfolio is normalized to $1$ after each operation. The genetic operators used in the algorithm can be summarized as follows:\\[1\baselineskip]
 \textbf{Selection: }The best $n_S$ chromosomes of each population are kept in the population.\\[1\baselineskip]
 \textbf{Mutation: }A random selection of $n_M$ chromosomes of the parent population will be mutated. Up to a number of 15\% of the length of the respective chromosome will be changed to a random
@@ -391,7 +391,7 @@ We can rewrite the GRB problem (\ref{eq:grb}) in the following equivalent form:
 &&&\sum_{i \in \mathcal{M}_k} x_i \geq 0, \quad k=1,..,s.
 \end{aligned}
 \end{equation}
-where $\Gamma_i = e^T e \Sigma$ and tr($\cdot$) denotes the trace of a matrix. Since $X = x x^T$ is the only non-convex constraint in (\ref{eq:sdp}), we obtain a convex relaxation of the GRB problem by relaxing this constraint to $X \succeq  x x^T$. We then obtain the following SDP relaxation of the GRB problem:
+where $\Gamma_i = \mathds{1}^T \mathds{1} \Sigma$ and tr($\cdot$) denotes the trace of a matrix. Since $X = x x^T$ is the only non-convex constraint in (\ref{eq:sdp}), we obtain a convex relaxation of the GRB problem by relaxing this constraint to $X \succeq  x x^T$. We then obtain the following SDP relaxation of the GRB problem:
 \begin{equation}
 \begin{aligned}
 & \max_{x,X}
@@ -424,7 +424,7 @@ Let $\mathcal{F}$ be the feasible region of the GRB problem:
 \begin{equation}
 \mathcal{F} := \{ x \in \mathcal{X}\quad|\quad h(x) = 0\}
 \end{equation}
-where $\mathcal{X} = \{x \in \mathbb{R}^n | x_i \geq 0$ $\forall i=1,..,n$, $e^T\cdot x = 1\}$. One possibility would be to set
+where $\mathcal{X} = \{x \in \mathbb{R}^n | x_i \geq 0$ $\forall i=1,..,n$, $\mathds{1}^T\cdot x = 1\}$. One possibility would be to set
 \begin{equation}
 p^*(x) = e^{\gamma \mathcal{R}(x)}\mathds{1}_{\mathcal{F}(x)} 
 \end{equation}

@@ -1,7 +1,7 @@
 Portfolio selection (or portfolio management) is the art and science of making decisions about investment mix and policy, matching investments to objectives, asset allocation for individuals and institutions, and balancing risk against performance. Modern Portfolio Theory (MPT) approaches investing by examining the entire market and the whole economy. The theory is an alternative to the older method of analyzing each investment’s individual merits. When investors look at each investment individual merit, they are analyzing an investment without worrying about the way different investments will perform in relation to each other. As a matter of fact, MPT places a large emphasis on the correlation between investments. Correlation is the amount we can expect various investments, and various asset classes, to change in value compared with each other. 
 
 \section{Risk}
-The term \textit{risk} is defined as the measurement of the likelihood that an investment will go up and down in value, how often and by how much. The theory assumes that investors prefer to minimize risk; in fact, it assumes that given the choice of two portfolios with equal returns, investors will choose the one with the least risk. If investors take on additional risk, they will expect to be compensated with additional return. Risk comes in two major categories:
+The term \textit{risk} is defined as the measurement of the likelihood that an investment will go up and down in value, how often and by how much. The theory assumes that investors prefer to minimize risk; in fact, it assumes that given the choice of two portfolios with equal returns, investors will choose the one with the lowest risk. If investors take on additional risk, they will expect to be compensated with additional return. Risk comes in two major categories:
 \begin{itemize}
 \item \textbf{Systematic risk} - the possibility that the entire market and economy will show losses, which will negatively affect nearly every investment; also called \textit{market risk};
 \item \textbf{Unsystematic risk} – the possibility that an investment or a category of investments will decline in value without having a major impact upon the entire market
@@ -16,7 +16,7 @@ Diversification generally does not protect against systematic risk because a dro
 \end{figure}
 
 \section{Markovitz Theory}
-Consider a portfolio with $n$ different assets where asset number $i$ will give the return $R_i$. Let $\mu_i$ and $\sigma^2_i$ be the corresponding mean and variance and assume, for any two assets $i$ and $j$ that is known their correlation coefficient $\rho_{ij}$. Let $\sigma_{i,j} = \rho_{ij}\sigma_i\sigma_j$ be the covariance between $R_i$ and $R_j$. Suppose the the relative amount of the value of the portfolio invested in asset $i$ is $x_i$. If $R$ is the return of the whole portfolio then:
+Consider a portfolio with $n$ different assets where the $i$-th asset will give the return $R_i$. Let $\mu_i$ and $\sigma^2_i$ be the corresponding mean and variance and assume, for any two assets $i$ and $j$ that is known their correlation coefficient $\rho_{ij}$. Let $\sigma_{i,j} = \rho_{ij}\sigma_i\sigma_j$ be the covariance between $R_i$ and $R_j$. Suppose the the relative amount of the value of the portfolio invested in asset $i$ is $x_i$. If $R$ is the return of the whole portfolio then:
 \begin{equation}
 \mu = E[R] = \sum\limits_{i=1}^n\mu_i x_i 
 \end{equation}
@@ -59,7 +59,7 @@ choose a portfolio from the efficient set, depending on how risk averse he is. O
 \end{equation}
 
 where $\mathds{1} = [1, .., 1] \in \mathbb{R}^n$ is the vector of all ones and $A$ ($0 \leq A \leq \infty$) is the so called \textit{risk aversion index}. $A = 0$ will result in the portfolio with the \textit{smallest variance}. An increasing $A$ corresponds to the investor becoming more willing to take a bigger risk to get a higher expected return; $A = \infty$ corresponds to the investor only caring about getting a large expected return no matter what the risk is \cite{markovitz}.\\
-If we set $A=0$, the problem became a \textit{mean-variance
+If we set $A=0$, the problem becomes a \textit{mean-variance
 optimization} (MVO) problem. If we add the constraint that every asset yields at least a target value $R$ of expected return, we obtain a convex quadratic programming problem:
 \begin{equation}\label{eq:variance}
 \begin{aligned}

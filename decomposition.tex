@@ -198,7 +198,7 @@ x^{k+1}_{i(k)}=\begin{cases}
  \end{cases}
 \end{equation*}
 \subsection{Quadratic Line Search (QLS)}
-In order to find a feasible step along a descent direction in $x^k$, we use a line search method called quadratic line search. The QLS algorithm procedure (Algorithm \ref{alg:QLS}) starts from $\alpha_k = \Delta_k$ and decreases $\alpha_k$ until:
+In order to find a feasible step along a descent direction in $x^k$, we use a line search method called quadratic line search. The QLS algorithm procedure (Algorithm \ref{alg:qls}) starts from $\alpha_k = \Delta_k$ and decreases $\alpha_k$ until:
 \begin{equation}
 f(x_k+\alpha_kd_k) \le  f(x_k)- \gamma (\alpha_k||d_k||)^2
 \end{equation}
@@ -216,7 +216,7 @@ Altough the most famous line search method is Armijo-Type, its most important dr
  \While{$f(x^{k},y^k) + \alpha d^{k}) > f(x^{k},y^k) - \gamma \left(\alpha ||d^{k}||\right)^2$}{
   Set $\alpha = \delta \alpha$
  }
- \caption{QLS Line Search}\label{alg:QLS}
+ \caption{QLS Line Search}\label{alg:qls}
 \end{algorithm}
 
 QLS algorithm has also the same convergency properties \cite{sciandrone-galligari-dilorenzo} of Armijo-type.
@@ -236,438 +236,284 @@ We present here a block descent algorithm where a further level of decomposition
 introduced with respect to the block component $x$. 
 More specifically, at each iteration, only two variables are updated, those corresponding
 to a {\it Violating Pair}, by performing an inexact line search along a feasible and descent direction.
+In order to guarantee convergence, the {\it Most Violating Pair} must be selected at least periodically, say every $M$ iterations.
+We will discuss in the section of the computational experiments the role and the influence of the parameter $M$.
+
 The adoption of a decomposition strategy with respect to the subvector $x$ is suitable
 whenever the number $n$ of variables is large.
 
 Note that the properties of the standard Armijo-type line search do not guarantee, without further assumptions
-on the descent search direction $d^k$, that the distance between successive points tends to zero, which is a usual requirement of decomposition methods. This motivates the employment of the Quadratic Line Searck (QLS) defined in the appendix and based on the acceptance condition
+on the descent search direction $d^k$, that the distance between successive points tends to zero, which is a usual requirement of decomposition methods. 
+This motivates the employment of the Quadratic Line Searck (QLS) defined in Algorithm \ref{alg:proximal} and based on the acceptance condition
 $$
 f((x^k,y^k)+\alpha^kd^k)\le f((x^k),y^k))-\gamma (\alpha^k)^2\|d^k\|^2.
 $$
-At every step $k$ we choose a random subset $W^k\subset \{1,..,n\}$ such as
-\begin{equation}\label{eq:lambda}
-\frac{|W^k|}{n} \times 100 = \lambda
-\end{equation}
-For each $w \in W^k$, we compute the partial derivative $\frac{\partial f(x,y)}{\partial x_w}$ and we select the MVP among the indexes in $W^k$. If we don't find a violating pair in $W^k$, we randomly add indexes until we find one, and we use this violating pair to build the descent direction. To assure the global convergence properties, we evaluate the MVP among the full gradient $\nabla_x f(x,y)$ every $M$ iterations. \\
-The algorithm is formally described in Algorithm \ref{alg:qls}.
+Concerning the unconstrained block component $y$, we do not specify the updating rule, but we state the following assumption that
+could be satisfied, in practice, by different techniques depending on the hypothesis on $f$.
+\par\medskip\noindent
+{\bf Assumption on the updating rule of} $y$.
+\par\medskip\noindent
+\begin{itemize}
+\item[(i)] For each $k$ we have $f(x^k,y^{k+1})\le f(x^k,y^k)$
+\item [(ii)] If
+$$
+\lim_{k\to\infty} \left(f(x^k,y^{k+1})- f(x^k,y^k)\right)=0
+$$
+then
+$$
+\lim_{k\to\infty}\|y^{k+1}-y^k\|=0
+$$
+and
+$$
+\lim_{k\to\infty}\nabla_y f(x^k,y^k)=0.
+$$
+\end{itemize}
+
+
+%At every step $k$ we choose a random subset $W^k\subset \{1,..,n\}$ such as
+%\begin{equation}\label{eq:lambda}
+%\frac{|W^k|}{n} \times 100 = \lambda
+%\end{equation}
+%For each $w \in W^k$, we compute the partial derivative $\frac{\partial f(x,\theta)}{\partial x_w}$ and 
+%we select the MVP among the indexes in $W^k$. If we don't find a violating pair in $W^k$, 
+%we randomly add indexes until we find one, and we use this violating pair to build the descent direction. To assure the global convergence properties, we evaluate the MVP among the full gradient $\nabla_x f(x,\theta)$ every $M$ iterations. \\
+The algorithm is formally described below.
 
 \begin{algorithm}[ht]
  \KwData{Given the initial feasible point $(x^{0}, y^{0})$}
  Set $k = 0$\\
  \While{(not convergence)}{
+  Compute $y^{k+1}$ such that Assumptions (i) and (ii) hold\\
  \eIf{$k \enskip \text{mod} \enskip M = 0$}
   {
-  Let $(i(k), j(k))$ be the MVP\\ 
+  Let $(i(k), j(k))$ be a Most Violating Pair\\ 
   }
   {
-  Let $(i(k), j(k))$ be the MVP among indexes in $W^k$\\ 
+  Let $(i(k), j(k))$ be a Violating Pair\ 
   }
   Compute a step $\alpha^{k}$  along the direction $d^k=d^{i(k),j(k)}$ by QLS\\
   Set $x_{i(k)}^{k+1} = x_{i(k)}^{k} + \alpha^{k}$, $x_{j(k)}^{k+1} = x_{j(k)}^{k} - \alpha^{k}$  \\
-  Compute $y^{k+1}$ such that $f(x^{k+1},y^{k+1})\le f(x^{k+1},y^k)$ and $\nabla_yf(x^{k+1},y^{k+1})=0$\\
+
   Set $k = k + 1$
  }
  \caption{Decomposition Algorithm}
- \label{alg:qls}
 \end{algorithm}
-
-\subsection{Proximal Point approximation}
-In this section we propose a version of previous algorithm which uses proximal point approximation. Let us redefine selected variable $x^k_{i(k)},x^k_{j(k)}$ as $x_{i},x_{j}$ for ease of notation. The idea behind proximal point modification is that at every iteration $k$ it's easy to solve the subproblem:
-\begin{align}
- &\min_{x_i,x_j} f(x_i,x_j)+ \frac{1}{2} \tau||(x_i,x_j)-(x_i^k,x_j^k)||^2\\
- &x_i+x_j = \underbrace{1-\sum_{h \ne i,j} x^k_h}_{c^k}\\
- &l \le x_i,x_j\le u
- \end{align}
-with $\tau>0$.
-
-In fact, thanks to simplex constraint, the objective function depends only on one of the selected variables (e.g. $x_j$). Additionally it is simply a 4-degree polynomial in $x_j$. Because of a continuous function admits minimum in a compact set, we have to find it between zeros of derivative and the limit points of the feasible set. Let us define $h'(\xi)$ as objective function derivative, then we can define the set of possible global minima as:
-\begin{equation}
- O_k = \{ \xi < x_j^k: h'(\xi)=0\} \cup \{\min\{l_j,x_i^k\} \}
-\end{equation}
-then we set:
-\begin{equation}
-x_j^{k+1}= \arg \min_{\xi \in O_k} \{h(\xi)\}
-\end{equation}
-and:
-\begin{equation}
-x_i^{k+1}= c^{k}-x^{k+1}_j
-\end{equation}
-The algorithm is formally described in Algorithm \ref{alg:proximal}.
-\begin{algorithm}[ht]
- \KwData{Given the initial feasible point $(x^{0}, y^{0})$}
- Set $k = 0$\\
- \While{(not convergence)}{
- \eIf{$k \enskip \text{mod} \enskip M = 0$}
-  {
-  Let $(i(k), j(k))$ be the MVP\\ 
-  }
-  {
-  Let $(i(k), j(k))$ be the MVP among indexes in $W^k$\\ 
-  }
-  Compute $\displaystyle x_{i(k)},x_{j(k)}\in \arg \min_{\xi,\zeta} f(\xi,\zeta)+\frac{1}{2}\tau ||(\xi,\zeta)-(x_{i(k)}^k,x_{j(k)}^k)||^2$\\
-  Compute $y^{k+1}$ such that $f(x^{k+1},y^{k+1})\le f(x^{k+1},y^k)$ and $\nabla_yf(x^{k+1},y^{k+1})=0$\\
-  Set $k = k + 1$
- }
- \caption{Decomposition Algorithm with proximal point}
- \label{alg:proximal}
-\end{algorithm}
-
-\section{Convergence analysis}
-Let us consider the following subset of indexes at $x^k$:
-
-\begin{equation}\label{eq:indexes}
- \begin{aligned}
-   L(x^k) =\{ i \in\{1,\ldots,n \}: x^k_i = l_i\}\\
-  U(x^k) =\{i \in\{1,\ldots,n \} : x^k_i = u_i\}
- \end{aligned}
-\end{equation}
-Also we define set:
-\begin{equation}
- C(x^k)=\{ i \in\{1,\ldots,n \}: l_i<x^k_i < u_i\}\\
-\end{equation}
-We use the following lemma:
-\begin{lemma}\label{lem:direction}
- Let ${(x^k,y^k)} \in \mathcal{F}$ a sequence converging to $(\overline{x},\overline{y}) \in \mathcal{F}$, then for $k$ sufficiently large we have:
- 
- \begin{subequations}
- \begin{align}
-& \mathcal{D}(\overline{x},\overline{y}) \subseteq \mathcal{D}(x^k,y^k)\\
-&L(\overline{x})\cup C(\overline{x})  \subseteq L(x^k)\cup C(x^k)\\
-&U(\overline{x})\cup C(\overline{x})  \subseteq U(x^k)\cup C(x^k)
-\end{align}
- \end{subequations}
-
-\end{lemma}
-
+\par\bigskip\noindent
+We can prove the following global convergence result.
 \begin{proposition}
 Suppose that the level set $\mathcal{L}_0$ is a compact set. Let $\{(x^k, y^k)\}$ be the sequence of points generated by the decomposition algorithm. Then
-\begin{itemize}
-\item $(x^k, y^k) \in \mathcal{L}_0, \enskip \forall k$ 
-\item  $\{(x^k, y^k)\}$ admits limit points and each limit point is critical for Problem (\ref{eq:problem})
-\end{itemize}
+$\{(x^k, y^k)\}$ admits limit points and each limit point is critical for Problem (\ref{eq:problem}).
+%\end{itemize}
 \end{proposition}
 
 \begin{proof}
-From the update of $y$ in the decomposition algorithm, we have
-\begin{equation}
-f(x^{k+1}, y^{k}) \leq f(x^{k}, y^{k})
+The instructions of the algorithm imply
+$$
+f(x^{k+1}, y^{k+1})\le f(x^{k}, y^{k+1}) \leq f(x^{k}, y^{k}),
+$$
+so that, the points of the sequence $\{(x^{k}, y^{k})\}$ belongs to the compact set $\mathcal{L}_0$.
+We also have
+\begin{equation}\label{on_funct}
+ \lim_{k\to\infty} f(x^k,y^{k+1})=\lim_{k\to\infty} f(x^{k},y^{k})=\bar f>-\infty
 \end{equation}
-and from the update rule of $x$ it follows
-\begin{equation}\label{eq:dec}
-f(x^{k+1}, y^{k+1}) \leq f(x^{k+1}, y^{k})
-\end{equation}
-Finally we have
-\begin{equation}
-f(x^{k+1}, y^{k+1}) \leq f(x^{k}, y^{k})
-\end{equation}
-so we have that the points of the sequence $\{(x^{k}, y^{k})\}$ belongs to the level set $\mathcal{L}_0$.\\
-Let $(\overline{x},\overline{y})$ be a limit point of $\{(x^k, y^k)\}$, i.e. there exist an infinite subset $K \subseteq N$ such that
+Let $(\overline{x},\overline{y})$ be a limit point of $\{(x^k, y^k)\}$, i.e. there exists an infinite subset $K \subseteq N$ such that
 \begin{equation}\label{eq:asim}
-\lim_{k \in K, k \rightarrow \infty} (x^k, y^k) = (\overline{x},\overline{y}) \qquad \lim_{k \in K, k \rightarrow \infty} d^{i(k),j(k)} = \overline{d}
+\lim_{k \in K, k \rightarrow \infty} (x^k, y^k) = (\overline{x},\overline{y})
 \end{equation}
-By contradiction, let us assume that $(\overline{x},\overline{y})$ is not a solution. In this case, at least one of the following conditions hold:
+By contradiction, let us assume that $(\overline{x},\overline{y})$ is not a critical point. 
+In this case, at least one of the following conditions holds:
 \begin{subequations}
 \begin{align}
 &\nabla_y f(\overline{x},\overline{y}) \neq 0  \label{eq:aa}\\
-&\exists \enskip i, j \enskip  \text{s.t.} \enskip \overline{x}_i > l_i \enskip  \text{and} \enskip  \nabla_x f(\overline{x},\overline{y})^T d^{i,j} = -\eta < 0 \label{eq:bb}
+&\exists \enskip i, j \enskip  \text{s.t.} \enskip d^{i,j}\in D(\bar x) \enskip  \text{and} \enskip  \nabla_x f(\overline{x},\overline{y})^T d^{i,j} = -\eta < 0 \label{eq:bb}
 \end{align}
 \end{subequations}
-For Point (\ref{eq:aa}), we recall that $y^{k+1}$ minimizes $f(x^{k+1},y)$ with respect to $y$. So, if we imagine to perform QLS along a descent direction (for example, $-\nabla_y f(x^{k+1},y^{k})$) we have
-\begin{equation}\label{eq:dis}
-f(x^{k+1}, y^{k+1}) \leq f(x^{k+1}, y^{k}) - \gamma (\alpha \parallel \nabla_y f(x^{k+1}, y^{k}) \parallel) ^2 \qquad \forall \alpha, \gamma > 0
+Suppose that (\ref{eq:aa}) holds.
+From (\ref{on_funct}), Assumption (ii) on the updating rule of $y^k$, and the continuity of the gradient we get
+$$
+\lim_{k\to\infty}\nabla_y f(x^k,y^k)=\nabla_y f(\overline{x},\overline{y})=0,
+$$
+and this contradicts (\ref{eq:aa}).
+
+Now assume that (\ref{eq:bb}) holds.
+For each $k$, a stepsize $\alpha^k>0$ is computed by QLS along the descent direction $d^{i(k),j(k)}$.
+Then we can write
+\begin{equation}\label{red_funct}
+ f(x^{k+1},y^{k+1})\le f(x^k,y^{k+1})-\gamma (\alpha^k)^2\|d^{i(k),j(k)}\|^2=f(x^k,y^{k+1})-\gamma\|x^{k+1}-x^k\|^2,
 \end{equation}
-From (\ref{eq:dis}) and thanks to (\ref{eq:dec}), we can extend the QLS convergence properties to $(x^{k+1}, y^{k+1})$. In particular, we can write
-\begin{equation}
-\lim_{k \in K, k \rightarrow \infty} \parallel \nabla_y f(x^{k}, y^{k}) \parallel =  \parallel \nabla_y f(\overline{x},\overline{y}) \parallel = 0
+from which, recalling (\ref{on_funct}) and that $\|d^{i(k),j(k)}\|^2=2$, we obtain
+\begin{equation}\label{dst_x}
+ \lim_{k\to\infty}\|x^{k+1}-x^k\|=\lim_{k\to\infty}\alpha^k=0.
+\end{equation} 
+From (\ref{on_funct}) and Assumption (ii) on the updating rule of $y^k$ we also have
+\begin{equation}\label{dst_y}
+ \lim_{k\to\infty}\|y^{k+1}-y^k\|=0.
 \end{equation}
-So we have proved that (\ref{eq:aa}) cannot hold.\\
-For Point (\ref{eq:bb}), the algorithm performs a QLS line search along $d^{i(k),j(k)}$ to determine the step $\alpha^{k}$. Thanks to QLS we can write
-\begin{equation}\label{eq:armijoprop}
-%\lim_{k \in K, k \rightarrow \infty} \alpha^{k} \parallel d^{i(k),j(k)} \parallel \frac{ \left| \nabla_x f(x^{k}, y^{k+1})^T d^{i(k),j(k)} \right|}{\parallel d^{i(k),j(k)} \parallel} = 0
-\lim_{k \in K, k \rightarrow \infty} \alpha^{k} \parallel d^{i(k),j(k)} \parallel = 0
+For each $k\in K$, let $v(k)$ be the integer such that $k+v(k)$ is an iteration
+where the Most Violating Pair is selected. Note that we have
+$$
+0\le v(k) \le M.
+$$
+From (\ref{dst_x}) and (\ref{dst_y}) we obtain
+\begin{equation}\label{cnv_x}
+ \lim_{k\in K,k\to\infty}x^{k+v(k)}=\bar x
 \end{equation}
-From (\ref{eq:direction}), we know that $\parallel d^{i(k),j(k)} \parallel = \sqrt{2} \enskip\forall k$, so from (\ref{eq:armijoprop}) it follows
-\begin{equation}\label{eq:alpha}%\label{eq:armijoprop2}
-%\lim_{k \in K, k \rightarrow \infty} \alpha^{k}  \left| \nabla_x f(x^{k}, y^{k+1})^T d^{i(k),j(k)} \right| = 0
-\lim_{k \in K, k \rightarrow \infty} \alpha^{k}=0
+\begin{equation}\label{cnv_y}
+ \lim_{k\in K,k\to\infty}y^{k+v(k)+1}=\bar y.
 \end{equation}
-From (\ref{eq:bb}) and because of $\overline{d}$ is limit of steepest descent direction of only two nonzero components in $\overline{x}$ we can write
-\begin{equation}\label{eq:wrong}
-\lim_{k \in K, k \rightarrow \infty} \nabla_x f(x^k, y^k)^T d^{i(k),j(k)} = \nabla_x f(\overline{x},\overline{y})^T \overline{d} = \eta_1 \le \eta < 0
+We introduce the index set 
+$$
+K_1=\{h: \ h=k+v(k), \ k\in K\}.
+$$
+By definition, for all $k\in K_1$ the Most Violating Pair $(i(k),j(k))$ is selected. Furthermore, we have
+\begin{equation}\label{cnv2_x}
+ \lim_{k\in K_1,k\to\infty}x^{k}=\bar x
 \end{equation}
-In general, we have that
-\begin{equation}
-\lim_{k \in K, k \rightarrow \infty} \alpha^k \leq \lim_{k \in K, k \rightarrow \infty} \Delta^k
+\begin{equation}\label{cnv2_y}
+ \lim_{k\in K_1,k\to\infty}y^{k+1}=\bar y.
 \end{equation}
-We have to differentiate between two cases:
-\begin{subequations}
-\begin{align}
-& \lim_{k \in K, k \rightarrow \infty} \Delta^k > 0 \label{eq:great}\\
-& \lim_{k \in K, k \rightarrow \infty} \Delta^k = 0 \label{eq:zero}
-\end{align}
-\end{subequations}
-If (\ref{eq:great}) holds, for large enough values of $k$, i.e. for $k \geq \hat{k}$, it must be $\alpha^k < \Delta^k$. From QLS properties we have at least a failure, for $k \geq \hat{k}$:
+Since $i(k)$ and $j(k)$ belong to the finite set $\{1,\ldots ,n\}$, we can extract a further subset (that we relabel by $K_1$) such that
+$$
+i(k)=i^\star \quad\quad j(k)=j^\star\quad\quad \forall k\in K_1.
+$$
+Note that $d^{i,j}\in D(\bar x,\bar y)$, so that, recalling Proposition \ref{2.3}, we obtain for
+$k\in K_1$ and $k$ sufficiently large
+\begin{equation}\label{dij_dk}
+ d^{i,j}\in D(x^k,y^k).
+\end{equation}
+For all $k\in K_1$, as $(i^\star,j^\star)$ is the Most Violating Pair, using (\ref{dij_dk}) we can write
+\begin{equation}\label{mvp_ij}
+ \nabla_xf(x^k,y^{k+1})^Td^{i^\star,j^\star}\le \nabla_xf(x^k,y^{k+1})^Td^{i,j}<0.
+\end{equation}
+Then, $d^{i^\star,j^\star}$ is a feasible and descent direction, and hence a stepsize $\alpha^k$ is computed along it by QLS.
+Further, from (\ref{dst_y}) and (\ref{eq:bb}) it follows
+\begin{equation}\label{desc_mvp}
+ \nabla_xf(\bar x,\bar y)^Td^{i^\star,j^\star}<0.
+\end{equation}
+Now let us distinguish two cases:
+\par\medskip\noindent
+Case (I). There exists an integer $\ell$  such that
+\begin{equation}\label{caseI}
+ \alpha^{k+\ell(k)}<\Delta^{k+\ell(k)}
+\end{equation}
+for all $k\in K_1$ and for some $\ell(k)\le \ell$.
+\par\medskip\noindent 
+Case (II). For all $k\in K_1$ and $m=0,\ldots ,2n$ we have
+\begin{equation}\label{caseII}
+ \alpha^{k+m}=\Delta^{k+m}.
+\end{equation}
+{\it Case} (I)
+\par\medskip\noindent
+Without loss of generality assume $\ell (k)=0$.
+Otherwise we can reason on the subsequence $\{x^k\}_{k+l(k)}$ that, by definition,
+is a subsequence where the  MVP is selected again (see the new instruction) since $\alpha^{k+l(k)-s}=\Delta^{k+l(k)-s}$,
+for $s=0,1,\ldots ,l(k)$,
+and $\alpha^{k+l(k)}<\Delta^{k+l(k)})$.
+
+The instructions of QLS imply for all $k\in K_1$
 \begin{equation}\label{eq:arm1}
-f(x^k + \frac{\alpha^k}{\delta} d^{i(k),j(k)}, y^k) - f(x^k,y^k) > -\gamma \left(\frac{\alpha^k}{\delta}\right)^2 ||d^{i(k),j(k)}||^2
+f(x^k + \frac{\alpha^k}{\delta} d^{i^\star,j^\star}, y^{k+1}) - f(x^k,y^{k+1}) > -2\gamma \left(\frac{\alpha^k}{\delta}\right)^2 
 \end{equation}
-For the mean value theorem, we can write
+Using the Mean Value Theorem, we can write
 \begin{equation}\label{eq:arm2}
-f(x^k + \frac{\alpha^k}{\delta} d^{i(k),j(k)}, y^k) = f(x^k, y^k) + \frac{\alpha^k}{\delta} \nabla_x f(z^k, y^k)^T d^{i(k),j(k)}
+f(x^k + \frac{\alpha^k}{\delta} d^{i^\star,j^\star}, y^{k+1}) = f(x^k, y^{k+1}) + \frac{\alpha^k}{\delta} \nabla_x f(z^k, y^{k+1})^T d^{i^\star,j^\star}
 \end{equation}
-where $z^k = x^k + \vartheta_k \frac{\alpha^k}{\delta} d^{i(k),j(k)}$ and $\vartheta_k \in (0,1)$. From (\ref{eq:arm2}) and (\ref{eq:arm1}), for $k \geq \hat{k}$, we have
+where $z^k = x^k + \vartheta_k \frac{\alpha^k}{\delta} d^{i^\star,j^\star}$ and $\vartheta_k \in (0,1)$. 
+From (\ref{eq:arm2}) and (\ref{eq:arm1}), for $k\in K_2$ and $k$ sufficiently large we have
 \begin{equation}\label{eq:nabla}
-\nabla_x f(z^k, y^k)^T d^{i(k),j(k)}  >- \gamma \frac{\alpha^k}{\delta} ||d^{i(k),j(k)}||^2
+\nabla_x f(z^k, y^{k+1})^T d^{i^\star,j^\star}  >- 2\gamma \frac{\alpha^k}{\delta} 
 \end{equation}
-Using (\ref{eq:asim}) and (\ref{eq:alpha}) it must be
-\begin{equation}
-\lim_{k \in K, k \rightarrow \infty} z^k = \lim_{k \in K, k \rightarrow \infty} x^k + \vartheta_k \frac{\alpha^k}{\delta} d^{i(k),j(k)} = \overline{x}
+Using (\ref{dst_x}) and (\ref{dst_y}) and we obtain
+$$
+\lim_{k \in K_1, k \rightarrow \infty} z^k = \lim_{k \in K_1, k \rightarrow \infty} x^k + \vartheta_k \frac{\alpha^k}{\delta} d^{i^\star,j^\star} = \overline{x}
+$$
+$$
+\lim_{k\in K_1,k\to\infty}y^{k+1}=\bar y.
+$$
+Taking the limits in (\ref{eq:nabla}) for $k\in K_1$ and $k\to\infty$ we have
+\begin{equation}\label{ddirmg0}
+\nabla_x f(\overline{x},\overline{y})^T d^{i^\star,j^\star} \geq 0,
 \end{equation}
-Taking the limit value of each member of (\ref{eq:nabla}) we have
-\begin{equation}
-\nabla_x f(\overline{x},\overline{y})^T \overline{d} \geq 0 %\gamma \nabla_x f(\overline{x},\overline{y})^T \overline{d}
-\end{equation}
-which contradicts that $\exists i,j$ such that $\overline{x}_i >l_i$ and:
-\begin{equation}
-\nabla_x f(\overline{x},\overline{y})^T d^{i,j} =\eta <0
-\end{equation}
-
-%that does not hold, since $\gamma < 1$. So we have proved that, if (\ref{eq:great}) holds, (\ref{eq:b}) cannot hold. \\
-
-If (\ref{eq:zero}) holds, we have to remark the subset of indexes defined in \ref{eq:indexes}.
-
-\iffalse
-%If (\ref{eq:zero}) holds, we have to define the following subset of indexes, for all iteration $k$:
-If (\ref{eq:zero}) holds we recall subset defined in \ref{eq:sets} computed in $x^k$.
-
-In next iterations $k+m$, $m\ge 0$ we have at least one of these two possible cases, from MVP selection rule:
-\begin{subequations}
+which contradicts (\ref{desc_mvp}).
+\par\bigskip\noindent
+{\it Case} (II).
+\par\medskip\noindent
+For all $m=0,\ldots ,2n$ we have that at least one of these two possible cases hold
+ \begin{subequations}
 \begin{align}
- j(k+m) &\in L(x^{k+m+1})\label{eq:SetCasesA}\\
- i(k+m) &\in U(x^{k+m+1})\label{eq:SetCasesB}
+ i(k+m)&\in R(x(k+m))\quad \quad i(k+m)\notin R(x(k+m+1))\label{eq:SetCasesA}\\
+ j(k+m)&\in S(x(k+m))\quad \quad j(k+m)\notin S(x(k+m+1))\label{eq:SetCasesB}
 \end{align}
 \end{subequations}
+Now we define two sets $\Gamma_1,\Gamma_2$ in $\{x^{k}\}_{k \in K}$ such that the first one contains all indexes $m \in\{0,\ldots,2n\}$ such that 
+(\ref{eq:SetCasesA}) holds.
+The second one contains all indexes $m \in\{0,\ldots,2n\}$ such that (\ref{eq:SetCasesB}) holds.
 
-Now we define two sets $\Gamma_1,\Gamma_2$ such that the first one contains all indexes $m \in\{0,\ldots,2n\}$ such that \ref{eq:SetCasesA} hold.
-On the contrary the second one contains all indexes $m \in\{0,\ldots,2n\}$ such that \ref{eq:SetCasesB} hold.
-
-Because of $|\Gamma_1|+|\Gamma_2|\ge2n+1$, one of these set have more than $n$ elements. Without loss of generality we take $|\Gamma_1|> n$.
-
-Then there exist at least two indexes $0\le h(k)< m(k)\le 2n$ such that:
-\begin{equation}
- i(h(k))=i(m(k))=i^*
-\end{equation}
-
-We can define a subset $K \subseteq \{0,1,\ldots\}$ such that $\forall k_i \in K$ holds:
-\begin{equation}
- i(k_i)=i^*
-\end{equation}
-and:
-\begin{equation}
- k_i <k_{i+1} \le k_i+2n
-\end{equation}
-
-For the MVP selection rule $\forall k_i \in K$ must hold:
-\begin{equation}
- \frac{\partial f(x^{k_i},y^{k_i})}{dx_{i^*}} \le \frac{\partial f(x^{k_i},y^{k_i})}{dx_{h}}, \ \forall h \in L(x^{k_i}) \cup C(x^{k_i})
-\end{equation}
-
-But  $\forall k_i \in K,\exists p(k_i)$ with  $k_i <p(k_i)<k_{i+1}$ such that:
-\begin{equation}
- i^* \not \in U(x^{p(k_i)+1})
-\end{equation}
-and then
-\begin{equation}
- \frac{\partial f(x^{p(k_i)},y^{p(k_i)})}{dx_{i^*}} \ge \frac{\partial f(x^{p(k_i)},y^{p(k_i)})}{dx_{h}}, \ \forall h \in U(x^{p(k_i)}) \cup C(x^{p(k_i)})
-\end{equation}
-
-
-Thanks to Lemma (\ref{lem:direction}) we can say that for $k$ sufficiently large, the set of feasible direction in $(x^k,y^k)$ contains the correspondent set in $(\overline{x},\overline{y})$.
-
-Then for $k_i \in K_1 \subset K$, $k_i$ sufficiently large, then following \ref{eq:bb} we have:
-\begin{equation}
-\begin{aligned}
-i \in L(x^{k_i},y^{k_i}) \cup C(x^{k_i},y^{k_i})\\
-j \in U(x^{k_i},y^{k_i}) \cup C(x^{k_i},y^{k_i})\\
-\end{aligned}
-\end{equation}
-and:
-\begin{equation}\label{eq:direction1}
-\begin{aligned}
- \frac{\partial f(x^{k_i},y^{k_i})}{dx_{i^*}} &\le \frac{\partial f(x^{k_i},y^{k_i})}{dx_{i}}\\
- \frac{\partial f(x^{p(k_i)},y^{p(k_i)})}{dx_{i^*}} &\ge \frac{\partial f(x^{p(k_i)},y^{p(k_i)})}{dx_{j}}
- \end{aligned}
-\end{equation}
-
-Because of  definition of $K_1$ we can say that:
-\begin{equation}
- \lim_{k_i \in K_1, k_i \rightarrow \infty} x^{k_i} =\overline{x}
-\end{equation}
-Quadratic line search guarantees that:
-\begin{equation}
- ||x^{k+2n}-x^{k}|| \rightarrow 0
-\end{equation}
-
-Hence because of $p(k_i)-k_i \le 2n$ we have:
-\begin{equation}
- \lim_{k_i \in K_1,k_i\rightarrow \infty}  ||x^{p(k_i)}-x^{k_i}||=0
-\end{equation}
-Then:
-\begin{equation}
- \lim_{k_i \in K_1,k_i\rightarrow \infty} x^{p(k_i)}=\overline{x}
-\end{equation}
-
-At limit point $\overline{x}$, from equation (\ref{eq:direction1})  we have: 
-\begin{equation*}
- \frac{\partial f(\overline{x},\overline{y})}{dx_i} - \frac{\partial f(\overline{x},\overline{y})}{dx_{j}} \ge 0
-\end{equation*}
-
-which contradicts \ref{eq:bb}.
-\end{proof}
-\fi
- %%%%NEW DIM%%%%
-%\begin{proof}
- Let's suppose that every $M \in \mathbb{N}$ iterations we select the Most-Violating-Pair and in other iteration we select simply a violating pair.
- 
- Let's consider the subsequence $x^{k}$ with $k  \in K =\{0,M,2M,\ldots\}$ in which we take the MVP.
- In next iterations $k+m \in K$, $m\ge 0$ we have at least one of these two possible cases, from MVP selection rule:
-\begin{subequations}
-\begin{align}
- j(k+m) &\in L(x^{k+m+1})\label{eq:SetCasesA}\\
- i(k+m) &\in U(x^{k+m+1})\label{eq:SetCasesB}
-\end{align}
-\end{subequations}
-Now we define two sets $\Gamma_1,\Gamma_2$ in $\{x^{k}\}_{k \in K}$ such that the first one contains all indexes $m \in\{0,\ldots,2n\}$ such that (\ref{eq:SetCasesA}) hold.
-On the contrary the second one contains all indexes $m \in\{0,\ldots,2n\}$ such that (\ref{eq:SetCasesB}) hold.
-
-Because of $|\Gamma_1|+|\Gamma_2|\ge2n+1$, one of these set have more than $n$ elements. Without loss of generality we take $|\Gamma_1|> n$.
- We can say that $\exists i^* \in \{1,\ldots,n\}$ and $l(k),m(k)$ such that:
+Since $|\Gamma_1|+|\Gamma_2|\ge 2n+1$, one of these sets contains a number of elements greater than $n$. 
+Without loss of generality assume $|\Gamma_1|> n$.
+We can say that there exist $ \hat i \in \{1,\ldots,n\}$ and $l(k),m(k)$ such that:
  \begin{equation}
-  k\le l(k) <m(k)\le2 n
+  k\le l(k) <m(k)\le 2 n
  \end{equation}
-and:
+and
 \begin{equation}
- i(k) = i(l(k))=i(m(k))=i^*
+ i(k) = i(l(k))=i(m(k))=\hat i.
 \end{equation}
-
-We can define a subset $K_1 \subseteq K$ such that $\forall k_i \in K_1$ holds:
+We can define a subset $K_1 \subseteq K$ such that $\forall k_i \in K_1$ we have
 \begin{equation}
- i(k_i)=i^*
+ i(k_i)=\hat i
 \end{equation}
-and:
+and
 \begin{equation}
  k_i <k_{i+1} \le k_i+2n
 \end{equation}
-
-
-For the MVP selection rule $\forall k_i \in K_1$ must hold:
+From the MVP rule it follows
 \begin{equation}
- \frac{\partial f(x^{k_i},y^{k_i})}{dx_{i^*}} \le \frac{\partial f(x^{k_i},y^{k_i})}{dx_{h}}, \ \forall h \in L(x^{k_i}) \cup C(x^{k_i})
+ \frac{\partial f(x^{k_i},y^{k_i+1})}{\partial x_{\hat i}} \le \frac{\partial f(x^{k_i},y^{k_i+1})}{\partial x_{h}}, \ \forall h \in R(x^{k_i})
 \end{equation}
-
-But  $\forall k_i \in K_1,\exists p(k_i)$ with  $k_i <p(k_i)<k_{i+1}$ such that:
+For all $k_i \in K_1$, there exists $p(k_i)$, with  $k_i <p(k_i)<k_{i+1}$, such that
 \begin{equation}
- i^* \not \in U(x^{p(k_i)+1})
+ \hat i \not \in R(x^{p(k_i)})\quad\quad \hat i \in \in R(x^{p(k_i)+1}).
 \end{equation}
-and then
+Then, again from the MVP rule, we must have
 \begin{equation}
- \frac{\partial f(x^{p(k_i)},y^{p(k_i)})}{dx_{i^*}} \ge \frac{\partial f(x^{p(k_i)},y^{p(k_i)})}{dx_{h}}, \ \forall h \in U(x^{p(k_i)}) \cup C(x^{p(k_i)})
+ \frac{\partial f(x^{p(k_i)},y^{p(k_i)+1})}{\partial x_{\hat i}} \ge \frac{\partial f(x^{p(k_i)},y^{p(k_i)+1})}{\partial x_{h}}, \ \forall h \in S(x^{p(k_i)})
 \end{equation}
-
-Thanks to Lemma (\ref{lem:direction}) we can say that for $k$ sufficiently large, the set of feasible direction in $(x^k,y^k)$ contains the correspondent set in $(\overline{x},\overline{y})$.
-
-Then for $k_i \in K_2 \subset K_1$, $k_i$ sufficiently large, then following (\ref{eq:b}) we have:
-\begin{equation}
-\begin{aligned}
-i \in L(x^{k_i},y^{k_i}) \cup C(x^{k_i},y^{k_i})\\
-j \in U(x^{k_i},y^{k_i}) \cup C(x^{k_i},y^{k_i})\\
-\end{aligned}
+From (\ref{dst_x}) and (\ref{dst_y}), recalling that  $p(k_i)-k_i \le 2n$, we have
+$$
+ \lim_{k_i\rightarrow \infty} x^{p(k_i)}=\overline{x}
+$$
+$$
+ \lim_{k_i\rightarrow \infty} y^{p(k_i)+1}=\overline{y}
+$$
+Note that $d^{i,j}\in D(\bar x,\bar y)$, so that, recalling Proposition \ref{2.3}, we obtain for
+$k\in K_1$ and $k$ sufficiently large
+\begin{equation}\label{dij_dka}
+ d^{i,j}\in D(x^{k_i},y^{k_i+1}),
 \end{equation}
-and:
+\begin{equation}\label{dij_dkbis}
+ d^{i,j}\in D(x^{p(k_i)},y^{p(k_i)+1}),
+\end{equation}
+i.e.,
+$$
+i\in R(x^{k_i})\quad\quad j\in S(x^{k_i})
+$$ 
+$$
+i\in R(x^{p(k_i)})\quad\quad j\in S(x^{p(k_i)}).
+$$
+Then  we can write
 \begin{equation}\label{eq:direction1}
 \begin{aligned}
- \frac{\partial f(x^{k_i},y^{k_i})}{dx_{i^*}} &\le \frac{\partial f(x^{k_i},y^{k_i})}{dx_{i}}\\
- \frac{\partial f(x^{p(k_i)},y^{p(k_i)})}{dx_{i^*}} &\ge \frac{\partial f(x^{p(k_i)},y^{p(k_i)})}{dx_{j}}
+ \frac{\partial f(x^{k_i},y^{k_i+1})}{\partial x_{\hat i}} &\le \frac{\partial f(x^{k_i},y^{k_i+1})}{\partial x_{i}}\\
+ \frac{\partial f(x^{p(k_i)},y^{p(k_i)+1})}{\partial x_{\hat i}} &\ge \frac{\partial f(x^{p(k_i)},y^{p(k_i)+1})}{\partial x_{j}}
  \end{aligned}
 \end{equation}
-
-Because of  definition of $K_2$ we can say that:
-\begin{equation}
- \lim_{k_i \in K_2, k_i \rightarrow \infty} x^{k_i} =\overline{x}
-\end{equation}
-Quadratic line search guarantees that:
-\begin{equation}
- ||x^{k+2n}-x^{k}|| \rightarrow 0
-\end{equation}
-
-
-Hence because of $p(k_i)-k_i \le 2n$ we have:
-\begin{equation}
- \lim_{k_i \in K_2,k_i\rightarrow \infty}  ||x^{p(k_i)}-x^{k_i}||=0
-\end{equation}
-Then:
-\begin{equation}
- \lim_{k_i \in K_2,k_i\rightarrow \infty} x^{p(k_i)}=\overline{x}
-\end{equation}
-
-At limit point $\overline{x}$, from equation (\ref{eq:direction1})  we have: 
-\begin{equation*}
- \frac{\partial f(\overline{x},\overline{y})}{dx_i} - \frac{\partial f(\overline{x},\overline{y})}{dx_{j}} \ge 0
-\end{equation*}
-
-which contradicts (\ref{eq:b}).
+Taking the limits for $k_i\in K_1$ and $k_i\to\infty$ and recalling the continuity of the gradient we obtain
+$$
+ \frac{\partial f(\overline{x},\overline{y})}{\partial x_i} - \frac{\partial f(\overline{x},\overline{y})}{\partial x_{j}} \ge 0,
+$$
+which contradicts (\ref{eq:bb}).
 \end{proof}
-
-\begin{proposition}
-Suppose that the level set $\mathcal{L}_0$ is a compact set. Let $\{(x^k, y^k)\}$ be the sequence of points generated by the decomposition algorithm with proximal point modification. Then
-\begin{itemize}
-\item $(x^k, y^k) \in \mathcal{L}_0, \enskip \forall k$ 
-\item  $\{(x^k, y^k)\}$ admits limit points and each limit point is critical for Problem (\ref{eq:problem})
-\end{itemize}
-\end{proposition}
-\begin{proof}
-The firts assertion is given by algorithm statement which say:
-\begin{equation}
-f(x^{k+1},y^{k+1})\le f(x^{k+1},y^k)\le f(x^k,y^k)- \underbrace{\frac{1}{2}\tau ||x^{k+1}-x^{k}||^2}_{>0}
-\end{equation}
-then the sequence $\{(x^k,y^k)\} \in \mathcal{L}_0$.
-
-To prove the second assertion it is necessary to show that
-\begin{equation}
-\lim_{k \rightarrow \infty} ||x^{k+1}-x^{k}||=0
-\end{equation}
-then the convergence can be completed as in previous proposition.
-
-
-From the $\mathcal{L}_0$ compactness we can say that the sequence $\{(x^k,y^k)\}$ has a subsequence $K \subset \{0,1,\ldots\}$ convergent to $(\overline{x},\overline{y}) \in \mathcal{L}_0$. Then for the continuity of $f$ we have:
-\begin{equation}
-\lim_{k \in K, k \rightarrow \infty}f(x^k,y^k)=f(\overline{x},\overline{y})= \overline{f}
-\end{equation}
-
-The instruction of algorithm imply that:
-\begin{equation}
-f(x^{k+1},y^{k+1})\le f(x^{k+1},y^{k})\le f(x^k,y^k)
-\end{equation}
-then the sequence $f(x^k,y^k)$ is decreasing and lower-bounded by $\overline{f}$ then we have:
-\begin{equation}
-\lim_{k \in K, k \rightarrow \infty} f(x^{k+1},y^{k})-f(x^{k},y^{k})=0
-\end{equation}
-
-Proximal point step imply that:
-\begin{equation}
-f(x^{k+1},y^{k})+\frac{1}{2}\tau||x^{k+1}-x^{k}||^2 \le f(x^{k},y^{k})
-\end{equation}
-
-Taking the limit for $k \in K, k \rightarrow \infty$ we obtain:
-\begin{equation}
-\lim_{k in K, \rightarrow \infty} ||x^{k+1}-x^{k}||=0
-\end{equation}
-
-Next convergence steps are equal to previous proposition.
-\end{proof}
-
-\begin{oss}
-In computational experiments we use $\tau = 0$ and compute an exact line search along direction $d^{i(k),j(k)}$. In next section we will show that in practical cases exact line search performs very well especially increasing number of variables.
-\end{oss}
 
 \section{Application to Risk Parity}
 Let us consider the problem
@@ -680,7 +526,148 @@ Let us consider the problem
 &&& \mathds{1}^T x = 1 \\
 \end{aligned}
 \end{equation}
-Problem (\ref{eq:rpfordec}) is an ERC problem and it's easy to see that it is a particular case of Problem (\ref{eq:problem}). Thus we can use the decomposition algorithm just exposed to solve it. First of all, we can write the derivative of the objective function with respect to $x$ and $\theta$ as:
+Problem (\ref{eq:rpfordec}) is an ERC problem and it's easy to see that it is a particular case of Problem (\ref{eq:problem}). Thus we can use the decomposition algorithm just exposed to solve it.\\
+$f(x,\theta)$ is clearly non-convex, but it is quadratic and strictly convex with respect to $\theta$.
+
+\subsection{Proximal Point modification}
+In this subsection we propose a \emph{Risk-Parity} version of general decomposition algorithm described above, using proximal point approximation.
+
+Let us redefine selected variable $x_{i(k)},x_{j(k)}$ as $x_{i},x_{j}$ for ease of notation, and let us consider the step when $\theta$ is fixed (i.e $f(x,\theta)=f(x)$).
+
+The idea behind proximal point modification is that at every iteration $k$, fixed other variable $\theta$, it's easy to solve the subproblem:
+\begin{align}
+ &\min_{x_i,x_j}h(x_i,x_j)= f(x_i,x_j)+ \frac{1}{2} \tau||(x_i,x_j)-(x_i^k,x_j^k)||^2\\
+ &x_i+x_j = \underbrace{1-\sum_{h \ne i,j} x^k_h}_{c^k}\\
+ &l \le x_i,x_j\le u
+ \end{align}
+where $f$ is defined in (\ref{eq:rpfordec}) and $\tau>0$.
+
+In fact, due to simplex constraint, the objective function depends only on one of the selected variables (e.g. $x_j$) and $f$ become 4-degree polynomial in $x_j$.
+
+Because of $h$ is continuously differentiable, it admits minimum in a compact set and we have to search it between zeros of $h'(\xi)$ and the limit points of the feasible set.
+
+Hence, at every iteration $k$, we can define the set of possible global minima as:
+\begin{equation}
+ O_k = \{ \xi < x_j^k: h'(\xi)=0\} \cup \{\min\{l_j,x_i^k\} \}
+\end{equation}
+
+then we set:
+\begin{equation}
+x_j^{k+1}= \arg \min_{\xi \in O_k} \{h(\xi)\}
+\end{equation}
+and:
+\begin{equation}
+x_i^{k+1}= c^{k}-x^{k+1}_j
+\end{equation}
+
+
+
+\begin{algorithm}[ht]
+ \KwData{Given the initial feasible point $(x^{0}, \theta^{0})$}
+ Set $k = 0$\\
+ \While{(not convergence)}{
+   Compute $\theta^{k+1}$ such that $f(x^{k},\theta^{k+1})\le f(x^{k},\theta^k)$ and $\nabla_\theta f(x^{k},\theta^{k+1})=0$\\
+ \eIf{$k \enskip \text{mod} \enskip M = 0$}
+  {
+  Let $(i(k), j(k))$ be the MVP\\ 
+  }
+  {
+  Let $(i(k), j(k))$ be a violating pair\\ 
+  }
+  Compute $\displaystyle x_{i(k)},x_{j(k)}\in \arg \min_{\xi,\zeta} f(\xi,\zeta)+\frac{1}{2}\tau ||(\xi,\zeta)-(x_{i(k)}^k,x_{j(k)}^k)||^2$\\
+  Set $k = k + 1$
+ }
+ \caption{Decomposition Algorithm with proximal point}
+ \label{alg:proximal}
+\end{algorithm}
+We can prove the follwing global convergence results.
+\begin{proposition}
+Suppose that the level set $\mathcal{L}_0$ is a compact set. Let $\{(x^k, \theta^k)\}$ be the sequence of points generated by the decomposition algorithm with proximal point modification. Then
+\begin{itemize}
+\item $(x^k, \theta^k) \in \mathcal{L}_0, \enskip \forall k$ 
+\item  $\{(x^k, \theta^k)\}$ admits limit points and each limit point is critical for Problem (\ref{eq:rpfordec})
+\end{itemize}
+\end{proposition}
+\begin{proof}
+The firts assertion is given by algorithm statement which say:
+\begin{equation}
+f(x^{k+1},\theta^{k+1})\le f(x^{k+1},y^k)\le f(x^k,\theta^k)- \underbrace{\frac{1}{2}\tau ||x^{k+1}-x^{k}||^2}_{>0}
+\end{equation}
+then the sequence $\{(x^k,\theta^k)\} \in \mathcal{L}_0$.
+
+To prove the second assertion it is necessary to show that
+\begin{equation}
+\lim_{k \rightarrow \infty} ||(x^{k+1},\theta^{k+1})-(x^{k},y^{k})||=0
+\end{equation}
+then the convergence can be completed as in previous proposition.
+
+Let us start to prove that $||x^{k+1}-x^{k}||\to0$.
+
+From the $\mathcal{L}_0$ compactness we can say that the sequence $\{(x^k,\theta^k)\}$ has a subsequence $K \subset \{0,1,\ldots\}$ convergent to $(\overline{x},\overline{y}) \in \mathcal{L}_0$. Then for the continuity of $f$ we have:
+\begin{equation}
+\lim_{k \in K, k \rightarrow \infty}f(x^k,\theta^k)=f(\overline{x},\overline{\theta})= \overline{f}
+\end{equation}
+
+The instruction of algorithm imply that:
+\begin{equation}
+f(x^{k+1},\theta^{k+1})\le f(x^{k+1},\theta^{k})\le f(x^k,\theta^k)
+\end{equation}
+then the sequence $f(x^k,\theta^k)$ is decreasing and lower-bounded by $\overline{f}$ then we have:
+\begin{equation}
+\lim_{k \in K, k \rightarrow \infty} f(x^{k+1},\theta^{k})-f(x^{k},\theta^{k})=0
+\end{equation}
+
+Proximal point step imply that:
+\begin{equation}
+f(x^{k+1},y^{k})+\frac{1}{2}\tau||x^{k+1}-x^{k}||^2 \le f(x^{k},y^{k})
+\end{equation}
+
+Taking the limit for $k \in K, k \to \infty$ we obtain:
+\begin{equation}
+\lim_{k \in K,k \to \infty} ||x^{k+1}-x^{k}||=0
+\end{equation}
+
+Now we have to prove that $|\theta^{k+1}-\theta^{k}|\to 0$, using the property that $f$ is quadratic and strictly convex with respect to $\theta$. 
+We have to prove the following lemma:
+\begin{lemma}
+Let $f(x,\theta)$ defined in (\ref{eq:rpfordec}), then if $\lim_{k \to \infty} f(x^{k},\theta^k)-f(x^{k},\theta^{k+1})=0$ then:
+\begin{equation}
+ \lim_{k\to \infty} |\theta^{k+1} -\theta^k| = 0 
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+The instructions of the algorithm imply that at every iteration $k$, we have to select the optimal step $\alpha_k^*$ along $-\nabla_{\theta}f(x^{k},\theta^{k})$.
+
+Because of $f$ is strictly convex quadratic function with respect to $\theta$ we have:
+\begin{equation}\label{eq:quadratic}
+f(x^{k},\theta^k-\alpha^*_k\nabla_{\theta}f(x^{k},\theta^{k})) = f(x^{k},\theta^{k})-\alpha^*_k |\nabla_{\theta}f(x^{k},\theta^{k})|^2
+\end{equation}
+with:
+\begin{equation}\label{eq:upTheta}
+ \theta^{k+1}= \theta^{k}-\alpha^*_k\nabla_{\theta}f(x^{k},\theta^{k})
+\end{equation}
+
+From hypothesis we have that:
+\begin{equation}
+ \lim_{k \to \infty} f(x^{k+1},\theta^k)-f(x^{k+1},\theta^{k+1})=0
+ \end{equation}
+
+and from (\ref{eq:upTheta}) and (\ref{eq:quadratic}):
+\begin{equation}
+  \lim_{k\to \infty} |\theta^{k+1} -\theta^k| = 0 
+\end{equation}
+\end{proof}
+ 
+Next convergence steps are equal to previous proposition.
+\end{proof}
+
+\begin{oss}
+In computational experiments we use $\tau = 0$ and compute an exact line search along direction $d^{i(k),j(k)}$. In next section we will show that in practical cases exact line search performs very well especially increasing number of variables.
+\end{oss}
+
+\subsection{Implementation guidelines}
+First of all, we can write the derivative of the objective function of Problem (\ref{eq:rpfordec}) with respect to $x$ and $\theta$ as:
 \begin{equation}\label{eq:gradxdec}
 \frac{\partial f(x,\theta)}{\partial x_j} = 2 \sum_{i=1}^n \left(x_i (\Sigma x)_i - \theta\right)\Sigma_{ij}x_i + 2(x_j (\Sigma x)_j - \theta)(\Sigma x)_j
 \end{equation}
@@ -688,13 +675,6 @@ and
 \begin{equation}\label{eq:gradthetadec}
 \frac{\partial f(x,\theta)}{\partial \theta}= -2\sum_{i=1}^n \left(x_i (\Sigma x)_i - \theta\right)
 \end{equation}
-
-$f(x,\theta)$ is clearly non-convex, but it is strictly convex with respect to $\theta$. It follows that, at every iteration $k$, we can compute $\theta^{k}$ by simply imposing that $\frac{\partial f(x^{k},\theta)}{\partial \theta} =0$, that is
-\begin{equation}\label{eq:theta}
-\theta^* = \frac{\sum_{i=1}^n x_i^{k} (\Sigma x^{k})_i}{n}
-\end{equation} 
-
-\subsection{Implementation guidelines}
 \subsubsection{Matrix product}
 As we can see from (\ref{eq:gradxdec}) and (\ref{eq:gradthetadec}), at every iteration $k$ we must compute:
 \begin{equation}
@@ -715,7 +695,7 @@ where $\Sigma_{i}$ is the $i$-th column of $\Sigma$. This shrewdness dramaticall
 
 \subsubsection{Gradient computation}
 We can split the gradient (\ref{eq:gradxdec}) computation in two parts. The first is:
-\begin{equation}\label{eq:first}
+\begin{equation}\label{eq:first1}
 2 \sum_{i=1}^n \left(x_i (\Sigma x)_i - \theta\right)\Sigma_{ij}x_i
 \end{equation}
 while the second is:
@@ -730,7 +710,7 @@ and the vector $d \in \mathbb{R}^n$ with elements:
 \begin{equation}
 d_j = 2 (x_j (\Sigma x)_j - \theta) 
 \end{equation}
-We can now write the two terms of the gradient using $B$ and $d$; the first term (\ref{eq:first}) becomes:
+We can now write the two terms of the gradient using $B$ and $d$; the first term (\ref{eq:first1}) becomes:
 \begin{equation}
 B d
 \end{equation}

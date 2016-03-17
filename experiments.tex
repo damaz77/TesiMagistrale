@@ -75,7 +75,7 @@ In order to obtain comparable results, in our scheme we use a stop criterion tha
 \left| \frac{\partial f(x^k,y^k)}{d{x_{j(k)}}} - \frac{\partial f(x^k,y^k)}{d{x_{i(k)}} }\right| < \epsilon
 \end{equation}
 In SNOPT, this is (almost) equivalent to set the \texttt{Major optimality tolerance} optional parameter to $\epsilon$.\\
-In the following experiments, we denote with DEC$_{\text{MVP}}$ the decomposition algorithm with $M=1$ (we compute the MVP among the full gradient $\nabla_x f(x,y)$ at each iteration), while we denote with DEC$_{\text{MVP-}\lambda\%}$ the decomposition algorithm where we use $\lambda$ in (\ref{eq:lambda}). For DEC$_{\text{MVP-}\lambda\%}$ we evaluate the stop criterion (\ref{eq:stop}) every $M$ iterations.
+In the following experiments, we denote with DEC$_{\text{MVP}}$ the decomposition algorithm with $M=1$ (we compute the MVP among the full gradient $\nabla_x f(x,y)$ at each iteration), while we denote with DEC$_{\text{MVP-}\lambda\%}$ the decomposition algorithm where, at each step, we compute the MVP among the $\lambda \%$ of indexes $\in \{1,..,n\}$. For DEC$_{\text{MVP-}\lambda\%}$ we evaluate the stop criterion (\ref{eq:stop}) every $M$ iterations.
 
 \subsection{Classical box constraints}
 In this section we use 
