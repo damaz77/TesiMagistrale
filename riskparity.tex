@@ -162,7 +162,7 @@ The log-barrier approach to finding risk parity solutions in the long-only setti
 && \sum_{i=i}^n \left( \frac{x_i(\Sigma x)_i}{b_i} - \theta \right)^2\\
 & \text{s.t.}
 &&\mathds{1}^T x =1\\
-&&&x_i \geq 0
+&&&x \geq 0
 \end{aligned}
 \end{equation}
 Note that the formulation (\ref{eq:bp}) is non-convex.  If the optimization problem above has an optimal value of zero, then the RP portfolio is achieved. Otherwise, the value of $\sum_{i=i}^n \left( \frac{x_i(\Sigma x)_i}{b_i} - \theta\right)^2$  can be regarded as a minimum variance measure towards our goal. Note that, since (\ref{eq:bp}) is a non-convex problem, in theory it is hard to solve and may produce local solutions. Anyway, we have the following lemma (for the proof see \cite{tutuncu}):
@@ -181,7 +181,7 @@ The solution of the following system of constraints
 \begin{aligned}
 &x_i\cdot\frac{\partial\sigma (x)}{\partial x_i} = x_j\cdot\frac{\partial\sigma (x)}{\partial x_j} \quad \forall i,j\\
 &\mathds{1}^T x =1\\
-&x_i \geq 0
+&x \geq 0
 \end{aligned}
 \end{equation}
 is a (normalized) ERC solution. There are also situations where ERC solutions may not exist because of the presence of additional restrictions on the portfolio weights. In such cases, the problem becomes to find portfolios that are close to equally risk contribution and for this purpose it will be important to quantify the deviation from equal contribution.
@@ -194,7 +194,7 @@ This section presents a least-squares formulation for solving the ERC problem.
 && \sum_{i=i}^n \sum_{j=1}^{n}\left(x_i(\Sigma x)_i - x_j(\Sigma x)_j\right)^2\\
 & \text{s.t.}
 &&\mathds{1}^T x =1\\
-&&&x_i \geq 0
+&&&x \geq 0
 \end{aligned}
 \end{equation}
 Alternatively, one can consider using penalty terms for deviations of risk contributions from their average value:
@@ -208,7 +208,7 @@ In this way, the objective function contains only $n$ elements in the sum. If we
 && F(x,\theta) = \sum_{i=1}^n (x_i(\Sigma x)_i - \theta)^2\\
 & \text{s.t.}
 &&\mathds{1}^T x =1\\
-&&&x_i \geq 0
+&&&x \geq 0
 \end{aligned}
 \end{equation}
 If the optimization problem above has an optimal value of zero, then the ERC portfolio is achieved. Otherwise, the value of $F(x,\theta)$ can be regarded as a minimum variance measure towards our goal. The auxiliary variable $\theta$ can always be set to its optimal value using the following lemma, however, allowing $\theta$ to be a free variable significantly simplifies the formulation \cite{tutuncu}. 
@@ -279,7 +279,7 @@ The definition of the diversification ratio (\ref{eq:dr}) leads to the contructi
 \begin{aligned}
 x^{MDP} = \mbox{argmax}_x &&&DR(x)\\
 \text{s.t.}&&&\mathds{1}^T x = 1\\ 
-&&&x_i \geq 0
+&&&x \geq 0
 \end{aligned}
 \end{equation}
 Consider a homogeneous investment universe of single assets where we have no reason to believe, \textit{ex ante}, that any single asset will reward risk more than another. In this universe, the \textit{ex ante} Sharpe ratios of single assets are identical, and thus each asset’s expected excess return (EER) is proportional to its volatility: risk is homogeneously rewarded. Denoting by $\mu_1,..,\mu_n$ the single assets' expected returns, we can define the EER for a single asset $i$ like
@@ -429,7 +429,7 @@ Since the ERC approach requires all assets to give an equal risk contribution to
 & \text{s.t.}
 & & x_i (\Sigma x)_i \leq \lambda\\
 &&&\mathds{1}^T x =1\\
-&&&x_i \geq 0
+&&&x \geq 0
 \end{aligned}
 \end{equation}
 Note that this is a nonconvex quadratic programming problem with quadratic constraints which might have \textit{multiple} solutions. Let $(x^{ERB},\lambda^{ERB})$ be a solution of the above problem. Then $\lambda^{ERB}$ is an upper bound for the total contribution of each asset to the variance. Thus the ERC portfolio is theoretically dominated by the ERB portfolios in terms of variance.\\

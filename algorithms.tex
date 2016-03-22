@@ -161,7 +161,7 @@ STOP
 
 In \cite{spinu} the initial guess $x^{0}$ is the scaled equally-weighted portfolio
 \begin{equation}
-x^{0} := \frac{\sqrt{\sum_i b_i}}{\sqrt{e^T C e}} \cdot e
+x^{0} := \frac{\sqrt{\sum_i b_i}}{\sqrt{\mathds{1}^T C \mathds{1}}} \cdot \mathds{1}
 \end{equation}
 
 \section{Cyclical coordinate descent (CCD)}The main idea behind the cyclical coordinate descent (CCD) algorithm is to minimize a function $f(x_1,...,x_n)$ by minimizing only one direction at each step, whereas classical descent algorithms consider all the directions at the same time. In this case, we find the value of $x_i$ which minimizes the objective function by considering the values taken by $x_j$ for $j \neq i$ as fixed. The procedure repeats for each direction until the global minimum is reached. This method uses the same principles as Gauss-Seidel or Jacobi algorithms for solving linear systems  \cite{ccd}.\\
@@ -195,7 +195,7 @@ and
 \end{equation}
 where $\Sigma_{i,.}$ and $\Sigma_{.,i}$ are the $i$th row and column of $\Sigma$. Updating $\Sigma x$ and $\sigma(x)$ is then straightforward and reduces to the computation of two vector products. These operations dramatically reduce the computational time of the algorithm.
 
-\section{Successive Convex Optimization method (SCRIP)}
+\section{Successive Convex Optimization method}
 Consider a general formulation for the RP problem
 \begin{equation}\label{eq:gen}
 \begin{aligned}
@@ -203,7 +203,7 @@ Consider a general formulation for the RP problem
 && \mathcal{L}(x)\\
 & \text{s.t.}
 &&\mathds{1}^T x = 1\\
-&&&x_i \geq 0
+&&&x \geq 0
 \end{aligned}
 \end{equation}
 where $\mathcal{L}(x)$ measures the risk concentration and has the form
@@ -219,14 +219,14 @@ problem (\ref{eq:gen}) becomes (\ref{eq:ls}). Introducing a function $P(x;x^{k})
 \begin{equation}
 P(x;x^{k}) := \sum_{i=1}^n (g_i(x^{k}) + (\nabla g_i(x^{k}))^T (x-x^{k}))^2
 \end{equation}
-at the $k$-th iteration, the SCRIP method aims to solve 
+at the $k$-th iteration, the Successive Convex Optimization method (SCRIP) aims to solve 
 \begin{equation}\label{eq:scrip1}
 \begin{aligned}
 & \underset{x}{\text{min}}
 &&P(x;x^{(k)}) + \frac{\tau}{2}\parallel x - x^{(k)} \parallel^2_2\\
 & \text{s.t.}
 &&\mathds{1}^T x = 1\\
-&&&x_i \geq 0
+&&&x \geq 0
 \end{aligned}
 \end{equation}
 where $\tau > 0$ is the parameter for the regularization term. The beauty of the approximation $P(x;x^{k})$ is that it is an

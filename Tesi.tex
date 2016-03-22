@@ -1,4 +1,4 @@
-\documentclass[11pt, titlepage, oneside]{book}
+\documentclass[10pt, titlepage, oneside]{book}
 \usepackage{setspace}
 \onehalfspacing
 \usepackage[utf8]{inputenc}
@@ -16,9 +16,10 @@
 \usepackage{pgfplots}
 \usepackage{tikz}
 \usepackage{subfig}
+\pagenumbering{Roman} 
 
 \tikzset{
-  font={\fontsize{9pt}{12}\selectfont}}
+  font={\fontsize{8pt}{12}\selectfont}}
 \SetKwRepeat{Do}{do}{while}
 \renewcommand{\arraystretch}{2}
 \newtheorem{definition}{Definition}[section]
@@ -42,7 +43,7 @@
 \end{titlepage} 
 
 \tableofcontents\clearpage
-
+\pagenumbering{arabic} 
 \chapter{Introduction}
 \input{introduction}
 
