@@ -411,8 +411,8 @@ the RP portfolio, with risk defined in (\ref{eq:risk2}), exists and is unique. I
 \end{theorem}
 \begin{equation}
 \begin{aligned}
-& y^* = {\text{argmin}}
-&& \mathcal{R}(x)\\
+& y^* = {\text{argmin}_y}
+&& \mathcal{R}(y)\\
 & \text{s.t.}
 &&\sum_{i=1}^n b_i ln(y_i) \geq \kappa\\
 &&&y_i > 0 \hspace{1em} \forall i
@@ -478,7 +478,7 @@ RC_{\mathcal{M}_k}(x) = \sum_{i \in \mathcal{M}_k} RC_i(x)
 \end{equation}
 where $b=(b_1,..,b_s)$ is the vector of \textit{budgets} of the $s$ assets groups. We note that the group risk parity problem becomes a RP problem (\ref{eq:rb}) when the $\mathcal{M}_k$'s are all singletons and $\cup_k \mathcal{M}_k = \{1,..,n\}$.
 \section{Generalized Risk Budgeting (GRB)}
-In portfolio construction and analysis it is often preferable to group assets according to attributes such as asset class, country, sector and industry. The generalized risk budgeting (GRB) strategy is based on this very idea of managing the marginal risk contributions of subsets of assets to the total portfolio risk. Note that is used the term "subset" rather than "partition" since depending on the attributes used for the asset classification, assets may belong to more than one group.\\
+In portfolio construction and analysis it is often preferable to group assets according to attributes such as asset class, country, sector and industry. The generalized risk budgeting (GRB) strategy is based on this very idea of managing the marginal risk contributions of subsets of assets to the total portfolio risk. Note that is used the term \textquotedblleft subset" rather than \textquotedblleft partition" since depending on the attributes used for the asset classification, assets may belong to more than one group.\\
 The GRB problem can be formulated as follows \cite{sdp}:
 \begin{equation}\label{eq:grb}
 \begin{aligned}

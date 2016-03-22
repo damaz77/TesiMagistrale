@@ -254,7 +254,7 @@ In this section is presented a standard genetic algorithm to compute ERC optimal
 f= \sum_i (\Delta_i - \Delta)^2
 \end{equation}
 
-\hspace{-0.5em}We use chromosomes of length $n$ which contain the specific portfolio weights of the $n$ risky assets. Thus, an important operator is the \textit{repair} operator, i.e. the sum of the portfolio is normalized to $1$ after each operation. The genetic operators used in the algorithm can be summarized as follows:\\[1\baselineskip]
+We use chromosomes of length $n$ which contain the specific portfolio weights of the $n$ risky assets. Thus, an important operator is the \textit{repair} operator, i.e. the sum of the portfolio is normalized to $1$ after each operation. The genetic operators used in the algorithm can be summarized as follows:\\[1\baselineskip]
 \textbf{Selection: }The best $n_S$ chromosomes of each population are kept in the population.\\[1\baselineskip]
 \textbf{Mutation: }A random selection of $n_M$ chromosomes of the parent population will be mutated. Up to a number of 15\% of the length of the respective chromosome will be changed to a random
 value between the portfolio bounds. The mutation positions will be chosen randomly. Afterwards the randomly selected positions will be replaced with a random value between the upper and the lower investment limit of the respective asset.\\[1\baselineskip]
@@ -412,7 +412,7 @@ Let $\Omega$ be the state space and $p(x) = p^*(x)/C$ denote some target probabi
 C := \int_{\Omega} p^*(x) dx
 \end{equation}
 The MCMC method is an approach to sample from $p(x)$ when the normalizing constant is hard compute. In the MCMC approach, one
-constructs a Markov chain on $\Omega$ using a "proposal" distribution $q(x_{t+1}|x_t)$ in such a way that $p(x)$
+constructs a Markov chain on $\Omega$ using a \textquotedblleft proposal" distribution $q(x_{t+1}|x_t)$ in such a way that $p(x)$
 is the unique stationary distribution for the Markov chain. The main requirement of MCMC is that the unnormalized distribution, $p^*(x)$, should be easy to compute. \\
 Given a current sample $x_t$ at time $t$, the proposal distribution $q(\cdot | x_t)$ is used to generate
 a candidate sample, $x_{t+1}$, which is then accepted with probability
@@ -428,7 +428,7 @@ where $\mathcal{X} = \{x \in \mathbb{R}^n | x_i \geq 0$ $\forall i=1,..,n$, $\ma
 \begin{equation}
 p^*(x) = e^{\gamma \mathcal{R}(x)}\mathds{1}_{\mathcal{F}(x)} 
 \end{equation}
-where $\mathds{1}_{\{\cdot\}}$ is the characteristic function of a set. Since the feasible region $\mathcal{F}$ of the GRB problem is typically very "small", $p^*(x_{t+1})$ is likely to be zero for most candidate points $x_{t+1}$ and these points will be rejected in the acceptance-rejection step (\ref{eq:acc}). Therefore, using MCMC to sample only from the feasible region is very difficult, and particularly so for high-dimensional problems. One possible approach to overcoming these difficulties is to allow the MCMC iterates $x_t$ to be infeasible; by adding a term which penalizes infeasibility to our definition of $p^*$, we can "direct" them towards the feasible region. In particular, we could define
+where $\mathds{1}_{\{\cdot\}}$ is the characteristic function of a set. Since the feasible region $\mathcal{F}$ of the GRB problem is typically very \textquotedblleft small", $p^*(x_{t+1})$ is likely to be zero for most candidate points $x_{t+1}$ and these points will be rejected in the acceptance-rejection step (\ref{eq:acc}). Therefore, using MCMC to sample only from the feasible region is very difficult, and particularly so for high-dimensional problems. One possible approach to overcoming these difficulties is to allow the MCMC iterates $x_t$ to be infeasible; by adding a term which penalizes infeasibility to our definition of $p^*$, we can \textquotedblleft direct" them towards the feasible region. In particular, we could define
 \begin{equation}
 P_c(x) := \mathcal{R}(x) - \frac{1}{2} c \parallel h(x) \parallel^2_2
 \end{equation}

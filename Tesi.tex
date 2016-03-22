@@ -6,32 +6,33 @@
 \usepackage{amsfonts}
 \usepackage{amsmath}
 \usepackage{amsthm}
+\usepackage{epstopdf}
 \usepackage{dsfont}
 \usepackage{multirow}
 \usepackage{url}
 \usepackage[ruled,vlined, linesnumbered]{algorithm2e}
 \usepackage{color}
 \usepackage[dvipsnames]{xcolor}
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usepackage{subfig}
+
+\tikzset{
+  font={\fontsize{9pt}{12}\selectfont}}
+\SetKwRepeat{Do}{do}{while}
+\renewcommand{\arraystretch}{2}
 \newtheorem{definition}{Definition}[section]
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{example}{Example}[section]
 \numberwithin{equation}{section}
-\usepackage{changepage}
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\N}{\mathbb{N}}
 \newtheorem{oss}{Remark}
 \newtheorem{proposition}[theorem]{Proposition}
 \newtheorem{corollary}[theorem]{Corollary}
 \setlength\parindent{0pt}
-\usepackage{pgfplots}
-\usepackage{tikz}
-\usepackage{caption}
-\usepackage{subfig}
-\tikzset{
-  font={\fontsize{9pt}{12}\selectfont}}
-\SetKwRepeat{Do}{do}{while}
-\renewcommand{\arraystretch}{2}
+
 \title{Optimization Methods Applied to Portfolio Selection}
 \author{Federico D'Amato}
  

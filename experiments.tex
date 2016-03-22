@@ -28,9 +28,9 @@ Equation (\ref{eq:stopconv}) express the fact that the (normalized) max deviatio
 \begin{tikzpicture}
 
 \begin{axis}[%
-width=0.6\textwidth,
+width=0.7\textwidth,
 xlabel={\# of assets},
-ylabel={Exe Time (s)},
+ylabel={Average Exe Time (s)},
 legend pos=north west,
 legend cell align=left
 ]
@@ -75,7 +75,7 @@ In order to obtain comparable results, in our scheme we use a stop criterion tha
 \left| \frac{\partial f(x^k,y^k)}{d{x_{j(k)}}} - \frac{\partial f(x^k,y^k)}{d{x_{i(k)}} }\right| < \epsilon
 \end{equation}
 In SNOPT, this is (almost) equivalent to set the \texttt{Major optimality tolerance} optional parameter to $\epsilon$.\\
-In the following experiments, we denote with DEC$_{\text{MVP}}$ the decomposition algorithm with $M=1$ (we compute the MVP among the full gradient $\nabla_x f(x,y)$ at each iteration), while we denote with DEC$_{\text{MVP-}\lambda\%}$ the decomposition algorithm where, at each step, we compute the MVP among the $\lambda \%$ of indexes $\in \{1,..,n\}$. For DEC$_{\text{MVP-}\lambda\%}$ we evaluate the stop criterion (\ref{eq:stop}) every $M$ iterations.
+In the following experiments, we denote with DEC$_{\text{MVP}}$ Algorithm \ref{alg:proximal} with $M=1$ (we compute the MVP among the full gradient $\nabla_x f(x,y)$ at each iteration), while we denote with DEC$_{\text{MVP-}\lambda\%}$ Algorithm \ref{alg:modified}. For DEC$_{\text{MVP-}\lambda\%}$ we evaluate the stop criterion (\ref{eq:stop}) every $M$ iterations (when we have the full gradient available).
 
 \subsection{Classical box constraints}
 In this section we use 
@@ -83,24 +83,24 @@ In this section we use
 l_i = 0  \qquad u_i = 1  \quad \forall i
 \end{equation} 
 \subsubsection{Inexact vs Exact Line Search}
-In Figure (\ref{fig:els}) we compare the performances of the decomposition algorithm using two different step selection: Algoritm \ref{alg:qls}, that uses Quadratic Line Search (QLS) and Algorithm \ref{alg:proximal} that uses Exact Line Search (ELS) instead, using the following starting point:
+In Figure (\ref{fig:els}) we compare the performances of the decomposition algorithm using two different step selection: Algoritm \ref{alg:decMVP}, that uses Quadratic Line Search (QLS) and Algorithm \ref{alg:proximal} that uses Exact Line Search (ELS) instead, using the following starting point:
 \begin{equation}\label{eq:sparsestarting}
 x^0 = \left[1, 0, .., 0 \right]
 \end{equation}
-Figure (\ref{fig:els}) points out that Algorithm \ref{alg:proximal} performs better than Algorithm \ref{alg:qls} in this particular problem. From now on, we always use the Proximal Point version of the decomposition algorithm (Algorithm \ref{alg:proximal}) in the experiments.
+Figure (\ref{fig:els}) points out that Algorithm \ref{alg:proximal} performs better than Algorithm \ref{alg:decMVP} in this particular problem. From now on, we always use the Proximal Point version of the decomposition algorithm (Algorithm \ref{alg:proximal}) in the experiments.
+
 \begin{figure}
 \makebox[\textwidth][c]{
 \subfloat[Comparison of average execution time\label{subfig-4:time2}]{%
 \begin{tikzpicture}
 \begin{axis}[%
-width=0.5\textwidth,
+width=0.7\textwidth,
 xlabel={\# of assets},
 ylabel={Average Exe Time (s)},
 scaled y ticks=false,
 legend pos=north west,
 legend cell align=left
 ]
-
 
 \addplot [color=red,solid,mark=x,mark options={solid}]
   table[row sep=crcr]{%10
@@ -124,19 +124,19 @@ legend cell align=left
 2000 40.08\\
 };
 
-
 \addlegendentry{DEC$_{\text{MVP}}$ (QLS)}
 \addlegendentry{DEC$_{\text{MVP}}$ (ELS)}
 \end{axis}
 
 \end{tikzpicture}
 }
-\hfill
-\hspace{1em}\subfloat[Comparison of average iterations\label{subfig-4:iterations2}]{%
+}
+\makebox[\textwidth][c]{
+\subfloat[Comparison of average iterations\label{subfig-4:iterations2}]{%
 \begin{tikzpicture}
 
 \begin{axis}[%
-width=0.5\textwidth,
+width=0.7\textwidth,
 xlabel={\# of assets},
 ylabel={Average Iterations},
 scaled y ticks=false,
@@ -184,7 +184,7 @@ In Figure (\ref{fig:100}) and Figure (\ref{fig:10}) we compare the average execu
 \subfloat[Comparison of average execution time\label{subfig-1:time2}]{%
 \begin{tikzpicture}
 \begin{axis}[%
-width=0.5\textwidth,
+width=0.7\textwidth,
 xlabel={\# of assets},
 ylabel={Average Exe Time (s)},
 scaled y ticks=false,
@@ -256,16 +256,18 @@ legend cell align=left
 
 \end{tikzpicture}
 }
+}
 \hfill
 \hspace{1em}\subfloat[Comparison of average iterations\label{subfig-2:iterations2}]{%
+\makebox[\textwidth][c]{
 \begin{tikzpicture}
 
 \begin{axis}[%
-width=0.5\textwidth,
+width=0.7\textwidth,
 xlabel={\# of assets},
 ylabel={Average Iterations},
 scaled y ticks=false,
-ymax=24000,
+ymax=18000,
 legend pos=north west,
 legend cell align=left
 ]
@@ -333,7 +335,7 @@ legend cell align=left
 \subfloat[Comparison of average execution time\label{subfig-1:time3}]{%
 \begin{tikzpicture}
 \begin{axis}[%
-width=0.5\textwidth,
+width=0.7\textwidth,
 xlabel={\# of assets},
 ylabel={Average Exe Time (s)},
 scaled y ticks=false,
@@ -405,18 +407,20 @@ legend cell align=left
 
 \end{tikzpicture}
 }
+}
 \hfill
 \hspace{1em}\subfloat[Comparison of average iterations\label{subfig-2:iterations3}]{%
+\makebox[\textwidth][c]{
 \begin{tikzpicture}
 
 \begin{axis}[%
-width=0.5\textwidth,
+width=0.7\textwidth,
 xlabel={\# of assets},
 ylabel={Average Iterations},
 scaled y ticks=false,
 legend pos=north west,
 legend cell align=left,
-ymax=24000
+ymax=18000
 ]
 
 \addplot [color=black,solid,mark=x,mark options={solid}]
@@ -1066,7 +1070,7 @@ The $\epsilon$ in the stop criterion (\ref{eq:stop}) is set to $10^{-10}$. In Fi
 \subfloat[Comparison of average execution time\label{subfig-1:time1}]{
 \begin{tikzpicture}
 \begin{axis}[%
-width=0.5\textwidth,
+width=0.7\textwidth,
 xlabel={\# of assets},
 ylabel={Average Exe Time (s)},
 scaled y ticks=false,
@@ -1149,15 +1153,17 @@ legend cell align=left
 
 \end{tikzpicture}
 }
+}
 \hfill
 \hspace{1em}\subfloat[Comparison of average iterations\label{subfig-2:iterations1}]{%
+\makebox[\textwidth][c]{
 \begin{tikzpicture}
 
 \begin{axis}[%
-width=0.5\textwidth,
+width=0.7\textwidth,
 xlabel={\# of assets},
 ylabel={Average Iterations},
-ymax=12000,
+ymax=10000,
 scaled y ticks=false,
 legend pos=north west,
 legend cell align=left
