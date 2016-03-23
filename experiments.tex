@@ -74,7 +74,7 @@ In order to obtain comparable results, in our scheme we use a stop criterion tha
 \begin{equation}\label{eq:stop}
 \left| \frac{\partial f(x^k,y^k)}{d{x_{j(k)}}} - \frac{\partial f(x^k,y^k)}{d{x_{i(k)}} }\right| < \epsilon
 \end{equation}
-In SNOPT, this is (almost) equivalent to set the \texttt{Major optimality tolerance} optional parameter to $\epsilon$.\\
+In SNOPT, this is (almost) equivalent to set the\linebreak \texttt{Major optimality tolerance} optional parameter to $\epsilon$.\\
 In the following experiments, we denote with DEC$_{\text{MVP}}$ Algorithm \ref{alg:proximal} with $M=1$ (we compute the MVP among the full gradient $\nabla_x f(x,y)$ at each iteration), while we denote with DEC$_{\text{MVP-}\lambda\%}$ Algorithm \ref{alg:modified}. For DEC$_{\text{MVP-}\lambda\%}$ we evaluate the stop criterion (\ref{eq:stop}) every $M$ iterations (when we have the full gradient available).
 
 \subsection{Classical box constraints}
@@ -890,7 +890,7 @@ ylabel={\% of attempts},
 ylabel near ticks,
 legend pos=north west,
 symbolic x coords = {5,10,20,50,75,100,150,200,500},
-bar width=6pt,
+bar width=4pt,
 xtick=data,
 ymax=40,
 width=.5\textwidth,
@@ -934,7 +934,7 @@ ylabel={\% of attempts},
 ylabel near ticks,
 legend pos=north west,
 symbolic x coords = {5,10,20,50,75,100,150,200,500},
-bar width=6pt,
+bar width=4pt,
 xtick=data,
 ymax=40,
 width=.5\textwidth,
@@ -979,7 +979,7 @@ ylabel={\% of attempts},
 ylabel near ticks,
 legend pos=north west,
 symbolic x coords = {5,10,20,50,75,100,150,200,500},
-bar width=6pt,
+bar width=4pt,
 xtick=data,
 ymax=40,
 width=.5\textwidth,
@@ -1021,7 +1021,7 @@ ylabel={\% of attempts},
 ylabel near ticks,
 legend pos=north west,
 symbolic x coords = {5,10,20,50,75,100,150,200,500},
-bar width=6pt,
+bar width=4pt,
 xtick=data,
 ymax=40,
 width=.5\textwidth,
