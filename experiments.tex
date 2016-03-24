@@ -87,7 +87,7 @@ In Figure (\ref{fig:els}) we compare the performances of the decomposition algor
 \begin{equation}\label{eq:sparsestarting}
 x^0 = \left[1, 0, .., 0 \right]
 \end{equation}
-Figure (\ref{fig:els}) points out that Algorithm \ref{alg:proximal} performs better than Algorithm \ref{alg:decMVP} in this particular problem. From now on, we always use the Proximal Point version of the decomposition algorithm (Algorithm \ref{alg:proximal}) in the experiments.
+Figure (\ref{fig:els}) points out that Algorithm \ref{alg:proximal} performs better than Algorithm \ref{alg:decMVP} in this particular problem. From now on, we always use the Proximal Point version of the decomposition algorithm (Algorithm \ref{alg:proximal}) in the next experiments.
 
 \begin{figure}
 \makebox[\textwidth][c]{
@@ -178,7 +178,7 @@ legend cell align=left
 \end{figure}
 
 \subsubsection{Decomposition vs SNOPT}
-In Figure (\ref{fig:100}) and Figure (\ref{fig:10}) we compare the average execution time and the average number of iterations performed by the decomposition algorithm (with different values of $\lambda$) against SNOPT using the starting point defined in (\ref{eq:sparsestarting}). The $\epsilon$ in the stop criterion (\ref{eq:stop}) is set to $10^{-10}$. In Figure (\ref{fig:100}) we set $M=100$, while in Figure (\ref{fig:10}) we set $M=10$.
+In Figure (\ref{fig:100}) and Figure (\ref{fig:10}) we compare the average execution time and the average number of iterations performed by the decomposition algorithm (with different values of $\lambda$) against SNOPT using the starting point defined in (\ref{eq:sparsestarting}). The $\epsilon$ in the stop criterion (\ref{eq:stop}) is set to $10^{-10}$. In Figure (\ref{fig:100}) we set $M=100$, while in Figure (\ref{fig:10}) we set $M=10$. The two figures show that SNOPT perform better than DEC$_{MVP}$, but show also that DEC$_{\text{MVP-}\lambda\%}$, especially for low values of $\lambda$, outperforms SNOPT in terms of average execution time when the number of assets $n$ becomes high. As we can see comparing Figure (\ref{fig:100}) with Figure (\ref{fig:10}), parameter $M$ does not significantly affect the performances of the decomposition algorithm, thus we can set $M=100$ in the next experiments.
 \begin{figure}
 \makebox[\textwidth][c]{
 \subfloat[Comparison of average execution time\label{subfig-1:time2}]{%
