@@ -19,9 +19,9 @@ In this section we compare the execution time of two algorithms used to solve th
 \subsection{Test problems and stopping criterion}
 We use the same stop criterion for both the algorithms tested; we stop the algorithm when:
 \begin{equation}\label{eq:stopconv}
-\max_i \left| \frac{RC_i}{\mathcal{R}(x)} - \frac{1}{n} \right| < \epsilon
+\max_i \left| \frac{RC_i}{\mathcal{R}(x)} - \frac{1}{n} \right| < \eta
 \end{equation}
-Equation (\ref{eq:stopconv}) express the fact that the (normalized) max deviation from Risk Parity of the solutions is less than $\epsilon$.
+Equation (\ref{eq:stopconv}) express the fact that the (normalized) max deviation from Risk Parity of the solutions is less than $\eta$.
 \begin{figure}
 \centering
 \makebox[\textwidth][c]{
@@ -62,7 +62,7 @@ legend cell align=left
 \end{axis}
 \end{tikzpicture}
 }
-\caption{Comparison of average execution time between CCD and Newton-Nesterov with $\epsilon = 10^{-8}$ in the stop criterion (\ref{eq:stopconv})}
+\caption{Comparison of average execution time between CCD and Newton-Nesterov with $\eta = 10^{-8}$ in the stop criterion (\ref{eq:stopconv})}
 \label{fig:convtest}
 \end{figure}
 Figure (\ref{fig:convtest})  shows that, for an universe of a small number of assets ($n<200$), Newton-Nesterov algorithm performs better than CCD. On the other hand, when we consider a bigger asset's universe ($n>300$), CCD outperform Newton-Nesterov; with $n=1250$, CCD algorithm is approximately 8 times faster to converge than the Newton-Nesterov one.
@@ -483,9 +483,9 @@ ymax=18000
 \subsubsection{Convergence to a Risk Parity solution}
 In this section we evaluate the probability to converge to a critical point $(x^*,y^*)$ that is also a Risk Parity solution, i.e. that satisfies 
 \begin{equation}\label{eq:reseps}
-\max_i \left| \frac{RC_i}{\mathcal{R}(x^*,y^*)} - \frac{1}{n} \right| < \epsilon
+\max_i \left| \frac{RC_i}{\mathcal{R}(x^*,y^*)} - \frac{1}{n} \right| < \eta
 \end{equation}
-where $RC_i$ is the risk contribution of the asset $i$ and ${\mathcal{R}(x^*,y^*)}$ is the total risk of the invested portfolio. Equation (\ref{eq:reseps}) express the fact that the (normalized) max deviation from Risk Parity of the solutions is less than $\epsilon$. In Figure (\ref{fig:convergence1}) we compare the probability to reach a Risk Parity solution for both the decomposition algorithm (with different values of $\lambda$) and SNOPT using the sparse starting point defined in (\ref{eq:sparsestarting}).\\ Figure (\ref{fig:convergence1}) shows that when the number of assets $n$ is low (i.e. $n < 100$), all the algorithms tested have a probability to converge to a Risk Parity solution that is nearly $100\%$. As the number of assets $n$ increases, the probability to converge to an RP solution decreases for all the algorithm tested. Compared with SNOPT, DEC$_\text{MVP}$ and DEC$_{\text{MVP-}\lambda\%}$ have always an higher probability of convergence. For $n <1250$ we have that DEC$_\text{MVP}$ has the highest probability to converge to an RP solution, while for $n >1250$ we observe that DEC$_{\text{MVP-}\lambda\%}$ has an higher convergence probability for certain values of $\lambda$.
+where $RC_i$ is the risk contribution of the asset $i$ and ${\mathcal{R}(x^*,y^*)}$ is the total risk of the invested portfolio. Equation (\ref{eq:reseps}) express the fact that the (normalized) max deviation from Risk Parity of the solutions is less than $\eta$. In Figure (\ref{fig:convergence1}) we compare the probability to reach a Risk Parity solution for both the decomposition algorithm (with different values of $\lambda$) and SNOPT using the sparse starting point defined in (\ref{eq:sparsestarting}).\\ Figure (\ref{fig:convergence1}) shows that when the number of assets $n$ is low (i.e. $n < 100$), all the algorithms tested have a probability to converge to a Risk Parity solution that is nearly $100\%$. As the number of assets $n$ increases, the probability to converge to an RP solution decreases for all the algorithm tested. Compared with SNOPT, DEC$_\text{MVP}$ and DEC$_{\text{MVP-}\lambda\%}$ have always an higher probability of convergence. For $n <1250$ we have that DEC$_\text{MVP}$ has the highest probability to converge to an RP solution, while for $n >1250$ we observe that DEC$_{\text{MVP-}\lambda\%}$ has an higher convergence probability for certain values of $\lambda$.
 
 \begin{figure}
 \makebox[\textwidth][c]{
@@ -576,46 +576,6 @@ legend style={at={(0.5,-0.3)},anchor=north}
 \label{fig:convergence1}
 \end{figure}
 
-%\begin{table}
-%\centering
-%\begin{tabular}{ c | c | c | c }
-%n &  G-S$_{(ALS)}$ & G-S$_{(ELS)}$  & SNOPT \\\hline
-%5    & 100.0\% & 100.0\% & 100.0\%\\\hline
-%10   & 100.0\% & 100.0\% & 100.0\%\\\hline
-%20   & 100.0\% & 100.0\% & 100.0\%\\\hline
-%50   & 99.0\%  & 99.4\%  & 99.5\%\\\hline
-%100  & 85.4\%  & 87.0\%  & 91.2\%\\\hline
-%200  & 40.0\%  & 45.0\%  & 52.0\%\\\hline
-%300  & 22.0\%  & 24.0\%  & 34.0\%\\\hline
-%500  & 0.0\%   & 6.0\%   & 3.0\%\\\hline
-%750  & 0.0\%   & 2.0\%   & 0.0\%\\\hline
-%1000 & 0.0\%   & 0.0\%   & 0.0\%\\\hline
-%1250 & 0.0\%   & 0.0\%   & 0.0\%\\\hline
-%\end{tabular}
-%\caption{Probability to converge to a Risk Parity solution using $x^{0}_i = 1/n \quad \forall i$}
-%\label{tab:first}
-%\end{table}
-%
-%
-%\begin{table}
-%\centering
-%\begin{tabular}{ c | c | c | c}
-%n &  G-S$_{(ALS)}$ & G-S$_{(ELS)}$  & SNOPT \\\hline
-%5    & 100.0\%  & 100.0\% & 100.0\%\\\hline
-%10   & 100.0\%  & 100.0\% & 99.9\%\\\hline
-%20   & 100.0\%  & 100.0\%  & 100.0\%\\\hline
-%50   & 100.0\%  & 99.9\%  & 99.9\%\\\hline
-%100  & 99.9\%   & 100.0\%  & 99.6\% \\\hline
-%200  & 100.0\%  & 100.0\%  & 98.8\% \\\hline
-%300  & 100.0\%  & 100.0\%  & 96.6\% \\\hline
-%500  & 99.5\%   & 99.2\%   & 88.0\%\\\hline
-%750  & 99.5\%   & 99.2\%  & 83.0\%\\\hline
-%1000 & 98.0\%   & 95.2\%  & 83.0\%\\\hline
-%1250 & 91.5\%   & 93.2\%  & 73.0\%\\\hline
-%\end{tabular}
-%\caption{Probability to converge to a Risk Parity solution using $x^{0}= [1, 0, .., 0]$}
-%\label{tab:second}
-%\end{table}
 
 \subsubsection{On the choosing of the starting point}
 From our experiments, it turns out that the choice of the starting point $x^0$ strongly affects the probability of the algorithms to reach a Risk Parity solution.  In Figure (\ref{fig:sparsity}) we measure the probability to reach a Risk Parity solution varying the sparsity of the initial guess $x^0$, i.e. the percentage of components of $x^0$ fixed to 0. In Figure (\ref{subfig-3:equally}) we use an equally distributed starting point:
@@ -629,6 +589,7 @@ In Figure (\ref{subfig-3:random}) we use a randomly distributed starting point:
 &x^0 = \frac{a^{0}}{\mathds{1}^T a^0}
 \end{aligned}
 \end{equation}
+In both case we can observe that a dense starting point leads to a low probability of convergence, especially for larger $n$. In Figure (\ref{subfig-3:equally}) we can notice that when the percentage of sparsity of the starting point exceeds the $40\%$, the probability to converge to an RP solution abruptly increases until it reaches the $100\%$ for each value of $n$ tested. A similar phenomenon is observable in Figure (\ref{subfig-3:random}), but in correspondence of a lower percentage of sparsity of the starting point.
 
 \begin{figure}
 \makebox[\textwidth][c]{
@@ -875,9 +836,195 @@ ylabel near ticks
 \subsection{General box constraints}
 In this section we use different combinations for the box constraints $l$ and $u$ and we compare the values assumed by the objective function in the critical point reached by the different algorithms. In these tests we take:
 \begin{equation}\label{eq:startxx}
-x_i^0 = \frac{1}{n} \quad \forall i \in \left\{1, .., n \right\}
+x_i^0 = \frac{1}{n} \quad \forall i 
 \end{equation}
-We denote with $x_{D}$ the solution produced by DEC$_{\text{MVP}}$ and with $x_{S}$ the solution produced by SNOPT. In Figure (\ref{fig:box}), we compare the value of $f(x_{D})$ with $f(x_{S})$ when the two algorithms converges at two different critical points ($x_D \neq x_S$) using different combinations of box constraints.
+
+\subsubsection{Execution Time}
+In Figure (\ref{fig:ultima1}) we compare the average execution time and the average number of iterations performed by the decomposition algorithm (with different values of $\lambda$) against SNOPT using the starting point defined in (\ref{eq:startxx}) and 
+\begin{equation}\label{eq:generalbox}
+l_i = \frac{1}{2n}  \qquad u_i = \frac{2}{n}  \quad \forall i
+\end{equation} 
+The $\epsilon$ in the stop criterion (\ref{eq:stop}) is set to $10^{-10}$.\\ The results reported in Figure (\ref{subfig-1:time1}) shows that SNOPT is the fastest algorithm to converge when we use this kind of bounds. For $n=2000$, SNOPT takes $2.68$ seconds to converge, while the fastest decomposition algorithm (DEC$_{\text{MVP-}2.5\%}$) takes $6.64$ seconds.\\
+Comparing Figure (\ref{subfig-2:iterations1}) with Figure (\ref{subfig-2:iterations2}) and Figure (\ref{subfig-2:iterations3}) we can deduce that all the decomposition algorithms tested takes less iterations to converge to a critical point when initialized with the equally weighted starting point (\ref{eq:startxx}).
+\begin{figure}
+\makebox[\textwidth][c]{
+\subfloat[Comparison of average execution time\label{subfig-1:time1}]{
+\begin{tikzpicture}
+\begin{axis}[%
+width=0.7\textwidth,
+xlabel={\# of assets},
+ylabel={Average Exe Time (s)},
+scaled y ticks=false,
+legend pos=north west,
+legend cell align=left
+]
+
+\addplot [color=black,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%
+%100	.105\\
+%200	.214\\
+%300	.340\\
+500	.737	\\
+750	1.713		\\
+1000 3.303 \\
+1250 5.400 \\
+1500 8.56\\
+1750 12.92\\
+2000 18.39\\
+};
+
+\addplot [color=red,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%10
+%100 .146\\
+%250 .341\\
+500 .853\\
+750 1.56\\
+1000 2.69 \\
+1250 4.09\\
+1500 5.75\\
+1750 8.10\\
+2000 11.08\\
+};
+
+\addplot [color=blue,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%5
+%100 .190\\
+%250 .355\\
+500 .759 \\
+750 1.33 \\
+1000 2.14 \\
+1250 3.23\\
+1500 4.50 \\
+1750 6.16 \\
+2000 7.81 \\
+};
+
+\addplot [color=magenta,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%2.5
+%100 .299\\
+%250 .468\\
+500  .854\\
+750  1.44\\
+1000 2.07 \\
+1250 2.92 \\
+1500 3.91 \\
+1750 5.22 \\
+2000 6.64\\
+};
+\addplot [color=green,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%
+%100	.005	\\
+%200	.014	\\
+%300	.035	    \\
+500	.118	    \\
+750	 .286  \\
+1000 0.561	\\
+1250 0.824	\\
+1500 1.43 \\
+1750 1.96 \\
+2000 2.68\\
+};
+
+\addlegendentry{DEC$_{\text{MVP}}$}
+\addlegendentry{DEC$_{\text{MVP-}10\%}$}
+\addlegendentry{DEC$_{\text{MVP-}5\%}$}
+\addlegendentry{DEC$_{\text{MVP-}2.5\%}$}
+\addlegendentry{SNOPT}
+\end{axis}
+
+\end{tikzpicture}
+}
+}
+\hfill
+\hspace{1em}\subfloat[Comparison of average iterations\label{subfig-2:iterations1}]{%
+\makebox[\textwidth][c]{
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=0.7\textwidth,
+xlabel={\# of assets},
+ylabel={Average Iterations},
+ymax=10000,
+scaled y ticks=false,
+legend pos=north west,
+legend cell align=left
+]
+
+\addplot [color=black,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%MVP
+%100	445 \\
+%200	819 \\
+%300	1176 \\
+500	1888\\
+750	2874 \\
+1000	 3701\\
+1250	 4439\\
+1500 5134\\
+1750 6082\\
+2000 7041\\
+};
+
+\addplot [color=red,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%10
+%100 607\\
+%250 1134\\
+500 2087\\ 
+750 2895 \\
+1000 3962 \\
+1250 4854 \\
+1500 5676 \\
+1750 6800 \\
+2000 8043\\
+};
+
+\addplot [color=blue,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%5
+%100 841\\
+%250 1349\\
+500 2283   \\
+750 3207 \\
+1000 4229  \\
+1250 5340 \\
+1500 6382 \\
+1750 7648\\
+2000 8541\\
+};
+
+\addplot [color=magenta,solid,mark=x,mark options={solid}]
+  table[row sep=crcr]{%2.5
+%100 1346\\
+%250 1857\\
+500 2780 \\
+750 3832\\
+1000 4934  \\
+1250 6053\\
+1500 7238\\
+1750 8021\\
+2000 9341\\
+};
+
+\addlegendentry{DEC$_{\text{MVP}}$}
+\addlegendentry{DEC$_{\text{MVP-}10\%}$}
+\addlegendentry{DEC$_{\text{MVP-}5\%}$}
+\addlegendentry{DEC$_{\text{MVP-}2.5\%}$}
+\end{axis}
+
+\end{tikzpicture}
+}
+}
+\caption{Comparison of performances using $\epsilon = 10^{-10}$ in (\ref{eq:stop}) with box constraints defined in (\ref{eq:generalbox})}
+\label{fig:ultima1}
+\end{figure}
+
+\subsubsection{Quality of the solutions produced}
+We denote with $x_{D}$ the solution produced by DEC$_{\text{MVP}}$ and with $x_{S}$ the solution produced by SNOPT. In Figure (\ref{fig:box}), we compare the value of $f(x_{D})$ with $f(x_{S})$ when the two algorithms converges at two different critical points ($x_D \neq x_S$) using different combinations of box constraints.\\ Figure (\ref{fig:box}) points out that DEC$_{\text{MVP}}$ converges to points with a better value of the objective function than SNOPT for three combinations of bounds out of four. For example, using
+\begin{equation*}
+l_i = \frac{1}{2n}, \quad u_i = \frac{2}{n} \quad \forall i
+\end{equation*}
+and $n=500$, DEC$_{\text{MVP}}$ finds better solutions than SNOPT in the $40\%$ of the total attempts. The only case in which SNOPT finds better solutions than DEC$_{\text{MVP}}$ is when we use
+\begin{equation*}
+l_i = -1, \quad u_i = 1 \quad \forall i
+\end{equation*} 
 
 \begin{figure}
 \makebox[\textwidth][c]{
@@ -1060,176 +1207,3 @@ title={$l_i = -1, \quad u_i = 1 \quad \forall i$}
 \label{fig:box}
 \end{figure}
 
-In Figure (\ref{subfig-1:time1}) we compare the average execution time of the decomposition algorithm (with different values of $\lambda$) against SNOPT using the starting point defined in (\ref{eq:startxx}) and 
-\begin{equation}\label{eq:generalbox}
-l_i = \frac{1}{2n}  \qquad u_i = \frac{2}{n}  \quad \forall i
-\end{equation} 
-The $\epsilon$ in the stop criterion (\ref{eq:stop}) is set to $10^{-10}$. In Figure (\ref{subfig-2:iterations1}) we compare the average number of iterations performed by the decomposition algorithm using different values of $\lambda$.
-\begin{figure}
-\makebox[\textwidth][c]{
-\subfloat[Comparison of average execution time\label{subfig-1:time1}]{
-\begin{tikzpicture}
-\begin{axis}[%
-width=0.7\textwidth,
-xlabel={\# of assets},
-ylabel={Average Exe Time (s)},
-scaled y ticks=false,
-legend pos=north west,
-legend cell align=left
-]
-
-\addplot [color=black,solid,mark=x,mark options={solid}]
-  table[row sep=crcr]{%
-%100	.105\\
-%200	.214\\
-%300	.340\\
-500	.737	\\
-750	1.713		\\
-1000 3.303 \\
-1250 5.400 \\
-1500 8.56\\
-1750 12.92\\
-2000 18.39\\
-};
-
-\addplot [color=red,solid,mark=x,mark options={solid}]
-  table[row sep=crcr]{%10
-%100 .146\\
-%250 .341\\
-500 .853\\
-750 1.56\\
-1000 2.69 \\
-1250 4.09\\
-1500 5.75\\
-1750 8.10\\
-2000 11.08\\
-};
-
-\addplot [color=blue,solid,mark=x,mark options={solid}]
-  table[row sep=crcr]{%5
-%100 .190\\
-%250 .355\\
-500 .759 \\
-750 1.33 \\
-1000 2.14 \\
-1250 3.23\\
-1500 4.50 \\
-1750 6.16 \\
-2000 7.81 \\
-};
-
-\addplot [color=magenta,solid,mark=x,mark options={solid}]
-  table[row sep=crcr]{%2.5
-%100 .299\\
-%250 .468\\
-500  .854\\
-750  1.44\\
-1000 2.07 \\
-1250 2.92 \\
-1500 3.91 \\
-1750 5.22 \\
-2000 6.64\\
-};
-\addplot [color=green,solid,mark=x,mark options={solid}]
-  table[row sep=crcr]{%
-%100	.005	\\
-%200	.014	\\
-%300	.035	    \\
-500	.118	    \\
-750	 .286  \\
-1000 0.561	\\
-1250 0.824	\\
-1500 1.43 \\
-1750 1.96 \\
-2000 2.68\\
-};
-
-\addlegendentry{DEC$_{\text{MVP}}$}
-\addlegendentry{DEC$_{\text{MVP-}10\%}$}
-\addlegendentry{DEC$_{\text{MVP-}5\%}$}
-\addlegendentry{DEC$_{\text{MVP-}2.5\%}$}
-\addlegendentry{SNOPT}
-\end{axis}
-
-\end{tikzpicture}
-}
-}
-\hfill
-\hspace{1em}\subfloat[Comparison of average iterations\label{subfig-2:iterations1}]{%
-\makebox[\textwidth][c]{
-\begin{tikzpicture}
-
-\begin{axis}[%
-width=0.7\textwidth,
-xlabel={\# of assets},
-ylabel={Average Iterations},
-ymax=10000,
-scaled y ticks=false,
-legend pos=north west,
-legend cell align=left
-]
-
-\addplot [color=black,solid,mark=x,mark options={solid}]
-  table[row sep=crcr]{%MVP
-%100	445 \\
-%200	819 \\
-%300	1176 \\
-500	1888\\
-750	2874 \\
-1000	 3701\\
-1250	 4439\\
-1500 5134\\
-1750 6082\\
-2000 7041\\
-};
-
-\addplot [color=red,solid,mark=x,mark options={solid}]
-  table[row sep=crcr]{%10
-%100 607\\
-%250 1134\\
-500 2087\\ 
-750 2895 \\
-1000 3962 \\
-1250 4854 \\
-1500 5676 \\
-1750 6800 \\
-2000 8043\\
-};
-
-\addplot [color=blue,solid,mark=x,mark options={solid}]
-  table[row sep=crcr]{%5
-%100 841\\
-%250 1349\\
-500 2283   \\
-750 3207 \\
-1000 4229  \\
-1250 5340 \\
-1500 6382 \\
-1750 7648\\
-2000 8541\\
-};
-
-\addplot [color=magenta,solid,mark=x,mark options={solid}]
-  table[row sep=crcr]{%2.5
-%100 1346\\
-%250 1857\\
-500 2780 \\
-750 3832\\
-1000 4934  \\
-1250 6053\\
-1500 7238\\
-1750 8021\\
-2000 9341\\
-};
-
-\addlegendentry{DEC$_{\text{MVP}}$}
-\addlegendentry{DEC$_{\text{MVP-}10\%}$}
-\addlegendentry{DEC$_{\text{MVP-}5\%}$}
-\addlegendentry{DEC$_{\text{MVP-}2.5\%}$}
-\end{axis}
-
-\end{tikzpicture}
-}
-}
-\caption{Comparison of performances using $\epsilon = 10^{-10}$ in (\ref{eq:stop}) with box constraints defined in (\ref{eq:generalbox})}
-\end{figure}

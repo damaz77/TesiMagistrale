@@ -248,7 +248,7 @@ Compute $x^{k+1} = x^{k} + \gamma^k(\hat{x}^{k} - x^{k}$)\\
 \end{algorithm}
 
 
-\section{Genetic algorithm}
+\section{A genetic algorithm}
 In this section is presented a standard genetic algorithm to compute ERC optimal portfolios. The \textit{fitness} definition in the ERC setting is given by the deviance of each risk contribution from the mean of all risk contributions\footnotemark[3]\footnotetext[3]{It is simple to extend this approach to the more general RP case}. We use the shorthand notation of $\Delta_i = \partial_{x_i} \sigma (x)$, so we can compute the expectation $\Delta = E(\Delta_i)$ and define the fitness $f$ as the sum of the quadratic distance of each risk contribution from the mean, as in ({\ref{eq:ls1}) \cite{genetic}. This nonnegative fitness value $f$ has to be minimized, where
 \begin{equation}
 f= \sum_i (\Delta_i - \Delta)^2

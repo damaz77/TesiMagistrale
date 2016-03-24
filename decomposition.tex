@@ -204,7 +204,7 @@ f(x_k+\alpha_kd_k) \le  f(x_k)- \gamma (\alpha_k||d_k||)^2
 \end{equation}
  where $d_k$ is a descent direction in $x_k$.
 
-Altough the most famous line search method is Armijo-Type, its most important drawback is that it can't guarantee that:
+Altough the most famous line search method is Armijo-Type, Quadratic Line Search can guarantee that:
 \begin{equation}
  \displaystyle \lim_{k\rightarrow \infty} ||x^{k+1}-x^{k}|| =0
 \end{equation}
@@ -711,7 +711,7 @@ and the vector $d \in \mathbb{R}^n$ with elements:
 \begin{equation}
 d_j = 2 (x_j (\Sigma x)_j - \theta) 
 \end{equation}
-We can now write the two terms of the gradient using $B$ and $d$; the first term (\ref{eq:first1}) becomes:
+We can now write the two terms of the gradient using $B$ and $d$. The first term (\ref{eq:first1}) becomes:
 \begin{equation}
 B d
 \end{equation}
