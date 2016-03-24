@@ -178,7 +178,7 @@ legend cell align=left
 \end{figure}
 
 \subsubsection{Decomposition vs SNOPT}
-In Figure (\ref{fig:100}) and Figure (\ref{fig:10}) we compare the average execution time and the average number of iterations performed by the decomposition algorithm (with different values of $\lambda$) against SNOPT using the starting point defined in (\ref{eq:sparsestarting}). The $\epsilon$ in the stop criterion (\ref{eq:stop}) is set to $10^{-10}$. In Figure (\ref{fig:100}) we set $M=100$, while in Figure (\ref{fig:10}) we set $M=10$. The two figures show that SNOPT perform better than DEC$_{MVP}$, but show also that DEC$_{\text{MVP-}\lambda\%}$, especially for low values of $\lambda$, outperforms SNOPT in terms of average execution time when the number of assets $n$ becomes high. As we can see comparing Figure (\ref{fig:100}) with Figure (\ref{fig:10}), parameter $M$ does not significantly affect the performances of the decomposition algorithm, thus we can set $M=100$ in the next experiments.
+In Figure (\ref{fig:100}) and Figure (\ref{fig:10}) we compare the average execution time and the average number of iterations performed by the decomposition algorithm (with different values of $\lambda$) against SNOPT using the starting point defined in (\ref{eq:sparsestarting}). The $\epsilon$ in the stop criterion (\ref{eq:stop}) is set to $10^{-10}$. In Figure (\ref{fig:100}) we set $M=100$, while in Figure (\ref{fig:10}) we set $M=10$.\\ The two figures show that SNOPT perform better than DEC$_{MVP}$, but show also that DEC$_{\text{MVP-}\lambda\%}$, especially for low values of $\lambda$, outperforms SNOPT in terms of average execution time when the number of assets $n$ becomes high. As we can see comparing Figure (\ref{fig:100}) with Figure (\ref{fig:10}), parameter $M$ does not significantly affect the performances of the decomposition algorithm, thus we can set $M=100$ in the next experiments.
 \begin{figure}
 \makebox[\textwidth][c]{
 \subfloat[Comparison of average execution time\label{subfig-1:time2}]{%
@@ -483,9 +483,9 @@ ymax=18000
 \subsubsection{Convergence to a Risk Parity solution}
 In this section we evaluate the probability to converge to a critical point $(x^*,y^*)$ that is also a Risk Parity solution, i.e. that satisfies 
 \begin{equation}\label{eq:reseps}
-\max_i \left| \frac{RC_i}{\mathcal{R}(x^*,y^*)} - \frac{1}{n} \right| < 10^{-6}
+\max_i \left| \frac{RC_i}{\mathcal{R}(x^*,y^*)} - \frac{1}{n} \right| < \epsilon
 \end{equation}
-where $RC_i$ is the risk contribution of the asset $i$ and ${\mathcal{R}(x^*,y^*)}$ is the total risk of the invested portfolio. Equation (\ref{eq:reseps}) express the fact that the (normalized) max deviation from Risk Parity of the solutions is less than $10^{-6}$. In Figure (\ref{fig:convergence1}) we compare the probability to reach a Risk Parity solution for both the decomposition algorithm (with different values of $\lambda$) and SNOPT. 
+where $RC_i$ is the risk contribution of the asset $i$ and ${\mathcal{R}(x^*,y^*)}$ is the total risk of the invested portfolio. Equation (\ref{eq:reseps}) express the fact that the (normalized) max deviation from Risk Parity of the solutions is less than $\epsilon$. In Figure (\ref{fig:convergence1}) we compare the probability to reach a Risk Parity solution for both the decomposition algorithm (with different values of $\lambda$) and SNOPT using the sparse starting point defined in (\ref{eq:sparsestarting}).\\ Figure (\ref{fig:convergence1}) shows that when the number of assets $n$ is low (i.e. $n < 100$), all the algorithms tested have a probability to converge to a Risk Parity solution that is nearly $100\%$. As the number of assets $n$ increases, the probability to converge to an RP solution decreases for all the algorithm tested. Compared with SNOPT, DEC$_\text{MVP}$ and DEC$_{\text{MVP-}\lambda\%}$ have always an higher probability of convergence. For $n <1250$ we have that DEC$_\text{MVP}$ has the highest probability to converge to an RP solution, while for $n >1250$ we observe that DEC$_{\text{MVP-}\lambda\%}$ has an higher convergence probability for certain values of $\lambda$.
 
 \begin{figure}
 \makebox[\textwidth][c]{

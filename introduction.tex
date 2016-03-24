@@ -1,6 +1,7 @@
+\section{Portfolio Selection}
 Portfolio selection (or portfolio management) is the art and science of making decisions about investment mix and policy, matching investments to objectives, asset allocation for individuals and institutions, and balancing risk against performance. Modern Portfolio Theory (MPT) approaches investing by examining the entire market and the whole economy. The theory is an alternative to the older method of analyzing each investment’s individual merits. When investors look at each investment individual merit, they are analyzing an investment without worrying about the way different investments will perform in relation to each other. As a matter of fact, MPT places a large emphasis on the correlation between investments. Correlation is the amount we can expect various investments, and various asset classes, to change in value compared with each other. 
 
-\section{Risk}
+\subsection{Risk}
 The term \textit{risk} is defined as the measurement of the likelihood that an investment will go up and down in value, how often and by how much. The theory assumes that investors prefer to minimize risk; in fact, it assumes that given the choice of two portfolios with equal returns, investors will choose the one with the lowest risk. If investors take on additional risk, they will expect to be compensated with additional return. Risk comes in two major categories:
 \begin{itemize}
 \item \textbf{Systematic risk} - the possibility that the entire market and economy will show losses, which will negatively affect nearly every investment; also called \textit{market risk};
@@ -15,7 +16,7 @@ Diversification generally does not protect against systematic risk because a dro
 \label{fig:div}
 \end{figure}
 
-\section{Markovitz Theory}
+\subsection{General formulation}
 Consider a portfolio with $n$ different assets where the $i$-th asset will give the return $R_i$. Let $\mu_i$ and $\sigma^2_i$ be the corresponding mean and variance and assume, for any two assets $i$ and $j$ that is known their correlation coefficient $\rho_{ij}$. Let $\sigma_{i,j} = \rho_{ij}\sigma_i\sigma_j$ be the covariance between $R_i$ and $R_j$. Suppose the the relative amount of the value of the portfolio invested in asset $i$ is $x_i$. If $R$ is the return of the whole portfolio then:
 \begin{equation}
 \mu = E[R] = \sum\limits_{i=1}^n\mu_i x_i 
@@ -32,14 +33,14 @@ For different choices of $x_1, ..., x_n$ the investor will get different combina
 \label{fig:efficient}
 \end{figure}
 
-\section{Sharpe Ratio (SR)}
+\subsection{Sharpe Ratio (SR)}
 The Sharpe Ratio is a measure for calculating risk-adjusted return \cite{sharpe}. The Sharpe Ratio is the average return earned in excess of the \textit{risk-free rate} per unit of volatility or total risk. Subtracting the \textit{risk-free rate} from the mean return, the performance associated with risk-taking activities can be isolated:
 \begin{equation}\label{eq:SR}
 SR(x) = \frac{\mu(x) - \mu_{RF}}{\sigma(x)}
 \end{equation} 
 where $\mu(x)$ is the expected return of the invested portfolio, $\mu_{RF}$ is the \textit{risk-free rate} and $\sigma(x)$ is the portfolio standard deviation ($\sqrt{x^T \Sigma x}$). The greater a portfolio's Sharpe Ratio, the better its risk-adjusted performance has been. A negative Sharpe Ratio indicates that a risk-less asset would perform better than the security being analyzed.
 
-\section{Diversification Ratio (DR)}
+\subsection{Diversification Ratio (DR)}
 The \textit{Diversification Ratio} (DR) is a measure of a portfolio diversification, defined as the ratio of the portfolio’s weighted
 average volatility to its overall volatility \cite{diversification}. Formally, if $x$ is the vector of the assets' weights,
 \begin{equation}\label{eq:dr}
@@ -47,7 +48,7 @@ DR(x) = \frac{\sum_{i=1}^{n}x_i\sigma_i}{\sigma(x)}
 \end{equation}
 It is intuitive that portfolios with “concentrated” weights and/or highly correlated holdings would be poorly diversified, and hence be characterized by relatively low DRs.
 
-\section{Portfolio selection}
+\subsection{Markowitz Portfolio Theory (MPT)}
 The Markowitz portfolio theory states that an investor should
 choose a portfolio from the efficient set, depending on how risk averse he is. One way to handle this, is to consider the optimization problem\footnotemark[1]\footnotetext[1]{The condition $x \geq 0$ is often referred as \textit{long-only} investment strategy.}:
 \begin{equation}
