@@ -19,10 +19,10 @@ Diversification generally does not protect against systematic risk because a dro
 \subsection{General formulation}
 Consider a portfolio with $n$ different assets where the $i$-th asset will give the return $R_i$. Let $\mu_i$ and $\sigma^2_i$ be the corresponding mean and variance and assume, for any two assets $i$ and $j$ that is known their correlation coefficient $\rho_{ij}$. Let $\sigma_{i,j} = \rho_{ij}\sigma_i\sigma_j$ be the covariance between $R_i$ and $R_j$. Suppose the the relative amount of the value of the portfolio invested in asset $i$ is $x_i$. If $R$ is the return of the whole portfolio then:
 \begin{equation}
-\mu = E[R] = \sum\limits_{i=1}^n\mu_i x_i 
+\mu(x) =  \sum\limits_{i=1}^n\mu_i x_i 
 \end{equation}
 \begin{equation}
-\sigma^2 = Var[R] = \sum\limits_{i=1}^n\sum\limits_{j=1}^n\sigma_{i,j}x_i x_j = x^T \Sigma x
+\sigma^2(x) = \sum\limits_{i=1}^n\sum\limits_{j=1}^n\sigma_{i,j}x_i x_j = x^T \Sigma x
 \end{equation}
 where $\Sigma$ is the covariance matrix and $\Sigma_{ij} = \sigma_{i,j}x_i x_j$ \cite{markovitz}.
 For different choices of $x_1, ..., x_n$ the investor will get different combinations of $\mu$ and $\sigma^2$. The set of all possible ($\sigma^2$, $\mu$) combinations is called the \textit{attainable set}. Those ($\sigma^2$, $\mu$) with minimum $\sigma^2$ for a given $\mu$ or more and maximum $\mu$ for a given $\sigma^2$ or less are called the \textit{efficient set} (or efficient frontier). Since an investor wants a high profit and a small risk, he wants to maximize $\mu$ and minimize $\sigma^2$ and should therefore choose a portfolio which gives a ($\sigma^2$, $\mu$) combination in the efficient set. In Figure (\ref{fig:efficient}) the attainable set is the interior of the ellipse and the efficient set is the upper left part of its boundary. \\
@@ -48,7 +48,7 @@ DR(x) = \frac{\sum_{i=1}^{n}x_i\sigma_i}{\sigma(x)}
 \end{equation}
 It is intuitive that portfolios with “concentrated” weights and/or highly correlated holdings would be poorly diversified, and hence be characterized by relatively low DRs.
 
-\subsection{Markowitz Portfolio Theory (MPT)}
+\subsection{Markowitz Portfolio Theory}
 The Markowitz portfolio theory states that an investor should
 choose a portfolio from the efficient set, depending on how risk averse he is. One way to handle this, is to consider the optimization problem\footnotemark[1]\footnotetext[1]{The condition $x \geq 0$ is often referred as \textit{long-only} investment strategy.}:
 \begin{equation}

@@ -18,7 +18,7 @@ In Table \ref{tab:t} is shown an overview of the exitent algorithms for computin
 \caption{Comparison between different algorithms for computing GRB/RP portfolios}
 \label{tab:t}
 \end{table}
-\section{Newton's Method}
+\section{Newton's Algorithm}
 The algorithm is an application of Newton’s method to solve a system of nonlinear equations \cite{newton}. Writing the system in general form, one is interested in finding the solution of $F(y)=0$. Recall that we can write a linear approximation to this system around any point using a Taylor expansion:
 \begin{equation}
 F(y) \approx F(c) + J(c)(y-c)
@@ -123,7 +123,7 @@ x^{k+1} = x^{k} - \Delta x^{k}
 \end{equation}
 with the iteration step given by
 \begin{equation}
-\Delta x^{(k)} = [F''(x^{(k)})]^{-1}F'(x^{(k)})
+\Delta x^{k} = [F''(x^{k})]^{-1}F'(x^{k})
 \end{equation}
 Now we define a quantity $\lambda_F$ as
 \begin{equation}
@@ -409,7 +409,7 @@ where the Schur complement is used to reformulate the semidefinite constraint $X
 \subsection{Markov chain Monte Carlo (MCMC)}
 Let $\Omega$ be the state space and $p(x) = p^*(x)/C$ denote some target probability distribution on $\Omega$ where 
 \begin{equation}
-C := \int_{\Omega} p^*(x) dx
+C = \int_{\Omega} p^*(x) dx
 \end{equation}
 The MCMC method is an approach to sample from $p(x)$ when the normalizing constant is hard compute. In the MCMC approach, one
 constructs a Markov chain on $\Omega$ using a \textquotedblleft proposal" distribution $q(x_{t+1}|x_t)$ in such a way that $p(x)$
@@ -417,12 +417,12 @@ is the unique stationary distribution for the Markov chain. The main requirement
 Given a current sample $x_t$ at time $t$, the proposal distribution $q(\cdot | x_t)$ is used to generate
 a candidate sample, $x_{t+1}$, which is then accepted with probability
 \begin{equation}\label{eq:acc}
-\alpha(x_t, x_{t+1}) := \min \Big\{ 1, \frac{q(x_t|x_{t+1})p^*(x_{t+1})}{q(x_{t+1}|x_t)p^*(x_t)}\Big\}
+\alpha(x_t, x_{t+1}) = \min \Big\{ 1, \frac{q(x_t|x_{t+1})p^*(x_{t+1})}{q(x_{t+1}|x_t)p^*(x_t)}\Big\}
 \end{equation}
 If the candidate point $x_{t+1}$ is rejected we then set $x_{t+1} = x_t$ and continue sampling in this manner.\\
 Let $\mathcal{F}$ be the feasible region of the GRB problem:
 \begin{equation}
-\mathcal{F} := \{ x \in \mathcal{X}\quad|\quad h(x) = 0\}
+\mathcal{F} = \{ x \in \mathcal{X}\quad|\quad h(x) = 0\}
 \end{equation}
 where $\mathcal{X} = \{x \in \mathbb{R}^n | x_i \geq 0$ $\forall i=1,..,n$, $\mathds{1}^T x = 1\}$. One possibility would be to set
 \begin{equation}
@@ -441,7 +441,7 @@ as the unnormalized density. The main difficulty with the penalty approach is th
 \subsection{Augmented Lagrangian MCMC}
 The augmented Lagrangian function of the GRB problem is defined as:
 \begin{equation}
-\mathcal{L}_{c_t}(u_t, x) := \mathcal{R}(x) + u_t^T h(x) + \frac{1}{2} c_t \parallel h(x) \parallel^2_2
+\mathcal{L}_{c_t}(u_t, x) = \mathcal{R}(x) + u_t^T h(x) + \frac{1}{2} c_t \parallel h(x) \parallel^2_2
 \end{equation}
 where $u_t = (u_{t,1},..,u_{t,s}) \in \mathbb{R}^s$  is a vector of time $t$ Lagrange multipliers. We define the time $t$ target distribution to be
 \begin{equation}
@@ -454,7 +454,7 @@ a predetermined value $\epsilon_c$ when there is no improvement in constraint vi
 \begin{equation}
 u_{t+1} = u_t - \epsilon_u \nabla d_{c_t}(u_t)
 \end{equation}
-where $d_{c_t}(u) := \max_{x \in \mathcal{X}}\mathcal{L}_{c_t}(u, x) $ denotes the dual function, and $\epsilon_u$ is a given step size. $c_t$ and $u_t$ are never updated both in the same iteration, in order to ensure that we leave the current location only after adequately exploring its neighbourhood.\\
+where $d_{c_t}(u) = \max_{x \in \mathcal{X}}\mathcal{L}_{c_t}(u, x) $ denotes the dual function, and $\epsilon_u$ is a given step size. $c_t$ and $u_t$ are never updated both in the same iteration, in order to ensure that we leave the current location only after adequately exploring its neighbourhood.\\
 The proposal distribution $q(x_{t+1}|x_t)$ is based on a random
 walk chain. In particular, one value $z^*_t \sim N(0, \sigma^q_t I )$ is generated, where $I \in \mathbb{R}^{n*n}$ is the identity matrix, and then is taken
 \begin{equation}

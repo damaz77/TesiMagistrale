@@ -406,10 +406,9 @@ Case (II). For all $k\in K_1$ and $m=0,\ldots ,2n$ we have
 {\it Case} (I)
 \par\medskip\noindent
 Without loss of generality assume $\ell (k)=0$.
-Otherwise we can reason on the subsequence $\{x^k\}_{k+l(k)}$ that, by definition,
-is a subsequence where the  MVP is selected again (see the new instruction) since $\alpha^{k+l(k)-s}=\Delta^{k+l(k)-s}$,
+Otherwise we can reason on the subsequence $\{x^k\}_{k+l(k)}$ that, by definition, is a subsequence where the  MVP is selected again (see the new instruction) since $\alpha^{k+l(k)-s}=\Delta^{k+l(k)-s}$,
 for $s=0,1,\ldots ,l(k)$,
-and $\alpha^{k+l(k)}<\Delta^{k+l(k)})$.
+and $\alpha^{k+l(k)}<\Delta^{k+l(k)}$.
 
 The instructions of QLS imply for all $k\in K_1$
 \begin{equation}\label{eq:arm1}
@@ -592,19 +591,19 @@ Suppose that the level set $\mathcal{L}_0$ is a compact set. Let $\{(x^k, \theta
 \begin{proof}
 The firts assertion is given by algorithm statement which say:
 \begin{equation}
-f(x^{k+1},\theta^{k+1})\le f(x^{k+1},y^k)\le f(x^k,\theta^k)- \underbrace{\frac{1}{2}\tau ||x^{k+1}-x^{k}||^2}_{>0}
+f(x^{k+1},\theta^{k+1})\le f(x^{k+1},\theta^k)\le f(x^k,\theta^k)- \underbrace{\frac{1}{2}\tau ||x^{k+1}-x^{k}||^2}_{>0}
 \end{equation}
 then the sequence $\{(x^k,\theta^k)\} \in \mathcal{L}_0$.
 
 To prove the second assertion it is necessary to show that
 \begin{equation}
-\lim_{k \rightarrow \infty} ||(x^{k+1},\theta^{k+1})-(x^{k},y^{k})||=0
+\lim_{k \rightarrow \infty} ||(x^{k+1},\theta^{k+1})-(x^{k},\theta^{k})||=0
 \end{equation}
 then the convergence can be completed as in previous proposition.
 
 Let us start to prove that $||x^{k+1}-x^{k}||\to0$.
 
-From the $\mathcal{L}_0$ compactness we can say that the sequence $\{(x^k,\theta^k)\}$ has a subsequence $K \subset \{0,1,\ldots\}$ convergent to $(\overline{x},\overline{y}) \in \mathcal{L}_0$. Then for the continuity of $f$ we have:
+From the $\mathcal{L}_0$ compactness we can say that the sequence $\{(x^k,\theta^k)\}$ has a subsequence $K \subset \{0,1,\ldots\}$ convergent to $(\overline{x},\overline{\theta}) \in \mathcal{L}_0$. Then for the continuity of $f$ we have:
 \begin{equation}
 \lim_{k \in K, k \rightarrow \infty}f(x^k,\theta^k)=f(\overline{x},\overline{\theta})= \overline{f}
 \end{equation}
@@ -620,7 +619,7 @@ then the sequence $f(x^k,\theta^k)$ is decreasing and lower-bounded by $\overlin
 
 Proximal point step imply that:
 \begin{equation}
-f(x^{k+1},y^{k})+\frac{1}{2}\tau||x^{k+1}-x^{k}||^2 \le f(x^{k},y^{k})
+f(x^{k+1},\theta^{k})+\frac{1}{2}\tau||x^{k+1}-x^{k}||^2 \le f(x^{k},\theta^{k})
 \end{equation}
 
 Taking the limit for $k \in K, k \to \infty$ we obtain:
