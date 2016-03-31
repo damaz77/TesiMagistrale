@@ -16,7 +16,7 @@ Diversification generally does not protect against systematic risk because a dro
 \label{fig:div}
 \end{figure}
 
-\subsection{General formulation}
+\subsection{Notation \& Measures}
 Consider a portfolio with $n$ different assets where the $i$-th asset will give the return $R_i$. Let $\mu_i$ and $\sigma^2_i$ be the corresponding mean and variance and assume, for any two assets $i$ and $j$ that is known their correlation coefficient $\rho_{ij}$. Let $\sigma_{i,j} = \rho_{ij}\sigma_i\sigma_j$ be the covariance between $R_i$ and $R_j$. Suppose the the relative amount of the value of the portfolio invested in asset $i$ is $x_i$. If $R$ is the return of the whole portfolio then:
 \begin{equation}
 \mu(x) =  \sum\limits_{i=1}^n\mu_i x_i 
@@ -33,14 +33,14 @@ For different choices of $x_1, ..., x_n$ the investor will get different combina
 \label{fig:efficient}
 \end{figure}
 
-\subsection{Sharpe Ratio (SR)}
+\subsubsection{Sharpe Ratio (SR)}
 The Sharpe Ratio is a measure for calculating risk-adjusted return \cite{sharpe}. The Sharpe Ratio is the average return earned in excess of the \textit{risk-free rate} per unit of volatility or total risk. Subtracting the \textit{risk-free rate} from the mean return, the performance associated with risk-taking activities can be isolated:
 \begin{equation}\label{eq:SR}
 SR(x) = \frac{\mu(x) - \mu_{RF}}{\sigma(x)}
 \end{equation} 
 where $\mu(x)$ is the expected return of the invested portfolio, $\mu_{RF}$ is the \textit{risk-free rate} and $\sigma(x)$ is the portfolio standard deviation ($\sqrt{x^T \Sigma x}$). The greater a portfolio's Sharpe Ratio, the better its risk-adjusted performance has been. A negative Sharpe Ratio indicates that a risk-less asset would perform better than the security being analyzed.
 
-\subsection{Diversification Ratio (DR)}
+\subsubsection{Diversification Ratio (DR)}
 The \textit{Diversification Ratio} (DR) is a measure of a portfolio diversification, defined as the ratio of the portfolio’s weighted
 average volatility to its overall volatility \cite{diversification}. Formally, if $x$ is the vector of the assets' weights,
 \begin{equation}\label{eq:dr}
@@ -61,7 +61,7 @@ choose a portfolio from the efficient set, depending on how risk averse he is. O
 
 where $\mathds{1} = [1, .., 1] \in \mathbb{R}^n$ is the vector of all ones and $A$ ($0 \leq A \leq \infty$) is the so called \textit{risk aversion index}. $A = 0$ will result in the portfolio with the \textit{smallest variance}. An increasing $A$ corresponds to the investor becoming more willing to take a bigger risk to get a higher expected return; $A = \infty$ corresponds to the investor only caring about getting a large expected return no matter what the risk is \cite{markovitz}.\\
 If we set $A=0$, the problem becomes a \textit{mean-variance
-optimization} (MVO) problem. If we add the constraint that every asset yields at least a target value $R$ of expected return, we obtain a convex quadratic programming problem:
+optimization} (MVO) problem. If we add the constraint that every asset yields at least a target value $R$ of expected return, we obtain a quadratic convex problem:
 \begin{equation}\label{eq:variance}
 \begin{aligned}
 &\min_x &&\frac{1}{2}x^T \Sigma x\\
@@ -84,4 +84,4 @@ An alternative way to formulate the MVO problem is the following:
 \end{equation}
 
 While in (\ref{eq:variance}) we attempt to minimize the variance of the portfolio, with the constraint that the return is at least greater than a fixed value of return $R$, in (\ref{eq:variance2}) we try to maximize the return, constraining the variance to be less or equal than a certain fixed value $\sigma^2$ \cite{libro}.\\
-The main problems of the mean-variance approach are two. The first is that there is no reason to expect that solutions to the Markowitz model will be well diversified portfolios. Diversification means reducing \textit{risk} by investing in a variety of assets. This model tends to produce portfolios with unreasonably large weights in certain asset classes \cite{libro}. The second criticism of the Markovitz model is its sensitivity to inputs \cite{tutuncu}.
+The main problems of the mean-variance approach are two. The first is that there is no reason to expect that solutions to the Markowitz model will be well diversified portfolios. This model tends to produce portfolios with unreasonably large weights in certain asset classes \cite{libro}. The second criticism of the Markovitz model is its sensitivity to inputs \cite{tutuncu}.

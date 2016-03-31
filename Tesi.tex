@@ -1,4 +1,5 @@
-\documentclass[11pt, titlepage, oneside]{book}
+\documentclass[10pt, titlepage]{book}
+\usepackage[a4paper,top=2in,bottom=2in, left=1.5in, right=1.5in]{geometry}
 \usepackage{setspace}
 \onehalfspacing
 \usepackage[utf8]{inputenc}
@@ -39,6 +40,10 @@
 \begin{titlepage}
 \input{titlepage}
 \end{titlepage} 
+\thispagestyle{empty}
+\chapter*{Abstract}
+\thispagestyle{empty}
+\input{abstract}
 
 \tableofcontents\clearpage
 
@@ -66,4 +71,6 @@
 \begin{thebibliography}{9}
 \input{bibliography}
 \end{thebibliography}
+%\bibliography{bib}{}
+%\bibliographystyle{plain}
 \end{document}

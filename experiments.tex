@@ -1,12 +1,12 @@
 \section{Dataset}
-In this section we briefly describe the dataset on which we tested some of the previously presented algorithms. The dataset used is the NASDAQ-2196\footnotemark[1]; this dataset is a $2196 \times 2196$ covariance matrix with:\footnotetext[1]{NASDAQ-2196 dataset can be downloaded at \url{http://host.uniroma3.it/docenti/cesarone/datasetsw3_tardella.html}}
+In this section we briefly describe the dataset on which we tested some of the previously presented algorithms. The dataset used is the NASDAQ-2196\footnotemark[1]; this dataset is a $2196 \times 2196$ covariance matrix $\Sigma_{\text{NQ}}$ with:\footnotetext[1]{NASDAQ-2196 dataset can be downloaded at \url{http://host.uniroma3.it/docenti/cesarone/datasetsw3_tardella.html}}
 \begin{itemize}
 \item $\min \{\Sigma_{\text{NQ}}\} = -7.5347 \times 10^{-3} $
 \item $\max \{\Sigma_{\text{NQ}}\} = 6.0531 \times 10^{-2} $
 \item $\mu(\Sigma_{\text{NQ}}) = 4.1252 \times 10^{-4} $
 \item $\sigma^2(\Sigma_{\text{NQ}}) = 2.9305 \times 10^{-7}$
 \end{itemize}
-In all the following experiments we used the NASDAQ-2196 dataset; from the covariance matrix contained in the dataset, we compute the correlation matrix and we use that instead of the covariance one for numerical reasons.
+In all the following experiments we use the NASDAQ-2196 dataset; from the covariance matrix contained in the dataset, we compute the correlation matrix and we use that instead of the covariance one for numerical reasons.
 
 \section{Implementation details}
 All the algorithms are written in \textit{Python 2.7} while we use the official Python interface for SNOPT. We also use \texttt{numpy} library, linked with \texttt{blas} and \texttt{ATLAS} libraries. The PC used for the experiments is equipped with and Intel i7 3630QM processor, 8GB of RAM and a Linux based distribution. We use \texttt{time.clock()} to determine the execution time of an algorithm, in this way:\vspace{0.3em}\\
@@ -75,7 +75,7 @@ In order to obtain comparable results, in our scheme we use a stop criterion tha
 \begin{equation}\label{eq:stop}
 \left| \frac{\partial f(x^k,\theta^k)}{d{x_{j(k)}}} - \frac{\partial f(x^k,\theta^k)}{d{x_{i(k)}} }\right| < \epsilon
 \end{equation}
-In SNOPT, this is (almost) equivalent to set the\linebreak \texttt{Major optimality tolerance} optional parameter to $\epsilon$.\\
+In SNOPT, this is (almost) equivalent to set the \texttt{Major optimality tolerance} optional parameter to $\epsilon$.\\
 In the following experiments, we denote with DEC$_{\text{MVP}}$ Algorithm \ref{alg:proximal} with $M=1$ (we compute the MVP among the full gradient $\nabla_x f(x,\theta)$ at each iteration), while we denote with DEC$_{\text{MVP-}\lambda\%}$ Algorithm \ref{alg:modified}. For DEC$_{\text{MVP-}\lambda\%}$ we evaluate the stop criterion (\ref{eq:stop}) every $M$ iterations (when we have the full gradient available).
 
 \subsection{Classical box constraints}
@@ -486,7 +486,8 @@ In this section we evaluate the probability to converge to a critical point $(x^
 \begin{equation}\label{eq:reseps}
 \max_i \left| \frac{RC_i}{\mathcal{R}(x^*)} - \frac{1}{n} \right| < \eta
 \end{equation}
-where $RC_i$ is the risk contribution of the asset $i$ and ${\mathcal{R}(x^*)}$ is the total risk of the invested portfolio. Equation (\ref{eq:reseps}) express the fact that the (normalized) max deviation from Risk Parity of the solutions is less than $\eta$. In Figure (\ref{fig:convergence1}) we compare the probability to reach a Risk Parity solution for both the decomposition algorithm (with different values of $\lambda$) and SNOPT using the sparse starting point defined in (\ref{eq:sparsestarting}).\\ Figure (\ref{fig:convergence1}) shows that when the number of assets $n$ is low (i.e. $n < 100$), all the algorithms tested have a probability to converge to a Risk Parity solution that is nearly $100\%$. As the number of assets $n$ increases, the probability to converge to an RP solution decreases for all the algorithm tested. Compared with SNOPT, DEC$_\text{MVP}$ and DEC$_{\text{MVP-}\lambda\%}$ have always an higher probability of convergence. For $n <1250$ we have that DEC$_\text{MVP}$ has the highest probability to converge to an RP solution, while for $n >1250$ we observe that DEC$_{\text{MVP-}\lambda\%}$ has an higher convergence probability for certain values of $\lambda$.
+where $RC_i$ is the risk contribution of the asset $i$ and ${\mathcal{R}(x^*)}$ is the total risk of the invested portfolio. Equation (\ref{eq:reseps}) express the fact that the (normalized) max deviation from Risk Parity of the solutions is less than $\eta$. In Figure (\ref{fig:convergence1}) we compare the probability to reach a Risk Parity solution for both the decomposition algorithm (with different values of $\lambda$) and SNOPT using the sparse starting point defined in (\ref{eq:sparsestarting}).\\
+Recalling that, when we use the box constraint defined in (\ref{eq:classicalbox}) the Risk Parity portfolio is a feasible solution for our problem, we can count how many times one algorithm converges to a critical point that is not the global optimum (i.e. the Risk Parity solution). Figure (\ref{fig:convergence1}) shows that when the number of assets $n$ is low (i.e. $n < 100$), all the algorithms tested have a probability to converge to a Risk Parity solution that is nearly $100\%$. As the number of assets $n$ increases, the probability to converge to an RP solution decreases for all the algorithm tested. Compared with SNOPT, DEC$_\text{MVP}$ and DEC$_{\text{MVP-}\lambda\%}$ have always an higher probability of convergence. For $n <1250$ we have that DEC$_\text{MVP}$ has the highest probability to converge to an RP solution, while for $n >1250$ we observe that DEC$_{\text{MVP-}\lambda\%}$ has an higher convergence probability for certain values of $\lambda$.
 
 \begin{figure}
 \makebox[\textwidth][c]{
@@ -573,7 +574,7 @@ legend style={at={(0.5,-0.3)},anchor=north}
 \end{axis}
 \end{tikzpicture}
 }
-\caption{Probability to converge to a Risk Parity solution using $x^{0}= [1, 0, .., 0]$ for the decomposition algorithm (with different values of $\lambda$) and SNOPT.}
+\caption{Probability to converge to a Risk Parity solution using $x^{0}= [1, 0, .., 0]$ and box constraints defined in (\ref{eq:classicalbox}) for the decomposition algorithm (with different values of $\lambda$) and SNOPT.}
 \label{fig:convergence1}
 \end{figure}
 
@@ -600,7 +601,7 @@ In both case we can observe that a dense starting point leads to a low probabili
 xlabel={\% of sparsity of $x_0$},
 ylabel={\% of convergence at RP},
 scaled y ticks=false,
-width=0.5\textwidth,
+width=0.7\textwidth,
 legend pos=south east,
 ylabel near ticks
 ]
@@ -709,10 +710,12 @@ ylabel near ticks
 \end{axis}
 \end{tikzpicture}
 }
+}
+\makebox[\textwidth][c]{
 \hspace{1em}\subfloat[With random $x_0$\label{subfig-3:random}]{%
 \begin{tikzpicture}
 \begin{axis}[%
-width=0.5\textwidth,
+width=0.7\textwidth,
 xlabel={\% of sparsity of $x_0$},
 ylabel={\% of convergence at RP},
 legend pos=south east,

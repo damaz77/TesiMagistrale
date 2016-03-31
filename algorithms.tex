@@ -1,4 +1,4 @@
-In Table \ref{tab:t} is shown an overview of the exitent algorithms for computing the GRB or RP weights; in Table \ref{tab:t}, the acronym DC is used to refer to the log-barrier formulation (\ref{eq:log1}) whereas LS is used to refer to the least-square formulation (\ref{eq:bp}).
+In this section we present some different algorithms used to solve the Portofolio Selection problem. Table \ref{tab:t} shows an overview of the existing algorithms for computing the GRB or RP portfolio weights; in Table \ref{tab:t}, the acronym LB is used to refer to the Log-Barrier formulation (\ref{eq:log1}) whereas LS is used to refer to the Least-Square formulation (\ref{eq:bp}).
 \begin{table}
 \begin{center}
 \begin{tabular}{| l | c| r |}
@@ -6,7 +6,7 @@ In Table \ref{tab:t} is shown an overview of the exitent algorithms for computin
     \textbf{Portofolio} &\textbf{Formulation type}& \textbf{Algorithms}  \\ \hline
     \multirow{2}{4em}{GRB}& \multirow{2}{6em}{Non-Convex}  &SDP relaxation \cite{sdp}  \\ \cline{3-3}
      &  &AL-MCMC \cite{sdp}\\ \hline
-    \multirow{7}{4em}{RP}& \multirow{2}{6em}{Convex (DC)}  &Newton-Nesterov \cite{spinu}\\\cline{3-3}     
+    \multirow{7}{4em}{RP}& \multirow{2}{6em}{Convex (LB)}  &Newton-Nesterov \cite{spinu}\\\cline{3-3}     
     &  & CCD \cite{ccd}\\ \cline{2-3}
      &\multirow{4}{8em}{Non-Convex (LS)} & SCRIP \cite{scrip}\\ \cline{3-3}
     && Genetic Algorithm \cite{genetic} \\\cline{3-3}
@@ -15,7 +15,7 @@ In Table \ref{tab:t} is shown an overview of the exitent algorithms for computin
     \hline
 \end{tabular}
 \end{center}
-\caption{Comparison between different algorithms for computing GRB/RP portfolios}
+\caption{Overview of different algorithms for computing GRB/RP portfolios}
 \label{tab:t}
 \end{table}
 \section{Newton's Algorithm}
@@ -96,7 +96,7 @@ Since F is strictly convex on $\mathbb{R}^n$ ($F''(x)$ is positive definite), it
 \begin{equation}\label{eq:sol}
 \Sigma x = bx^{-1}
 \end{equation}
-If $x^*$ is the solution of (\ref{eq:sol}), then $y^* := D^{1/2}x^*$ is the solution of
+If $x^*$ is the solution of (\ref{eq:sol}), then $y^* = D^{1/2}x^*$ is the solution of
 \begin{equation}
 Cy = by^{-1}
 \end{equation}
@@ -223,7 +223,7 @@ at the $k$-th iteration, the Successive Convex Optimization method (SCRIP) aims 
 \begin{equation}\label{eq:scrip1}
 \begin{aligned}
 & \underset{x}{\text{min}}
-&&P(x;x^{(k)}) + \frac{\tau}{2}\parallel x - x^{(k)} \parallel^2_2\\
+&&P(x;x^{k}) + \frac{\tau}{2}\parallel x - x^{k} \parallel^2_2\\
 & \text{s.t.}
 &&\mathds{1}^T x = 1\\
 &&&x \geq 0

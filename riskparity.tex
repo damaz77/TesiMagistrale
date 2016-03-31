@@ -396,8 +396,8 @@ c^* = \frac{\pi(x)}{\sigma (x)} = \frac{\mu(x)-\mu_r}{\sigma(x)}
 which is the ex-ante Sharpe ratio $SR(x)$ (\ref{eq:SR}) of the portfolio. If $c > c^*$, $\omega$ is positive and $\omega \rightarrow 1$ when $c \rightarrow \infty$.\\
 We conclude that
 \begin{itemize}
-\item The risk contribution of asset $i$ is a \textbf{return-based} contribution if $c$ is \textbf{lower} than the Sharpe ratio of the portfolio
-\item The risk contribution of asset $i$ is a \textbf{volatility-based} contribution if $c$ is \textbf{higher} than the Sharpe ratio of the portfolio
+\item The risk contribution of asset $i$ is a \textit{return-based} contribution if $c$ is \textit{lower} than the Sharpe ratio of the portfolio
+\item The risk contribution of asset $i$ is a \textit{volatility-based} contribution if $c$ is \textit{higher} than the Sharpe ratio of the portfolio
 \end{itemize}
 The singularity around the Sharpe ratio implies that the value of $c$ must be carefully calibrated.
 
@@ -468,7 +468,7 @@ An extension of the risk parity problem is the case of group risk parity where w
 is useful in the case when there are a large number of assets. Another reason to apply group risk parity is to avoid fully dense solutions (which are enforced by individual risk parity) when the number of assets is large. If $\mathcal{M}_1, ..., \mathcal{M}_s \subseteq \{1,..,n\}$ denote $s$ subsets of portfolio assets, then the marginal risk contribution of the $k$-th subset is
 \begin{equation}
 RC_{\mathcal{M}_k}(x) = \sum_{i \in \mathcal{M}_k} RC_i(x)
-\end{equation} For group risk parity, we solve the following nonconvex problem:
+\end{equation} For group risk parity, we solve the following non-convex problem:
 \begin{equation}
 \begin{aligned}
 &\sum_{i \in \mathcal{M}_k} RC_i(x) = b_k \mathcal{R}(x) \quad k=1,..,s\\
